@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#3f4447",
+                        "outline-variant": "#c3c6d6",
+                        "on-surface": "#011d35",
+                        "surface-container-highest": "#d1e4ff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed": "#cee5ff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-tint": "#0c56d0",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "secondary-fixed-dim": "#aec9e7",
+                        "surface-container-low": "#eef4ff",
+                        "on-secondary-container": "#48637d",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001848",
+                        "surface-dim": "#c4dcfd",
+                        "on-tertiary-fixed-variant": "#43474b",
+                        "on-secondary-fixed": "#001d32",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#dfe3e7",
+                        "surface-container-high": "#dbe9ff",
+                        "on-surface-variant": "#434654",
+                        "primary": "#003d9b",
+                        "surface": "#f8f9ff",
+                        "primary-container": "#0052cc",
+                        "tertiary-fixed-dim": "#c3c7cb",
+                        "outline": "#737685",
+                        "surface-container": "#e4efff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#171c1f",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#19324b",
+                        "on-tertiary-container": "#cfd3d7",
+                        "secondary-container": "#c4e0fe",
+                        "background": "#f8f9ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#2e4962",
+                        "inverse-primary": "#b2c5ff",
+                        "inverse-on-surface": "#e9f1ff",
+                        "surface-variant": "#d1e4ff",
+                        "tertiary-container": "#565b5f",
+                        "secondary": "#46617b",
+                        "primary-fixed": "#dae2ff",
+                        "on-primary-container": "#c4d2ff",
+                        "on-background": "#011d35"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "max-width": "1200px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface h-16 flex items-center justify-between px-margin-mobile">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-bold text-[20px] leading-[28px] text-primary">MedVerify</h1>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+</header>
+<main class="flex-grow pt-20 pb-24 px-margin-mobile max-w-max-width mx-auto w-full">
+<!-- Status Banner -->
+<div class="mb-lg bg-surface-container-low rounded-xl p-md flex items-center gap-md border border-surface-variant">
+<div class="bg-primary-container p-sm rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-md" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<h2 class="font-semibold text-[14px] leading-[16px] text-primary">AI Extraction Complete</h2>
+<p class="text-[12px] leading-[16px] text-on-surface-variant">Review the scanned details below for accuracy.</p>
+</div>
+</div>
+<!-- Medicine Preview Image -->
+<div class="w-full h-48 rounded-xl overflow-hidden mb-lg relative bg-surface-container-highest">
+<img alt="Medicine packaging scan" class="w-full h-full object-cover opacity-80" data-alt="A professional close-up of a medicine box packaging placed on a sterile clinical white surface. The lighting is bright and even, highlighting the clear typography of the labels. The aesthetic is clean, medical, and modern, dominated by neutral whites and soft blue accents, conveying a sense of accuracy and pharmaceutical trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpW57MfIqHK9YASHbV4-1zzg1-21mgpSK4ibjAKTPXYBzn6prp1BD3aWcqE0rpMGeIKKweU05iwC4vneLGw1Lp2phs2j4gvJQ7Zf1r0cmwv2LBHSlL-jLkZfM4JnBhyQruyIpERa7OyMXWuCCH63DdrZkT7zcIVXuF_Hpvaw0zsJImV7hMvoqS7Bpj5w4jAyAX7W1frKJKLvHAVlwXqSNfg8XScI9L-z1LVqK2kRnJX12cIpcCa52cVPWr8_pLHDo3BZgp_EPNIY-K"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/40 to-transparent"></div>
+<div class="absolute bottom-md left-md flex items-center gap-xs bg-surface-container-lowest/90 px-sm py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]" data-icon="image">image</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Original Scan</span>
+</div>
+</div>
+<!-- Extraction Results Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+<span class="font-bold text-[16px] text-primary uppercase tracking-tight">Medicine Details</span>
+<button class="flex items-center gap-xs text-primary hover:bg-surface-container transition-colors px-sm py-1 rounded-full">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+<span class="text-[14px] font-semibold">Edit</span>
+</button>
+</div>
+<!-- Fields Container -->
+<div class="p-lg space-y-lg">
+<!-- Medicine Name -->
+<div class="flex flex-col gap-xs">
+<label class="text-[12px] font-bold text-on-secondary-container uppercase tracking-widest">Medicine Name</label>
+<div class="flex items-center justify-between">
+<span class="text-[18px] font-semibold text-on-surface">Amoxicillin 500mg Capsules</span>
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="h-px bg-outline-variant/50 w-full"></div>
+<!-- Batch Number -->
+<div class="grid grid-cols-2 gap-gutter">
+<div class="flex flex-col gap-xs">
+<label class="text-[12px] font-bold text-on-secondary-container uppercase tracking-widest">Batch Number</label>
+<span class="text-[16px] font-medium text-on-surface">BN-2024-8841</span>
+</div>
+<!-- Expiry Date -->
+<div class="flex flex-col gap-xs">
+<label class="text-[12px] font-bold text-on-secondary-container uppercase tracking-widest">Expiry Date</label>
+<div class="flex items-center gap-sm">
+<span class="text-[16px] font-medium text-on-surface">12 / 2026</span>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full font-bold">VALID</span>
+</div>
+</div>
+</div>
+<div class="h-px bg-outline-variant/50 w-full"></div>
+<!-- Manufacturer -->
+<div class="flex flex-col gap-xs">
+<label class="text-[12px] font-bold text-on-secondary-container uppercase tracking-widest">Manufacturer</label>
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="factory">factory</span>
+</div>
+<span class="text-[16px] font-medium text-on-surface">PharmaGlobal Solutions Inc.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Verification Notice -->
+<div class="mt-lg p-md bg-error-container/20 border border-error/10 rounded-xl flex items-start gap-md">
+<span class="material-symbols-outlined text-error mt-1" data-icon="info">info</span>
+<p class="text-[14px] leading-tight text-on-error-container">
+                Always cross-reference the extracted data with the physical product. Incorrect details can lead to failed verification.
+            </p>
+</div>
+</main>
+<!-- Bottom Actions & Navigation Shell -->
+<div class="fixed bottom-0 w-full bg-surface shadow-md z-50">
+<!-- Floating Primary Action -->
+<div class="px-margin-mobile pb-lg pt-md">
+<button class="w-full h-14 bg-primary text-on-primary rounded-xl font-bold text-[16px] flex items-center justify-center gap-md active:scale-[0.98] transition-all shadow-lg hover:bg-primary-container">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+                Proceed to Verify
+            </button>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="flex justify-around items-center py-2 border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="photo_camera" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+<span class="text-[12px] font-medium">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-[12px] font-medium">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[12px] font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Micro-interaction for feedback -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+<style>
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</body></html>

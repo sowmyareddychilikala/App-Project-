@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedVerify - Scan Medicine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#3f4447",
+                    "outline-variant": "#c3c6d6",
+                    "on-surface": "#011d35",
+                    "surface-container-highest": "#d1e4ff",
+                    "surface-bright": "#f8f9ff",
+                    "secondary-fixed": "#cee5ff",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "surface-tint": "#0c56d0",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#0040a2",
+                    "secondary-fixed-dim": "#aec9e7",
+                    "surface-container-low": "#eef4ff",
+                    "on-secondary-container": "#48637d",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#001848",
+                    "surface-dim": "#c4dcfd",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "on-secondary-fixed": "#001d32",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#dfe3e7",
+                    "surface-container-high": "#dbe9ff",
+                    "on-surface-variant": "#434654",
+                    "primary": "#003d9b",
+                    "surface": "#f8f9ff",
+                    "primary-container": "#0052cc",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "outline": "#737685",
+                    "surface-container": "#e4efff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#171c1f",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#19324b",
+                    "on-tertiary-container": "#cfd3d7",
+                    "secondary-container": "#c4e0fe",
+                    "background": "#f8f9ff",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#2e4962",
+                    "inverse-primary": "#b2c5ff",
+                    "inverse-on-surface": "#e9f1ff",
+                    "surface-variant": "#d1e4ff",
+                    "tertiary-container": "#565b5f",
+                    "secondary": "#46617b",
+                    "primary-fixed": "#dae2ff",
+                    "on-primary-container": "#c4d2ff",
+                    "on-background": "#011d35"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "max-width": "1200px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-xl-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-xl-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanner-guide {
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+        }
+        .scanning-line {
+            animation: scan 3s ease-in-out infinite;
+        }
+        @keyframes scan {
+            0%, 100% { top: 0%; }
+            50% { top: 100%; }
+        }
+        .shutter-active:active {
+            transform: scale(0.9);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md overflow-hidden h-screen w-full flex flex-col">
+<!-- TopAppBar Shell -->
+<header class="bg-surface dark:bg-on-surface flex items-center justify-between px-margin-mobile w-full h-16 z-50 fixed top-0 left-0">
+<div class="flex items-center gap-4">
+<button aria-label="Go back" class="text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-tertiary-container p-2 rounded-full Active: scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile font-bold text-primary dark:text-primary-fixed">MedVerify</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-tertiary-container p-2 rounded-full Active: scale-95 transition-transform" id="flash-toggle">
+<span class="material-symbols-outlined" data-icon="flash_on">flash_on</span>
+</button>
+</div>
+</header>
+<!-- Main Camera Canvas -->
+<main class="relative flex-1 w-full bg-black flex flex-col items-center justify-center pt-16">
+<!-- Mock Camera View -->
+<div class="absolute inset-0 z-0 h-full w-full bg-cover bg-center" data-alt="A clean, clinical view through a mobile camera lens of a white pharmaceutical medicine box resting on a light grey textured surface. The scene is illuminated by cool, high-key medical laboratory lighting with soft shadows. The focus is sharp on the barcode and text of the packaging, reflecting a professional healthcare environment with a blue and white color palette. The overall atmosphere is precise, modern, and high-tech." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBiwGIvBZXupeetNp7wiB1duiM5tVO3wQatoTZitwIJf-XdHN-jO8Gahp9_HhdUu9G3dtr5PqUdkQEtPXXEnnJrp9eNrZH_xT3yOJjmz2gKOG4sSYi3LvpitKdCOU_4-Ig_bhFnZLwG-Z-0hfR0XAiBaq2CtfTF4kCZ59VWB2b0vm7khWP4_5C5SbZGZhs71B63SmFBf06X276r0PfqCSSQesY3rpCX9eyIrsR3pnJAm0uDBQ10xYdQ4lbudhUr3hKAz72T4Oq9wCtg');">
+</div>
+<!-- Scanning Overlay Layer -->
+<div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
+<!-- Scanning Frame Container -->
+<div class="relative w-64 h-64 md:w-80 md:h-80 scanner-guide border-2 border-primary-fixed rounded-xl overflow-hidden">
+<!-- Corner Accents -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
+<!-- Animated Scan Line -->
+<div class="scanning-line absolute left-0 right-0 h-0.5 bg-primary shadow-[0_0_10px_rgba(0,61,155,0.8)] z-20"></div>
+</div>
+<!-- Instruction Text -->
+<div class="mt-8 px-6 py-2 bg-black/40 backdrop-blur-md rounded-full">
+<p class="text-white font-label-md text-label-md text-center">Align medicine packaging within the frame</p>
+</div>
+</div>
+<!-- Bottom Controls -->
+<div class="absolute bottom-0 left-0 w-full z-20 px-margin-mobile pb-12 flex items-center justify-between">
+<!-- Gallery Shortcut -->
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/50 group-hover:border-primary transition-all bg-surface-container-low">
+<img alt="Recent Photo" class="w-full h-full object-cover" data-alt="A small square thumbnail image of blue and white capsules in a blister pack, photographed in a brightly lit pharmacy setting with high contrast and clinical clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMbamANGG57E866HuW6y1PbztnQNjKjA1s3N3a6hat1CVeV4JjjLdFs1yL1SHXAloVgfj8zTM1BSanH5JsVbyf3titV5HGHY3Ty5RKp1vkbSCREyl19484rxnTp_-U816T_CYpxZl6s2vyDM_9BuaNhpoVp-AexwwKf2hBD14Dx_ejZ0nFI2oTDRvke8-Rog6AeXGrrwzN_1-BkYm38R8yOcVMTai6BYTta2hnXqDc00bmvVIQlM7FRvCAscMQrdgxyjfygdJD6eYZ"/>
+</div>
+<span class="text-white font-label-sm text-label-sm">Gallery</span>
+</button>
+<!-- Large Shutter Button -->
+<div class="relative flex items-center justify-center">
+<!-- Inner Button -->
+<button class="shutter-active w-20 h-20 bg-white rounded-full flex items-center justify-center p-1.5 transition-all shadow-xl" id="shutter">
+<div class="w-full h-full border-4 border-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="photo_camera">photo_camera</span>
+</div>
+</button>
+</div>
+<!-- Focus Lock / Action Toggle -->
+<button class="flex flex-col items-center gap-1 text-white hover:text-primary transition-colors">
+<div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+</div>
+<span class="text-white font-label-sm text-label-sm">QR Code</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Shell - Suppressed for task focus per "The Filter" rule -->
+<!-- However, the prompt says "History" and "Settings" exist in global nav. Since this is an immersive scan mode, we suppress it for maximum canvas as per instructions. -->
+<script>
+        // Micro-interactions
+        const shutterBtn = document.getElementById('shutter');
+        const flashBtn = document.getElementById('flash-toggle');
+        let flashOn = false;
+
+        shutterBtn.addEventListener('click', () => {
+            // Flash effect
+            const flash = document.createElement('div');
+            flash.className = 'fixed inset-0 bg-white z-[100] pointer-events-none opacity-0 transition-opacity duration-75';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => flash.classList.replace('opacity-0', 'opacity-100'), 50);
+            setTimeout(() => flash.classList.replace('opacity-100', 'opacity-0'), 150);
+            setTimeout(() => flash.remove(), 300);
+
+            // Simple vibration simulation
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(50);
+            }
+        });
+
+        flashBtn.addEventListener('click', () => {
+            flashOn = !flashOn;
+            const icon = flashBtn.querySelector('span');
+            if (flashOn) {
+                icon.innerText = 'flash_off';
+                icon.setAttribute('data-icon', 'flash_off');
+                flashBtn.classList.add('text-primary');
+            } else {
+                icon.innerText = 'flash_on';
+                icon.setAttribute('data-icon', 'flash_on');
+                flashBtn.classList.remove('text-primary');
+            }
+        });
+
+        // Toggle Scanning Line Visibility
+        setInterval(() => {
+            const line = document.querySelector('.scanning-line');
+            line.style.opacity = line.style.opacity === '0.2' ? '1' : '0.2';
+        }, 1500);
+    </script>
+</body></html>

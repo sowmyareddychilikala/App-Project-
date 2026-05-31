@@ -1,0 +1,34 @@
+6. Home Dashboard
+Quick actions
+Recent alerts
+7. Notifications Center
+Expiry alerts
+Safety alerts
+8. User Profile
+Personal information
+9. Settings
+Preferences
+Notification settings
+
+App Description:
+MODULE 2: Home Dashboard
+Purpose
+
+Acts as the central control center of the application.
+
+What This Module Does
+Displays important alerts.
+Shows medicine reminders.
+Displays recent community safety notifications.
+Provides shortcuts to major features.
+Manages user settings.
+Why It Exists
+
+Users should immediately know:
+
+Which medicines are expiring.
+Which medicines are risky.
+Which community alerts need attention.
+User Workflow
+
+Login → Dashboard → Choose desired action.

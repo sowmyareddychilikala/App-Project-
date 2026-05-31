@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#2a1700",
+                    "inverse-primary": "#bec6e0",
+                    "tertiary": "#000000",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e0e3e5",
+                    "secondary": "#515f74",
+                    "secondary-fixed-dim": "#b9c7df",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "background": "#f7f9fb",
+                    "primary-container": "#131b2e",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-container": "#eceef0",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-secondary-fixed": "#0d1c2e",
+                    "surface": "#f7f9fb",
+                    "outline-variant": "#c6c6cd",
+                    "primary-fixed-dim": "#bec6e0",
+                    "tertiary-container": "#2a1700",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "secondary-container": "#d5e3fc",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-background": "#191c1e",
+                    "on-secondary-container": "#57657a",
+                    "surface-bright": "#f7f9fb",
+                    "on-surface": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "surface-tint": "#565e74",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-container": "#7c839b",
+                    "secondary-fixed": "#d5e3fc",
+                    "outline": "#76777d",
+                    "tertiary-fixed": "#ffddb8",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#45464d",
+                    "on-tertiary-container": "#b87500",
+                    "on-secondary-fixed-variant": "#3a485b",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed": "#dae2fd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "4px",
+                    "unit": "8px",
+                    "stack-lg": "32px",
+                    "gutter": "12px",
+                    "container-margin": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "label-bold": ["Atkinson Hyperlegible Next"],
+                    "headline-xl": ["Public Sans"],
+                    "body-md": ["Atkinson Hyperlegible Next"],
+                    "status-tag": ["Atkinson Hyperlegible Next"],
+                    "headline-lg-mobile": ["Public Sans"],
+                    "headline-lg": ["Public Sans"]
+            },
+            "fontSize": {
+                    "label-bold": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-xl": ["30px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "status-tag": ["12px", {"lineHeight": "16px", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f7f9fb;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #76777d;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface bg-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-container-margin h-16 w-full bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">location_on</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Safety Monitor</h1>
+</div>
+<button class="hover:bg-surface-container transition-colors active:scale-95 duration-100 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-2xl">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20 pb-24 px-container-margin max-w-4xl mx-auto w-full">
+<!-- Search and Filter Layer -->
+<section class="mb-stack-md space-y-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-0 rounded-lg py-3 pl-12 pr-4 font-body-md transition-all shadow-sm outline-none" placeholder="Search suspicious medicines..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 custom-scroll">
+<span class="bg-primary text-on-primary font-status-tag text-status-tag px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">All Reports</span>
+<span class="bg-surface border border-outline-variant text-on-surface-variant font-status-tag text-status-tag px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 hover:bg-surface-container transition-colors">Label Errors</span>
+<span class="bg-surface border border-outline-variant text-on-surface-variant font-status-tag text-status-tag px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 hover:bg-surface-container transition-colors">Discoloration</span>
+<span class="bg-surface border border-outline-variant text-on-surface-variant font-status-tag text-status-tag px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 hover:bg-surface-container transition-colors">Packaging</span>
+</div>
+</section>
+<!-- List Header -->
+<div class="flex justify-between items-end mb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Suspicious Items</h2>
+<p class="text-on-surface-variant font-label-bold text-label-bold opacity-75">Recent Community Flags</p>
+</div>
+<span class="font-label-bold text-label-bold text-error bg-error-container px-2 py-0.5 rounded">LIVE ALERTS</span>
+</div>
+<!-- Medicine List (Asymmetric Grid/List Hybrid) -->
+<div class="space-y-gutter">
+<!-- Medicine Card 1 -->
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-md transition-shadow active:scale-[0.98] duration-150 cursor-pointer flex group" onclick="window.location.hash='#details'">
+<div class="w-32 h-32 flex-shrink-0 bg-surface-container relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A macro shot of a pharmaceutical blister pack against a clean, clinical white background with soft hospital-grade lighting. The scene is sterile and professional, featuring a palette of white, silver, and subtle deep blue accents. High contrast photography highlights the textures of the foil and the medicinal tablets inside, projecting an aura of authoritative calm and medical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp7hi7FdWJyAAGRF6T9s5Xux2ti8Kvjd4Xs6mDIejYa7iwYhLAseHV7ylSSpHOmIOIw9sT6DHzS9IjCMR5Qz2_YOpST2Ozqk-QUoglY0K7vzwco9vyZlsSohJ4PMjob9OqAaTKCvdiIWAcWULSNT53uVIQxuvmkw-d8GLQM99VStP4fH4UbnvBZ06DYh6T-xwbjUwaltJHIRHE-sYdkI3tB2IYnXzwJ1d_nDMeJ4OLc9fiOneQXmNqKKKKKVi2EnybKUEq-SIdtQh-"/>
+<div class="absolute top-2 left-2 bg-error text-on-error font-status-tag text-[10px] px-1.5 py-0.5 rounded-sm">URGENT</div>
+</div>
+<div class="p-4 flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Amoxycillin 500mg</h3>
+<span class="bg-tertiary-container text-on-tertiary-container font-label-bold text-label-bold px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> 14 Reports
+                            </span>
+</div>
+<p class="text-on-surface-variant font-label-bold text-label-bold uppercase mt-1">GlobalPharma Solutions</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="text-error material-symbols-outlined text-sm">emergency</span>
+<p class="text-on-surface-variant text-sm line-clamp-1">Suspicion: Mismatched pill color in Batch #2901-X</p>
+</div>
+</div>
+</div>
+<!-- Medicine Card 2 -->
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-md transition-shadow active:scale-[0.98] duration-150 cursor-pointer flex group" onclick="window.location.hash='#details'">
+<div class="w-32 h-32 flex-shrink-0 bg-surface-container relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up of an amber glass medicine bottle with a white screw cap, sitting on a minimalist slate surface. The lighting is focused and direct, creating a professional pharmaceutical studio aesthetic. The color story is dominated by deep amber, crisp white labels, and neutral grays, emphasizing functional utility and reliability in a medical context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABKYt0-XK9_MHqLFeHJWOgfPxMB6NURZUq0Ici1ORCtwz3BiKB_KK7171Udno1i2imJoSAU2cyVDGTJpYYJVfwBKPXt9mmP4zQ4KHRQWoEjFntiFwjbul5teA5LxkfLWQEFUSTTrcVVf9i4UTORhPDXrD3DJScKzucSfqYz6xxe1t-eXSpo8hilOpE7dLW-Pns9HIjSLEPCR5DO_XBTZoZMRvhD8H8zQAgmM-5xwoaYLH62MPiup-LieBSuZE-k0XcwbWsaOtJ8OiH"/>
+</div>
+<div class="p-4 flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">CardioPress XL</h3>
+<span class="bg-surface-container-high text-on-surface-variant font-label-bold text-label-bold px-2 py-1 rounded">
+                                8 Reports
+                            </span>
+</div>
+<p class="text-on-surface-variant font-label-bold text-label-bold uppercase mt-1">HealthCore Labs</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="text-secondary material-symbols-outlined text-sm">edit_note</span>
+<p class="text-on-surface-variant text-sm line-clamp-1">Suspicion: Label typo 'Expiry' spelled 'Expirry'</p>
+</div>
+</div>
+</div>
+<!-- Medicine Card 3 -->
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-md transition-shadow active:scale-[0.98] duration-150 cursor-pointer flex group" onclick="window.location.hash='#details'">
+<div class="w-32 h-32 flex-shrink-0 bg-surface-container relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A sleek, modern white plastic pill bottle with a minimalist safety cap, isolated against a soft gray backdrop with subtle shadows. The visual style is modern corporate with high functional utility, using a monochromatic palette with sharp, clean lines. The lighting is diffused but directional, highlighting the pharmaceutical packaging as a critical safety object." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZpr57q3Aq2Gdp7XYCzgC4vBvp-cr7FIVDR1x7jKt0wqBYPjtNwJyNv5RdPYAfh-0QklBDybuMxyyHwkkdTBqFxbUy_wZogjMShEzMS-FVQiBskLEBr0jB79FnTJJsOrRPA-JgXyZyGSijGQpZjxonuVw0j9CMXAFWMoM0vTZAq7RJlsO-y35LHkmB4E-8eLKURbteUtVuanARjeecjhmzFJZYzxEAA8IMJCPzzrZgsyFD9KdZZ2osZW77LKBXoPtvpZf4zRyMgAfP"/>
+</div>
+<div class="p-4 flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Insulin Gen-A</h3>
+<span class="bg-surface-container-high text-on-surface-variant font-label-bold text-label-bold px-2 py-1 rounded">
+                                5 Reports
+                            </span>
+</div>
+<p class="text-on-surface-variant font-label-bold text-label-bold uppercase mt-1">BioGenerics Inc.</p>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="text-secondary material-symbols-outlined text-sm">inventory_2</span>
+<p class="text-on-surface-variant text-sm line-clamp-1">Suspicion: Box seal appears tampered or reglued</p>
+</div>
+</div>
+</div>
+<!-- Medicine Card 4 (Bento Variation) -->
+<div class="bg-surface border-2 border-on-tertiary-container rounded-xl p-4 hover:shadow-lg transition-shadow cursor-pointer relative" onclick="window.location.hash='#details'">
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="font-headline-lg text-primary">NeuroZenic 10</h3>
+<p class="text-on-surface-variant font-label-bold text-label-bold">MindPath Medical</p>
+</div>
+<div class="h-12 w-12 bg-on-tertiary-container text-surface flex items-center justify-center rounded-full">
+<span class="font-bold">22</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant">
+<span class="text-[10px] font-status-tag uppercase text-on-surface-variant block mb-1">Issue</span>
+<p class="text-sm font-bold">Cloudy Liquid</p>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant">
+<span class="text-[10px] font-status-tag uppercase text-on-surface-variant block mb-1">Status</span>
+<p class="text-sm font-bold text-error">Investigation</p>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between text-on-surface-variant">
+<span class="text-xs font-label-bold">Reported 2h ago</span>
+<span class="material-symbols-outlined">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+<!-- Floating SOS Button (Primary Action) -->
+<button class="fixed bottom-24 right-container-margin w-16 h-16 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-90 transition-transform z-40 group">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform" style="font-variation-settings: 'FILL' 1;">add_alert</span>
+</button>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 pb-safe bg-surface border-t border-outline-variant shadow-lg">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90 duration-150 px-4 py-1">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-bold text-label-bold mt-1">Map</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90 duration-150 px-4 py-1">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-label-bold text-label-bold mt-1">Alerts</span>
+</div>
+<!-- Active Tab: Medicines -->
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pill</span>
+<span class="font-label-bold text-label-bold mt-1">Medicines</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-90 duration-150 px-4 py-1">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-bold text-label-bold mt-1">Recalls</span>
+</div>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.group');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Smooth search appearance
+            const searchBar = document.querySelector('input');
+            searchBar.addEventListener('focus', () => {
+                searchBar.parentElement.classList.add('scale-[1.01]');
+            });
+            searchBar.addEventListener('blur', () => {
+                searchBar.parentElement.classList.remove('scale-[1.01]');
+            });
+        });
+    </script>
+</body></html>

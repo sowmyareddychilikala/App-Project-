@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - MediGuard AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        
+        /* Smooth backdrop blur for the biometric modal */
+        .glass-overlay {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Medical Blue Glow for focus states */
+        .input-focus-glow:focus-within {
+            box-shadow: 0 0 0 2px #0052cc33;
+        }
+
+        /* Prevent auto-fill background issues */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0px 1000px #f4f5f7 inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191c1e",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#006e28",
+                        "surface-container-high": "#e7e8ea",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f1f3",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d6",
+                        "inverse-surface": "#2e3132",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed-variant": "#00531c",
+                        "on-secondary": "#ffffff",
+                        "outline": "#737685",
+                        "on-primary-fixed": "#001848",
+                        "surface-tint": "#0c56d0",
+                        "on-tertiary-container": "#70e2ff",
+                        "secondary-container": "#6ffb85",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-secondary-container": "#00732a",
+                        "primary-fixed": "#dae2ff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-secondary-fixed": "#002107",
+                        "secondary-fixed-dim": "#53e16f",
+                        "on-primary-container": "#c4d2ff",
+                        "primary-container": "#0052cc",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fb",
+                        "on-surface-variant": "#434654",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f4f6",
+                        "on-tertiary-fixed-variant": "#004e5d",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "surface-container-highest": "#e1e2e4",
+                        "primary": "#003d9b",
+                        "inverse-primary": "#b2c5ff",
+                        "tertiary-container": "#006476",
+                        "secondary-fixed": "#72fe88",
+                        "surface-container": "#edeef0",
+                        "background": "#f8f9fb",
+                        "tertiary": "#004b58",
+                        "surface-variant": "#e1e2e4",
+                        "tertiary-fixed": "#adecff",
+                        "surface-dim": "#d9dadc",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#5dd6f3",
+                        "surface": "#f8f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- Top AppBar (Simplified for Login as per Task Hierarchy Policy: Suppression of full Nav) -->
+<header class="w-full top-0 sticky bg-surface h-16 flex items-center px-margin z-10">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary" data-icon="shield_with_heart">shield_with_heart</span>
+<span class="font-headline-md text-headline-md-mobile font-bold text-primary">MediGuard AI</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center p-gutter">
+<!-- Login Container -->
+<div class="w-full max-w-[440px] bg-surface p-xl rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-[#E1E4E8]">
+<!-- Brand Identity Section -->
+<div class="flex flex-col items-center mb-lg">
+<div class="w-16 h-16 mb-md">
+<img alt="MediGuard AI Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfcUENRu-3TIivn5u5OJAnHnHLl8gB6f2fyAe4SQ_sm0-t_08NQ5blW7WhZRonuSc08bw8QwXnZkPjEC8HZOG3l_pvDLmacuR7iGz_tisY5dK1-W5oXyoPIN_E7FdfCPOldNpkQPN0MEGt7A5-OPVboJI6toMGNAmMT_0YLYo0oRuJe82lKwxTp95qsP83j7A5fjJahd2NEYX1jVWrkuXLcXrJbQHuhpe2grSgGHWVfDtStJKyGPswEutUMpfJkxDo0qjJfuhB1aI"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface text-center mb-xs">Welcome Back</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center">Please enter your clinical credentials</p>
+</div>
+<!-- Login Form -->
+<form class="space-y-md" id="loginForm">
+<!-- Identifier Field -->
+<div class="space-y-xs group">
+<label class="font-label-md text-label-md text-on-surface-variant group-focus-within:text-primary transition-colors" for="identifier">Email or Mobile Number</label>
+<div class="relative input-focus-glow rounded-lg">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="mail">mail</span>
+<input class="w-full h-[48px] pl-12 pr-4 bg-[#F4F5F7] border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-0 transition-all outline-none" id="identifier" name="identifier" placeholder="dr.smith@hospital.com" required="" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-xs group">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface-variant group-focus-within:text-primary transition-colors" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:underline transition-all" href="#">Forgot Password?</a>
+</div>
+<div class="relative input-focus-glow rounded-lg">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="lock">lock</span>
+<input class="w-full h-[48px] pl-12 pr-12 bg-[#F4F5F7] border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-0 transition-all outline-none" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant hover:text-on-surface" data-icon="visibility" onclick="togglePassword()" type="button">visibility</button>
+</div>
+</div>
+<!-- Remember Me & Biometric Trigger -->
+<div class="flex items-center justify-between py-xs">
+<label class="flex items-center space-x-2 cursor-pointer">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Keep me logged in</span>
+</label>
+<button class="flex items-center space-x-1 text-primary-container font-label-md hover:opacity-80 transition-opacity" onclick="openBiometric()" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="faceid">face</span>
+<span>FaceID</span>
+</button>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-[48px] bg-primary-container text-on-primary hover:opacity-90 active:scale-[0.98] transition-all font-label-md rounded-lg flex items-center justify-center space-x-2" type="submit">
+<span>Login</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="login">login</span>
+</button>
+</form>
+<!-- Sign Up Link -->
+<div class="mt-lg text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Don't have an account? 
+                    <a class="text-primary font-label-md hover:underline" href="#">Sign up</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Footer Security Note -->
+<footer class="py-md text-center">
+<div class="flex items-center justify-center space-x-2 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock_person">lock_person</span>
+<span class="font-label-sm text-label-sm">HIPAA Compliant &amp; End-to-End Encrypted</span>
+</div>
+</footer>
+<!-- Biometric Modal (Hidden by default) -->
+<div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-gutter" id="biometricModal">
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeBiometric()"></div>
+<div class="relative w-full max-w-[320px] bg-surface rounded-xl p-xl shadow-2xl animate-in fade-in zoom-in duration-300">
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mb-md animate-pulse">
+<span class="material-symbols-outlined text-primary text-[48px]" data-icon="faceid">face</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-xs">Biometric Auth</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">Position your face within the frame or use TouchID sensor</p>
+<div class="flex w-full space-x-md">
+<button class="flex-1 h-[40px] border border-outline-variant text-on-surface font-label-md rounded-lg hover:bg-surface-container-low transition-colors" onclick="closeBiometric()">Cancel</button>
+<button class="flex-1 h-[40px] bg-primary-container text-on-primary font-label-md rounded-lg hover:opacity-90 transition-opacity" onclick="handleBiometricSuccess()">Try Again</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = event.currentTarget;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function openBiometric() {
+            document.getElementById('biometricModal').classList.remove('hidden');
+        }
+
+        function closeBiometric() {
+            document.getElementById('biometricModal').classList.add('hidden');
+        }
+
+        function handleBiometricSuccess() {
+            // Visual feedback for successful scan
+            const icon = document.querySelector('#biometricModal .material-symbols-outlined[data-icon="faceid"]');
+            icon.style.color = '#006e28';
+            setTimeout(() => {
+                alert('Biometric authentication successful. Redirecting...');
+                closeBiometric();
+            }, 1000);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Mock login logic
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span><span>Securing Session...</span>';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                alert('Secure login initiated. Welcome back, Practitioner.');
+            }, 1500);
+        });
+    </script>
+</body></html>

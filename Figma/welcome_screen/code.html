@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Welcome to MediGuard AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191c1e",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#006e28",
+                        "surface-container-high": "#e7e8ea",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f1f3",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d6",
+                        "inverse-surface": "#2e3132",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed-variant": "#00531c",
+                        "on-secondary": "#ffffff",
+                        "outline": "#737685",
+                        "on-primary-fixed": "#001848",
+                        "surface-tint": "#0c56d0",
+                        "on-tertiary-container": "#70e2ff",
+                        "secondary-container": "#6ffb85",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-secondary-container": "#00732a",
+                        "primary-fixed": "#dae2ff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-secondary-fixed": "#002107",
+                        "secondary-fixed-dim": "#53e16f",
+                        "on-primary-container": "#c4d2ff",
+                        "primary-container": "#0052cc",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fb",
+                        "on-surface-variant": "#434654",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f3f4f6",
+                        "on-tertiary-fixed-variant": "#004e5d",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "surface-container-highest": "#e1e2e4",
+                        "primary": "#003d9b",
+                        "inverse-primary": "#b2c5ff",
+                        "tertiary-container": "#006476",
+                        "secondary-fixed": "#72fe88",
+                        "surface-container": "#edeef0",
+                        "background": "#f8f9fb",
+                        "tertiary": "#004b58",
+                        "surface-variant": "#e1e2e4",
+                        "tertiary-fixed": "#adecff",
+                        "surface-dim": "#d9dadc",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#5dd6f3",
+                        "surface": "#f8f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fb;
+            color: #191c1e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(225, 228, 232, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- Top Navigation Header (Manual Implementation based on JSON context but adapted for Welcome Screen) -->
+<header class="w-full top-0 sticky bg-surface h-16 flex items-center px-margin z-50">
+<div class="flex items-center justify-between w-full max-w-screen-xl mx-auto">
+<div class="font-headline-md text-headline-md-mobile font-bold text-primary">MediGuard AI</div>
+<div class="hidden md:flex space-x-base">
+<button class="px-md py-xs font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full">Support</button>
+<button class="px-md py-xs font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full">About AI</button>
+</div>
+</div>
+</header>
+<main class="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center">
+<div class="max-w-screen-xl w-full mx-auto px-margin grid grid-cols-1 md:grid-cols-12 gap-gutter items-center py-lg">
+<!-- Illustration Section (Left on Desktop) -->
+<div class="md:col-span-6 flex justify-center order-1 md:order-2">
+<div class="relative w-full max-w-lg aspect-square">
+<!-- Decorative shapes for depth -->
+<div class="absolute -top-10 -left-10 w-40 h-40 bg-primary-fixed rounded-full opacity-30 blur-3xl"></div>
+<div class="absolute -bottom-10 -right-10 w-60 h-60 bg-secondary-container rounded-full opacity-20 blur-3xl"></div>
+<img alt="Medicine AI Safety" class="w-full h-full object-cover rounded-xl shadow-md z-10 relative" data-alt="A futuristic and professional medical illustration featuring a translucent 3D holographic human heart and a medicine pill bottle floating in a sterile, high-tech laboratory environment. The scene is bathed in soft blue and white volumetric lighting, creating a calm and clinical atmosphere. High-quality digital art style with clean lines and generous whitespace, reflecting a modern corporate healthcare brand. Small data nodes and glowing AI pathways connect the elements, symbolizing safety and advanced technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp-QQkJbGJnVO-3jMdlPtukO8KcSRK1ghchyoogWWgmIvCn2fnrdJVLdSivftRDrIgqGhgUoV55pAsLMKKW8DISoXCDYQJ_G5djPNrjy3SyxVUynvkiN306dSxBxg16n60ZZog7U0D51A2msFYUTDHklIig9PYl4yrxRPJqxKpb97Rt93hIA58MtbZjtN-fxgRqViA7_MHICE8j1mK0j99l-U9BSTDrHbqhGETsjqCdILIFgHWFc493w9u7efbMLKItNBThKDaDtM"/>
+<!-- AI Insight Floating Badge -->
+<div class="absolute bottom-base left-base glass-card p-md rounded-xl shadow-md flex items-center gap-sm z-20 animate-bounce duration-1000">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">AI Verified</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">99.8% Accuracy</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Content Section (Left on Desktop) -->
+<div class="md:col-span-6 flex flex-col space-y-md order-2 md:order-1">
+<div class="space-y-sm">
+<span class="px-sm py-xs bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm rounded-full inline-flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-1">auto_awesome</span>
+                        Next-Gen Health Guardian
+                    </span>
+<h1 class="font-headline-xl text-headline-xl text-on-surface leading-tight">
+                        Your AI-Powered Medicine <br/> <span class="text-primary">Safety Guard</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                        Empowering patients and clinicians with real-time pharmaceutical intelligence to prevent adverse reactions and ensure optimal health outcomes.
+                    </p>
+</div>
+<!-- Benefits List (Bento-style items) -->
+<div class="grid grid-cols-1 gap-sm pt-sm">
+<div class="flex items-start gap-md p-sm bg-surface-container-low rounded-xl border border-outline-variant hover:border-primary transition-colors group">
+<div class="p-sm bg-white rounded-lg shadow-sm group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary-container">document_scanner</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Scan medicines instantly</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Identify complex pill labels in seconds using advanced OCR.</p>
+</div>
+</div>
+<div class="flex items-start gap-md p-sm bg-surface-container-low rounded-xl border border-outline-variant hover:border-primary transition-colors group">
+<div class="p-sm bg-white rounded-lg shadow-sm group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary-container">warning</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Detect side effects early</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI-driven cross-referencing against your health profile.</p>
+</div>
+</div>
+<div class="flex items-start gap-md p-sm bg-surface-container-low rounded-xl border border-outline-variant hover:border-primary transition-colors group">
+<div class="p-sm bg-white rounded-lg shadow-sm group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-primary-container">inventory_2</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Manage your inventory securely</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Expiration alerts and dosage tracking at your fingertips.</p>
+</div>
+</div>
+</div>
+<!-- CTA Actions -->
+<div class="flex flex-col sm:flex-row gap-md pt-md">
+<button class="h-[48px] px-lg bg-primary text-on-primary font-label-md text-label-md rounded-full flex items-center justify-center gap-sm hover:opacity-90 active:scale-95 transition-all shadow-md" onclick="window.location.href='#register'">
+                        Get Started
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="h-[48px] px-lg bg-transparent border border-primary text-primary font-label-md text-label-md rounded-full flex items-center justify-center hover:bg-surface-container-low active:scale-95 transition-all" onclick="window.location.href='#login'">
+                        Login
+                    </button>
+</div>
+<!-- Trust Footer -->
+<div class="pt-lg flex items-center gap-md">
+<div class="flex -space-x-base">
+<img class="w-8 h-8 rounded-full border-2 border-surface" data-alt="Close up portrait of a smiling doctor in clinical attire, professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw9ZmmlpH1Ttfwo_LoK1LxI5KErZyxV8yf12GOOYnjcM2ME9pFjr0YPoGbJKsGthsxYEmjudtzi964zo3sJNpbPoQfb20YSqwVcZBftzhH6W1X-H92axCpvHRCauj21d4znrtrkZKDq6NU1seRuWu_dOqvATrDeVX2IJ9lJvfphVWsgpLrq7r3TjJcI_7J0MFmj8B0vtxb6ZeR4qaY9xoyH_SN2CvRDnnIfKo-P8f_GMfJtkV-slPApFfdHPXBiNVg0-AqbCedz-o"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface" data-alt="Portrait of a medical researcher in a lab, bright high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASLEuDs2QD6QiCsuDVFRZfIUug150lkdHRQNpTSpiaROmSdj4Ke4N0FdmacE0uPuX1lX9j6WxQrhXDIvegDI29AKrWyec2conIB3lzcRF-V63nKJ1J5dQ4FZNSb229IiKzj61nUTqS-tYqQmmcE8Qqdlufff-nV8gez7QoM-TMpHXs12WksXJ2uctS73lKoHzhPfUPg75RNgWTd0ZIRbCpKw9pwNVRhqcO9ephQbkivjD5fdufPE9DlmaQeo_mC5IBjCAZj4pk_gk"/>
+<div class="w-8 h-8 rounded-full bg-primary-fixed border-2 border-surface flex items-center justify-center text-[10px] font-bold text-primary">+12k</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Trusted by thousands of health professionals.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer for mobile context (Optional Login emphasis) -->
+<footer class="md:hidden w-full p-md bg-surface text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">Already have an account? <a class="text-primary font-bold" href="#login">Sign In</a></p>
+</footer>
+<script>
+        // Simple entrance animation logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.querySelector('main');
+            mainContent.style.opacity = '0';
+            mainContent.style.transform = 'translateY(20px)';
+            mainContent.style.transition = 'all 0.8s ease-out';
+            
+            setTimeout(() => {
+                mainContent.style.opacity = '1';
+                mainContent.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body></html>

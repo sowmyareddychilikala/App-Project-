@@ -1,0 +1,6 @@
+28. Report Side Effect Screen
+29. Side Effect Category Selection Screen
+30. Existing Health Condition Screen
+31. Write Review Screen
+32. Community Experiences Screen
+33. Side Effect Analytics Screen

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safety Monitor - Map View</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&amp;family=Public+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#2a1700",
+                    "inverse-primary": "#bec6e0",
+                    "tertiary": "#000000",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e0e3e5",
+                    "secondary": "#515f74",
+                    "secondary-fixed-dim": "#b9c7df",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "background": "#f7f9fb",
+                    "primary-container": "#131b2e",
+                    "on-primary-fixed": "#131b2e",
+                    "surface-container": "#eceef0",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-secondary-fixed": "#0d1c2e",
+                    "surface": "#f7f9fb",
+                    "outline-variant": "#c6c6cd",
+                    "primary-fixed-dim": "#bec6e0",
+                    "tertiary-container": "#2a1700",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "secondary-container": "#d5e3fc",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-background": "#191c1e",
+                    "on-secondary-container": "#57657a",
+                    "surface-bright": "#f7f9fb",
+                    "on-surface": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "surface-tint": "#565e74",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-container": "#7c839b",
+                    "secondary-fixed": "#d5e3fc",
+                    "outline": "#76777d",
+                    "tertiary-fixed": "#ffddb8",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#45464d",
+                    "on-tertiary-container": "#b87500",
+                    "on-secondary-fixed-variant": "#3a485b",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed": "#dae2fd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "4px",
+                    "unit": "8px",
+                    "stack-lg": "32px",
+                    "gutter": "12px",
+                    "container-margin": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "label-bold": ["Atkinson Hyperlegible Next"],
+                    "headline-xl": ["Public Sans"],
+                    "body-md": ["Atkinson Hyperlegible Next"],
+                    "status-tag": ["Atkinson Hyperlegible Next"],
+                    "headline-lg-mobile": ["Public Sans"],
+                    "headline-lg": ["Public Sans"]
+            },
+            "fontSize": {
+                    "label-bold": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-xl": ["30px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "status-tag": ["12px", {"lineHeight": "16px", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .pulse-red {
+            box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(186, 26, 26, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0); }
+        }
+        .map-gradient-overlay {
+            background: linear-gradient(180deg, rgba(247,249,251,0.9) 0%, rgba(247,249,251,0) 20%, rgba(247,249,251,0) 80%, rgba(247,249,251,1) 100%);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md text-body-md overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-on-background border-b border-outline-variant dark:border-outline flex justify-between items-center px-container-margin h-16 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-on-primary" data-icon="location_on">location_on</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-on-primary">Safety Monitor</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-100 p-2 rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-surface-variant" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Map Canvas -->
+<main class="relative flex-grow mt-16 mb-16 overflow-hidden">
+<!-- Interactive Map Background -->
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover grayscale-[20%] opacity-80" data-alt="A detailed, clean minimalist urban map showing a grid of city streets in a light-mode aesthetic. The map uses a soft palette of whites, light grays, and pale blues, consistent with a high-stakes safety infrastructure. Transparent amber and red heat-map overlays indicate areas of concern, maintaining a modern and authoritative atmosphere for community emergency monitoring." data-location="New York City" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo9hQPVE6aEvSIxNXqvjQ37IO-KtmaQGvoV11gfHwdkTvEB5BVi8jMfsAoRYJ61KVc50OXl6-Zg1fHwuzZZvRrjuMd9VkmzcTLD9U1-mjj0QEBYxh5QDTLZ1ZWajkqhO2EctiyJ2BUpcIGryI_l0UQbrxr1UeyrnWDTJ-7MHnB4w5kNcYImpsrTwsxWHavhcy-eCd0D6sBPHNPCf0BuFXQUQbLraYBuegytK-AklowSFMGZ26fU9CWy8djXyA-lTfGMwVCxWv6YNcf"/>
+<div class="absolute inset-0 map-gradient-overlay pointer-events-none"></div>
+</div>
+<!-- Floating Search & Filters Layer -->
+<div class="absolute top-4 left-4 right-4 z-20 flex flex-col gap-3 md:w-96">
+<!-- Search Bar -->
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body-md text-on-surface placeholder-on-surface-variant/60" placeholder="Search suspicious locations..." type="text"/>
+<span class="material-symbols-outlined text-on-surface-variant ml-2 cursor-pointer" data-icon="mic">mic</span>
+</div>
+<!-- Quick Filters -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+<button class="flex items-center gap-1 bg-primary text-on-primary px-3 py-1.5 rounded-full whitespace-nowrap text-label-bold font-label-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                    All Reports
+                </button>
+<button class="flex items-center gap-1 bg-surface-container border border-outline-variant text-on-surface-variant px-3 py-1.5 rounded-full whitespace-nowrap text-label-bold font-label-bold hover:bg-surface-container-high transition-colors">
+                    Medicine
+                </button>
+<button class="flex items-center gap-1 bg-surface-container border border-outline-variant text-on-surface-variant px-3 py-1.5 rounded-full whitespace-nowrap text-label-bold font-label-bold hover:bg-surface-container-high transition-colors">
+                    Pharmacies
+                </button>
+</div>
+</div>
+<!-- Map Markers (Pins) -->
+<!-- High Risk Pin -->
+<div class="absolute top-[40%] left-[30%] z-10 group cursor-pointer">
+<div class="pulse-red bg-error text-on-error w-8 h-8 rounded-full flex items-center justify-center border-2 border-surface shadow-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<!-- Tooltip/Snippet on Hover/Click -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-surface-container-lowest border border-error p-3 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+<div class="text-error font-status-tag text-status-tag uppercase tracking-wider mb-1">High Risk</div>
+<div class="font-label-bold text-on-surface">Batch #4492A Alert</div>
+<div class="text-[12px] text-on-surface-variant mt-1">Reported 12m ago • 5th Ave</div>
+</div>
+</div>
+<!-- Elevated Risk Pin -->
+<div class="absolute top-[65%] left-[60%] z-10 group cursor-pointer">
+<div class="bg-on-tertiary-container text-on-tertiary-fixed w-8 h-8 rounded-full flex items-center justify-center border-2 border-surface shadow-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="pill" style="font-variation-settings: 'FILL' 1;">pill</span>
+</div>
+</div>
+<!-- SOS Floating Action Button -->
+<button class="absolute bottom-6 right-6 z-30 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[32px]" data-icon="add_alert" style="font-variation-settings: 'FILL' 1;">add_alert</span>
+</button>
+<!-- Quick Stats Drawer (Small/Bottom) -->
+<div class="absolute bottom-4 left-4 right-4 z-40 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg transition-transform duration-300 transform translate-y-0" id="stats-drawer">
+<div class="p-4">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<h3 class="font-label-bold text-label-bold text-on-surface">Community Status: Elevated</h3>
+</div>
+<button class="p-1 rounded-full hover:bg-surface-container transition-colors" onclick="document.getElementById('stats-drawer').classList.toggle('translate-y-[calc(100%-48px)]')">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant">
+<div class="text-on-surface-variant text-[12px] uppercase font-label-bold mb-1">Total Reports</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">128</div>
+<div class="text-on-tertiary-container text-[11px] font-label-bold">+12% vs Yesterday</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant">
+<div class="text-on-surface-variant text-[12px] uppercase font-label-bold mb-1">Active Alerts</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-error">03</div>
+<div class="text-on-surface-variant text-[11px] font-label-bold">Nearby radius: 2km</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 pb-safe bg-surface dark:bg-on-background border-t border-outline-variant dark:border-outline shadow-lg dark:shadow-none">
+<!-- Map (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-bold text-label-bold">Map</span>
+</a>
+<!-- Alerts -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+<span class="font-label-bold text-label-bold">Alerts</span>
+</a>
+<!-- Medicines -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="pill">pill</span>
+<span class="font-label-bold text-label-bold">Medicines</span>
+</a>
+<!-- Recalls -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="font-label-bold text-label-bold">Recalls</span>
+</a>
+</nav>
+<script>
+        // Simple Interaction logic for the drawer toggle button
+        document.addEventListener('DOMContentLoaded', () => {
+            const drawer = document.getElementById('stats-drawer');
+            const toggleBtn = drawer.querySelector('button');
+            const icon = toggleBtn.querySelector('span');
+            
+            toggleBtn.addEventListener('click', () => {
+                const isCollapsed = drawer.classList.contains('translate-y-[calc(100%-54px)]');
+                if (isCollapsed) {
+                    drawer.classList.remove('translate-y-[calc(100%-54px)]');
+                    icon.innerText = 'keyboard_arrow_down';
+                } else {
+                    drawer.classList.add('translate-y-[calc(100%-54px)]');
+                    icon.innerText = 'keyboard_arrow_up';
+                }
+            });
+        });
+    </script>
+</body></html>

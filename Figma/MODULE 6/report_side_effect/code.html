@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Report Side Effect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container": "#dbf1fe",
+                        "on-tertiary-fixed-variant": "#374951",
+                        "on-background": "#071e27",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#8df5e4",
+                        "on-tertiary-container": "#00060a",
+                        "secondary": "#006b5f",
+                        "surface-container-low": "#e6f6ff",
+                        "secondary-fixed": "#8df5e4",
+                        "outline": "#727785",
+                        "on-secondary-fixed-variant": "#005048",
+                        "primary-fixed": "#d8e2ff",
+                        "surface": "#f3faff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#007165",
+                        "on-primary-container": "#ffffff",
+                        "outline-variant": "#c1c6d6",
+                        "tertiary-fixed-dim": "#b6cad2",
+                        "tertiary-fixed": "#d2e6ef",
+                        "on-surface-variant": "#414754",
+                        "inverse-primary": "#adc7ff",
+                        "on-secondary-fixed": "#00201c",
+                        "error": "#ba1a1a",
+                        "background": "#f3faff",
+                        "on-primary-fixed": "#001a41",
+                        "surface-variant": "#cfe6f2",
+                        "primary-container": "#1a73e8",
+                        "surface-bright": "#f3faff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#677a82",
+                        "secondary-fixed-dim": "#70d8c8",
+                        "inverse-surface": "#1e333c",
+                        "on-tertiary-fixed": "#0b1e24",
+                        "surface-tint": "#005bc0",
+                        "tertiary": "#4f6169",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-surface": "#071e27",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#cfe6f2",
+                        "inverse-on-surface": "#dff4ff",
+                        "on-secondary": "#ffffff",
+                        "primary": "#005bbf",
+                        "surface-dim": "#c7dde9",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#d5ecf8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "margin-mobile": "20px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "touch-target": "48px",
+                        "xs": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-ui-card {
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .selection-active {
+            background-color: #dbf1fe; /* surface-container */
+            border-color: #005bbf; /* primary */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile h-touch-target bg-surface shadow-sm">
+<button class="flex items-center justify-center w-touch-target h-touch-target active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile text-primary">Report Side Effect</h1>
+<button class="flex items-center justify-center w-touch-target h-touch-target active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<main class="pt-20 px-margin-mobile space-y-lg">
+<!-- Introduction -->
+<section>
+<p class="font-body-md text-on-surface-variant mb-xs">Logging your experiences helps personalize your care and warns others in the community.</p>
+</section>
+<!-- Medication Selection -->
+<section class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-1">Select Medication</label>
+<div class="grid grid-cols-1 gap-sm">
+<div class="soft-ui-card flex items-center p-md rounded-xl border-2 border-transparent cursor-pointer transition-all hover:bg-surface-container selection-active" onclick="selectMed(this)">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center mr-md">
+<span class="material-symbols-outlined text-primary" data-icon="pill">pill</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-on-surface">Lisinopril</h3>
+<p class="font-label-sm text-on-surface-variant">10mg • Once Daily</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="soft-ui-card flex items-center p-md rounded-xl border-2 border-transparent cursor-pointer transition-all hover:bg-surface-container" onclick="selectMed(this)">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center mr-md">
+<span class="material-symbols-outlined text-secondary" data-icon="pill">pill</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-on-surface">Metformin</h3>
+<p class="font-label-sm text-on-surface-variant">500mg • Twice Daily</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-outline-variant" data-icon="circle">circle</span>
+</div>
+</div>
+</section>
+<!-- Side Effect Severity -->
+<section class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-1">Severity Level</label>
+<div class="soft-ui-card p-lg rounded-xl flex flex-col space-y-md">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-on-surface-variant">Mild</span>
+<span class="font-label-sm text-on-surface-variant">Severe</span>
+</div>
+<div class="flex justify-between gap-2">
+<button class="severity-btn flex-1 h-12 rounded-lg bg-surface-container-low flex items-center justify-center transition-transform active:scale-90 border-2 border-transparent" data-val="1" onclick="setSeverity(1)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sentiment_satisfied">sentiment_satisfied</span>
+</button>
+<button class="severity-btn flex-1 h-12 rounded-lg bg-surface-container-low flex items-center justify-center transition-transform active:scale-90 border-2 border-transparent" data-val="2" onclick="setSeverity(2)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sentiment_neutral">sentiment_neutral</span>
+</button>
+<button class="severity-btn flex-1 h-12 rounded-lg bg-surface-container-low flex items-center justify-center transition-transform active:scale-90 border-2 border-transparent" data-val="3" onclick="setSeverity(3)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sentiment_dissatisfied">sentiment_dissatisfied</span>
+</button>
+<button class="severity-btn flex-1 h-12 rounded-lg bg-surface-container-low flex items-center justify-center transition-transform active:scale-90 border-2 border-transparent" data-val="4" onclick="setSeverity(4)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sentiment_very_dissatisfied">sentiment_very_dissatisfied</span>
+</button>
+<button class="severity-btn flex-1 h-12 rounded-lg bg-surface-container-low flex items-center justify-center transition-transform active:scale-90 border-2 border-transparent" data-val="5" onclick="setSeverity(5)">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="mood_bad">mood_bad</span>
+</button>
+</div>
+<p class="text-center font-label-md text-primary pt-2" id="severity-label">Moderate discomfort</p>
+</div>
+</section>
+<!-- Onset and Duration -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-1">When did it start?</label>
+<div class="soft-ui-card p-md rounded-xl flex items-center border border-outline-variant focus-within:border-primary">
+<span class="material-symbols-outlined text-on-surface-variant mr-xs" data-icon="calendar_today">calendar_today</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body-md text-on-surface" placeholder="Today, 8:45 AM" type="text"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-1">How long did it last?</label>
+<div class="soft-ui-card p-md rounded-xl flex items-center border border-outline-variant focus-within:border-primary">
+<span class="material-symbols-outlined text-on-surface-variant mr-xs" data-icon="timer">timer</span>
+<select class="bg-transparent border-none focus:ring-0 w-full font-body-md text-on-surface appearance-none">
+<option>Under 30 mins</option>
+<option>1-4 hours</option>
+<option>Persistent</option>
+<option>Intermittent</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Description -->
+<section class="space-y-xs">
+<label class="font-label-md text-on-surface-variant px-1">Description (Optional)</label>
+<div class="soft-ui-card p-md rounded-xl border border-outline-variant focus-within:border-primary">
+<textarea class="bg-transparent border-none focus:ring-0 w-full font-body-md text-on-surface resize-none" placeholder="Describe the feeling (e.g., sharp headache, nausea after eating)..." rows="3"></textarea>
+</div>
+</section>
+<!-- Submit Button -->
+<section class="pt-4">
+<button class="w-full h-touch-target bg-primary text-on-primary rounded-xl font-headline-sm shadow-md active:scale-95 transition-transform duration-150 flex items-center justify-center gap-2">
+<span>Submit Report</span>
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+<p class="text-center font-label-sm text-on-surface-variant mt-md italic">This report will be shared anonymously with the clinical community.</p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 pb-safe bg-surface shadow-lg rounded-t-xl border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="font-label-sm text-label-sm">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-sm text-label-sm">Report</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-label-sm text-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="pill">pill</span>
+<span class="font-label-sm text-label-sm">Meds</span>
+</a>
+</nav>
+<script>
+        function selectMed(el) {
+            // Remove active classes from all siblings
+            const cards = el.parentElement.children;
+            for (let card of cards) {
+                card.classList.remove('selection-active');
+                card.classList.remove('border-primary');
+                const icon = card.querySelector('[data-icon="check_circle"]');
+                if (icon) {
+                    icon.innerText = 'circle';
+                    icon.classList.replace('text-primary', 'text-outline-variant');
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.setAttribute('data-icon', 'circle');
+                }
+            }
+            
+            // Add active class to selected
+            el.classList.add('selection-active');
+            el.classList.add('border-primary');
+            const newIcon = el.querySelector('[data-icon="circle"]');
+            if (newIcon) {
+                newIcon.innerText = 'check_circle';
+                newIcon.classList.replace('text-outline-variant', 'text-primary');
+                newIcon.style.fontVariationSettings = "'FILL' 1";
+                newIcon.setAttribute('data-icon', 'check_circle');
+            }
+        }
+
+        const severityMap = {
+            1: "Negligible / Mild discomfort",
+            2: "Noticeable, but manageable",
+            3: "Moderate discomfort",
+            4: "Highly distressing",
+            5: "Extreme / Emergency required"
+        };
+
+        function setSeverity(val) {
+            const btns = document.querySelectorAll('.severity-btn');
+            const label = document.getElementById('severity-label');
+            
+            btns.forEach(btn => {
+                const btnVal = parseInt(btn.getAttribute('data-val'));
+                const icon = btn.querySelector('.material-symbols-outlined');
+                
+                if (btnVal === val) {
+                    btn.classList.add('bg-primary', 'border-primary');
+                    icon.classList.replace('text-on-surface-variant', 'text-on-primary');
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    btn.classList.remove('bg-primary', 'border-primary');
+                    icon.classList.replace('text-on-primary', 'text-on-surface-variant');
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+            
+            label.innerText = severityMap[val];
+        }
+
+        // Initialize severity
+        setSeverity(3);
+    </script>
+</body></html>

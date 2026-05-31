@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedVerify - AI Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#3f4447",
+                    "outline-variant": "#c3c6d6",
+                    "on-surface": "#011d35",
+                    "surface-container-highest": "#d1e4ff",
+                    "surface-bright": "#f8f9ff",
+                    "secondary-fixed": "#cee5ff",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "surface-tint": "#0c56d0",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#0040a2",
+                    "secondary-fixed-dim": "#aec9e7",
+                    "surface-container-low": "#eef4ff",
+                    "on-secondary-container": "#48637d",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#001848",
+                    "surface-dim": "#c4dcfd",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "on-secondary-fixed": "#001d32",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#dfe3e7",
+                    "surface-container-high": "#dbe9ff",
+                    "on-surface-variant": "#434654",
+                    "primary": "#003d9b",
+                    "surface": "#f8f9ff",
+                    "primary-container": "#0052cc",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "outline": "#737685",
+                    "surface-container": "#e4efff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#171c1f",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#19324b",
+                    "on-tertiary-container": "#cfd3d7",
+                    "secondary-container": "#c4e0fe",
+                    "background": "#f8f9ff",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#2e4962",
+                    "inverse-primary": "#b2c5ff",
+                    "inverse-on-surface": "#e9f1ff",
+                    "surface-variant": "#d1e4ff",
+                    "tertiary-container": "#565b5f",
+                    "secondary": "#46617b",
+                    "primary-fixed": "#dae2ff",
+                    "on-primary-container": "#c4d2ff",
+                    "on-background": "#011d35"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "max-width": "1200px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-xl-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-xl-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes scan-line {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(200%); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        .scan-animation {
+            animation: scan-line 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-surface flex items-center justify-between px-margin-mobile w-full h-16 docked full-width top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed Active: scale-95 transition-transform hover:bg-surface-container dark:hover:bg-tertiary-container p-2 rounded-full">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary dark:text-primary-fixed">MedVerify</h1>
+</div>
+<div class="w-10 h-10"></div> <!-- Spacer for symmetry -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile relative">
+<!-- Background Glassmorphic Frame for Scanned Image Preview -->
+<div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+<div class="w-full max-w-md aspect-[3/4] rounded-xl overflow-hidden border border-outline-variant shadow-2xl">
+<img alt="Scanned Medicine" class="w-full h-full object-cover" data-alt="A close-up, sharp photograph of a pharmaceutical blister pack against a clean white clinical background. The lighting is bright and professional, emphasizing the textures and text on the packaging. The scene is framed as if captured by a high-resolution medical scanner, utilizing the brand's primary medical blue tones and crisp neutral grays for a highly reliable and authoritative aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAZr30sABp2Q2L_jkhCHByvq4cThEJ7omVcnz0EyBhGlb21CzkRsuPGrlMgXMQex_fMPwPeBx9Pr25ckRcMP4nRR5PPthpKkV3TeD9ZjCk0K6kWS9UVX2MWnOr24VJZuZd5wt8V3jMyKzoZH0RGL4z9VnoGNKWmEATKrHAwGof2BjMn5kaJ2R_x8Y2OSZwTh1spK9UvZc2ldywcDDdOKRKRlAV3Ee7a4mJ7nIcChTACcj3DM1os9DUhjPFfDtNRaXtsJwKzQopuG9c"/>
+</div>
+</div>
+<!-- AI Analyzing Core -->
+<div class="relative z-10 flex flex-col items-center">
+<!-- Animated Pulse Circles -->
+<div class="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center mb-10">
+<div class="absolute inset-0 rounded-full bg-primary-container pulse-ring"></div>
+<div class="absolute inset-0 rounded-full bg-primary-container pulse-ring" style="animation-delay: 0.5s"></div>
+<div class="absolute inset-0 rounded-full bg-primary-container pulse-ring" style="animation-delay: 1s"></div>
+<!-- Main Scanner Orb -->
+<div class="relative w-32 h-32 md:w-40 md:h-40 bg-surface-container-highest rounded-full shadow-lg flex items-center justify-center overflow-hidden border-2 border-primary">
+<div class="scan-animation absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-primary/30 to-transparent"></div>
+<span class="material-symbols-outlined text-primary text-5xl md:text-6xl" style="font-variation-settings: 'FILL' 1;">
+                        neurology
+                    </span>
+</div>
+<!-- Floating Data Chips (Asymmetric Layout) -->
+<div class="absolute -top-4 -right-8 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full shadow-sm flex items-center gap-2 animate-bounce" style="animation-duration: 3s;">
+<span class="material-symbols-outlined text-primary text-sm">qr_code_scanner</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Batch-ID #429</span>
+</div>
+<div class="absolute bottom-4 -left-12 bg-surface-container-low border border-outline-variant px-3 py-1.5 rounded-full shadow-sm flex items-center gap-2 animate-pulse">
+<span class="material-symbols-outlined text-primary text-sm">verified_user</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Authenticating...</span>
+</div>
+</div>
+<!-- Text Content -->
+<div class="text-center space-y-3 max-w-xs">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">AI Analyzing</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Extracting medicine details and detecting patterns...</p>
+</div>
+<!-- Dynamic Progress Indicator -->
+<div class="mt-12 w-64 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary transition-all duration-300 ease-out" id="progress-bar" style="width: 15%"></div>
+</div>
+<p class="mt-4 font-label-md text-label-md text-primary uppercase tracking-widest opacity-80" id="status-label">Loading Neural Models</p>
+</div>
+</main>
+<!-- Extraction Feedback Overlay (Bento inspired snippet) -->
+<div class="fixed bottom-lg left-margin-mobile right-margin-mobile flex flex-col gap-4 max-w-xl mx-auto z-20">
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant p-4 rounded-xl shadow-xl flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary-container rounded-lg flex items-center justify-center flex-shrink-0">
+<img alt="Extraction Focus" class="w-full h-full object-cover rounded-md opacity-60" data-alt="A macro close-up of a high-tech camera lens capturing intricate details of text on a medicine label. The image uses cool blue tones and clinical lighting, focusing on the precision of the optical character recognition process within a sleek medical software environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZNkWXtoBsGqqz5eqstET7ntZzgwIN1EaxzRYPaqkdHNK57VKkm9BNmMEkwgfWjhypEZok0BfmVO_2Od7D-q3zR_JdvU2QH-mem7W1yCiXBb_5v9HZ91z2_J6BkBtg1BoDBInfwjTinLbyLyYM6C1xG5mZta864W40gutmFf5rabYOamC6bTFdOyvEWGgR2kHenHGCWWDrAwHe8FiZkQ6ejjB0p9JyxFFLUeWQDtFWTrjiP3smYjLmnjvcPX1VaOMUmXxE-XIgijB6"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-sm text-label-sm text-on-secondary-container">DETECTED TEXT</span>
+<span class="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary/10 rounded">98.2% CONFIDENCE</span>
+</div>
+<div class="flex gap-2">
+<div class="h-4 w-24 bg-surface-container-high rounded-full animate-pulse"></div>
+<div class="h-4 w-16 bg-surface-container-high rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // Micro-interaction: Progress bar simulation
+        const progress = document.getElementById('progress-bar');
+        const statusText = document.getElementById('status-label');
+        const statuses = [
+            'Loading Neural Models',
+            'Identifying Borders',
+            'Enhancing Contrast',
+            'Recognizing Typography',
+            'Validating Batch Codes',
+            'Finalizing Results'
+        ];
+        
+        let width = 15;
+        let statusIdx = 0;
+
+        const interval = setInterval(() => {
+            if (width >= 98) {
+                clearInterval(interval);
+                statusText.innerText = 'Analysis Complete';
+            } else {
+                width += Math.random() * 8;
+                if (width > 100) width = 98;
+                progress.style.width = width + '%';
+                
+                // Update status text based on progress
+                statusIdx = Math.floor((width / 100) * statuses.length);
+                if (statuses[statusIdx]) {
+                    statusText.innerText = statuses[statusIdx];
+                }
+            }
+        }, 800);
+    </script>
+</body></html>

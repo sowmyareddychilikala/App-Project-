@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Write Review - Side Effects Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .star-active {
+            font-variation-settings: 'FILL' 1;
+            color: #005bbf;
+        }
+        .soft-ui-card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3faff;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container": "#dbf1fe",
+                        "on-tertiary-fixed-variant": "#374951",
+                        "on-background": "#071e27",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#8df5e4",
+                        "on-tertiary-container": "#00060a",
+                        "secondary": "#006b5f",
+                        "surface-container-low": "#e6f6ff",
+                        "secondary-fixed": "#8df5e4",
+                        "outline": "#727785",
+                        "on-secondary-fixed-variant": "#005048",
+                        "primary-fixed": "#d8e2ff",
+                        "surface": "#f3faff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#007165",
+                        "on-primary-container": "#ffffff",
+                        "outline-variant": "#c1c6d6",
+                        "tertiary-fixed-dim": "#b6cad2",
+                        "tertiary-fixed": "#d2e6ef",
+                        "on-surface-variant": "#414754",
+                        "inverse-primary": "#adc7ff",
+                        "on-secondary-fixed": "#00201c",
+                        "error": "#ba1a1a",
+                        "background": "#f3faff",
+                        "on-primary-fixed": "#001a41",
+                        "surface-variant": "#cfe6f2",
+                        "primary-container": "#1a73e8",
+                        "surface-bright": "#f3faff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#677a82",
+                        "secondary-fixed-dim": "#70d8c8",
+                        "inverse-surface": "#1e333c",
+                        "on-tertiary-fixed": "#0b1e24",
+                        "surface-tint": "#005bc0",
+                        "tertiary": "#4f6169",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-surface": "#071e27",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#cfe6f2",
+                        "inverse-on-surface": "#dff4ff",
+                        "on-secondary": "#ffffff",
+                        "primary": "#005bbf",
+                        "surface-dim": "#c7dde9",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#d5ecf8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "margin-mobile": "20px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "touch-target": "48px",
+                        "xs": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-margin-mobile h-touch-target w-full z-50 sticky top-0 bg-surface shadow-sm">
+<div class="flex items-center gap-4">
+<button class="w-touch-target h-touch-target flex items-center justify-center text-primary active:scale-95 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile text-primary">Write a Review</h1>
+</div>
+<div class="w-touch-target h-touch-target flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">account_circle</span>
+</div>
+</header>
+<main class="px-margin-mobile mt-lg max-w-2xl mx-auto">
+<!-- Medicine Card (Context) -->
+<div class="bg-surface-container-lowest p-md rounded-xl soft-ui-card flex items-center gap-md mb-lg">
+<div class="w-16 h-16 rounded-lg bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">pill</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-on-surface">Lisinopril</h2>
+<p class="font-label-md text-on-surface-variant">Blood Pressure Medication</p>
+</div>
+</div>
+<!-- Review Form Container -->
+<section class="space-y-xl">
+<!-- Overall Rating -->
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant uppercase tracking-wider block">Overall Experience</label>
+<div class="flex items-center gap-xs" id="star-rating">
+<button class="w-touch-target h-touch-target flex items-center justify-center text-outline-variant hover:text-primary transition-colors active:scale-90" onclick="setRating(1)">
+<span class="material-symbols-outlined text-4xl" data-icon="star">star</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center text-outline-variant hover:text-primary transition-colors active:scale-90" onclick="setRating(2)">
+<span class="material-symbols-outlined text-4xl" data-icon="star">star</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center text-outline-variant hover:text-primary transition-colors active:scale-90" onclick="setRating(3)">
+<span class="material-symbols-outlined text-4xl" data-icon="star">star</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center text-outline-variant hover:text-primary transition-colors active:scale-90" onclick="setRating(4)">
+<span class="material-symbols-outlined text-4xl" data-icon="star">star</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center text-outline-variant hover:text-primary transition-colors active:scale-90" onclick="setRating(5)">
+<span class="material-symbols-outlined text-4xl" data-icon="star">star</span>
+</button>
+</div>
+</div>
+<!-- Detailed Experience -->
+<div class="space-y-xs">
+<label class="font-label-md text-on-surface-variant uppercase tracking-wider block" for="review-text">Detailed Experience</label>
+<textarea class="w-full rounded-xl border-outline-variant bg-surface-container-lowest p-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none font-body-md text-on-surface placeholder:text-outline-variant soft-ui-card" id="review-text" placeholder="Describe your symptoms, side effects, and how long you've been taking this medicine..." rows="6"></textarea>
+</div>
+<!-- Tags Grid (Bento Style Layout) -->
+<div class="space-y-md">
+<label class="font-label-md text-on-surface-variant uppercase tracking-wider block">What stood out?</label>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-sm">
+<!-- Pros Section -->
+<div class="col-span-2 md:col-span-1 space-y-sm">
+<span class="font-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add_circle</span> PROS
+                        </span>
+<div class="flex flex-wrap gap-xs">
+<button class="px-md py-xs rounded-full bg-secondary-container/10 border border-secondary/20 text-secondary font-label-md hover:bg-secondary-container transition-colors" onclick="toggleTag(this)">Fast Acting</button>
+<button class="px-md py-xs rounded-full bg-secondary-container/10 border border-secondary/20 text-secondary font-label-md hover:bg-secondary-container transition-colors" onclick="toggleTag(this)">Effective</button>
+<button class="px-md py-xs rounded-full bg-secondary-container/10 border border-secondary/20 text-secondary font-label-md hover:bg-secondary-container transition-colors" onclick="toggleTag(this)">Easy to Swallow</button>
+</div>
+</div>
+<!-- Cons Section -->
+<div class="col-span-2 md:col-span-2 space-y-sm">
+<span class="font-label-sm text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">remove_circle</span> CONS
+                        </span>
+<div class="flex flex-wrap gap-xs">
+<button class="px-md py-xs rounded-full bg-error-container/10 border border-error/20 text-error font-label-md hover:bg-error-container transition-colors" onclick="toggleTag(this)">Expensive</button>
+<button class="px-md py-xs rounded-full bg-error-container/10 border border-error/20 text-error font-label-md hover:bg-error-container transition-colors" onclick="toggleTag(this)">Drowsiness</button>
+<button class="px-md py-xs rounded-full bg-error-container/10 border border-error/20 text-error font-label-md hover:bg-error-container transition-colors" onclick="toggleTag(this)">Nausea</button>
+<button class="px-md py-xs rounded-full bg-error-container/10 border border-error/20 text-error font-label-md hover:bg-error-container transition-colors" onclick="toggleTag(this)">Bitter Taste</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Disclaimer Card -->
+<div class="p-md rounded-xl bg-surface-container-low border border-outline-variant/30 flex gap-sm items-start">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-label-sm text-on-surface-variant italic">
+                    Your review will be shared with the Side Effects Hub community to help others make informed decisions. Please do not share sensitive personal identifiers.
+                </p>
+</div>
+<!-- Post Button -->
+<button class="w-full bg-primary text-on-primary font-headline-sm h-14 rounded-xl shadow-lg hover:bg-primary-container active:scale-[0.98] transition-all flex items-center justify-center gap-sm">
+                Post Review
+                <span class="material-symbols-outlined">send</span>
+</button>
+</section>
+<!-- Decorative Community Insight (Asymmetric Element) -->
+<div class="mt-xl relative overflow-hidden rounded-2xl bg-on-primary-fixed-variant p-lg text-on-primary-container">
+<div class="relative z-10">
+<h3 class="font-headline-sm mb-base text-white">Join the Discussion</h3>
+<p class="font-body-md text-primary-fixed opacity-90 max-w-[80%]">1,240 people have shared their journey with this medication this month.</p>
+</div>
+<!-- Glassmorphism overlay circles -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+<div class="absolute right-12 -bottom-12 w-24 h-24 bg-secondary-fixed/20 rounded-full blur-xl"></div>
+</div>
+</main>
+<!-- Success Feedback (Hidden by default) -->
+<div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-lg py-sm rounded-full shadow-2xl opacity-0 translate-y-10 transition-all pointer-events-none z-50 flex items-center gap-xs" id="toast">
+<span class="material-symbols-outlined text-secondary-fixed">check_circle</span>
+<span class="font-label-md">Review posted successfully!</span>
+</div>
+<!-- Script for Interactions -->
+<script>
+        function setRating(rating) {
+            const stars = document.querySelectorAll('#star-rating .material-symbols-outlined');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('star-active');
+                    star.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    star.classList.remove('star-active');
+                    star.style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+        }
+
+        function toggleTag(button) {
+            if (button.classList.contains('bg-secondary-container') || button.classList.contains('bg-error-container')) {
+                // Deactivate
+                button.classList.remove('bg-secondary-container', 'bg-error-container', 'text-on-secondary-container', 'text-on-error-container');
+                button.classList.add('bg-secondary-container/10', 'bg-error-container/10');
+            } else {
+                // Activate
+                button.classList.remove('bg-secondary-container/10', 'bg-error-container/10');
+                if (button.textContent.includes('Drowsiness') || button.textContent.includes('Expensive') || button.textContent.includes('Nausea') || button.textContent.includes('Bitter')) {
+                    button.classList.add('bg-error-container', 'text-on-error-container');
+                } else {
+                    button.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                }
+            }
+        }
+
+        // Simple button click effect for Post Review
+        const postBtn = document.querySelector('button.bg-primary');
+        postBtn.addEventListener('click', () => {
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, 0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 40px)';
+            }, 3000);
+        });
+    </script>
+<!-- Visual Polish: Floating Atmosphere -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-[10%] left-[5%] w-64 h-64 bg-primary/5 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-[20%] right-[5%] w-96 h-96 bg-secondary/5 rounded-full blur-[120px]"></div>
+</div>
+</body></html>

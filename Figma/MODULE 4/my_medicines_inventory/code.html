@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedClarity - Inventory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#00201d",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-primary-container": "#8590a6",
+                    "on-surface-variant": "#45474c",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#1e293b",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-primary-fixed-variant": "#3c475a",
+                    "inverse-primary": "#bcc7de",
+                    "secondary-fixed": "#89f5e7",
+                    "tertiary-container": "#3c2300",
+                    "primary": "#091426",
+                    "background": "#f7f9fb",
+                    "surface-container": "#eceef0",
+                    "surface-variant": "#e0e3e5",
+                    "tertiary": "#201100",
+                    "tertiary-fixed": "#ffddb8",
+                    "surface-dim": "#d8dadc",
+                    "surface": "#f7f9fb",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "secondary": "#006a61",
+                    "surface-container-high": "#e6e8ea",
+                    "on-surface": "#191c1e",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c5c6cd",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "error": "#ba1a1a",
+                    "on-background": "#191c1e",
+                    "on-secondary-fixed-variant": "#005049",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#545f73",
+                    "on-primary-fixed": "#111c2d",
+                    "outline": "#75777d",
+                    "secondary-container": "#86f2e4",
+                    "on-tertiary-container": "#c88000",
+                    "on-tertiary-fixed": "#2a1700",
+                    "primary-fixed-dim": "#bcc7de",
+                    "on-secondary-container": "#006f66",
+                    "primary-fixed": "#d8e3fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding-mobile": "16px",
+                    "container-padding-desktop": "40px",
+                    "gutter": "24px",
+                    "card-gap": "16px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .medicine-card-shadow {
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.04);
+        }
+        .medicine-card-shadow:hover {
+            box-shadow: 0 8px 24px rgba(30, 41, 59, 0.08);
+            transform: translateY(-2px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface shadow-[0_4px_12px_rgba(30,41,59,0.04)]">
+<div class="flex justify-between items-center h-16 px-container-padding-mobile md:px-container-padding-desktop max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" style="font-variation-settings: 'FILL' 1;">medication</span>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed font-bold">MedClarity</h1>
+</div>
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-surface-container-high p-2 rounded-full transition-colors active:opacity-80">
+                qr_code_scanner
+            </button>
+</div>
+</header>
+<main class="pt-24 px-container-padding-mobile md:px-container-padding-desktop max-w-7xl mx-auto">
+<!-- Search & Action Section -->
+<div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex-1 max-w-xl">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-2">Your Medicine Cabinet</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage and track your medications with clinical precision.</p>
+</div>
+<button class="flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-6 py-4 rounded-xl shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_a_photo</span>
+                Scan New
+            </button>
+</div>
+<!-- Search Bar -->
+<div class="relative mb-8">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all font-body-md text-body-md" placeholder="Search by name or category..." type="text"/>
+</div>
+<!-- Dashboard Layout: Bento Grid Style -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-card-gap">
+<!-- Urgent Attention Column (Sidebar for desktop) -->
+<div class="md:col-span-4 space-y-card-gap">
+<div class="p-6 bg-error-container/20 border border-error/10 rounded-xl">
+<h3 class="font-label-md text-label-md text-error mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+                        Requires Attention
+                    </h3>
+<div class="space-y-4">
+<!-- Urgent Item -->
+<div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/30">
+<div class="w-12 h-12 rounded-lg bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error">pill</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md">Amoxicillin</h4>
+<p class="font-body-sm text-body-sm text-error">Expired yesterday</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-tertiary-fixed/30 border border-on-tertiary-container/10 rounded-xl">
+<h3 class="font-label-md text-label-md text-on-tertiary-fixed-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">event</span>
+                        Weekly Usage
+                    </h3>
+<div class="h-32 flex items-end justify-between gap-1 px-2">
+<div class="w-full bg-on-tertiary-container/20 rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-on-tertiary-container/20 rounded-t-sm h-[65%]"></div>
+<div class="w-full bg-on-tertiary-container/20 rounded-t-sm h-[90%]"></div>
+<div class="w-full bg-primary rounded-t-sm h-[30%]"></div>
+<div class="w-full bg-on-tertiary-container/20 rounded-t-sm h-[55%]"></div>
+<div class="w-full bg-on-tertiary-container/20 rounded-t-sm h-[45%]"></div>
+<div class="w-full bg-on-tertiary-container/20 rounded-t-sm h-[70%]"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-tertiary-fixed-variant mt-3 text-center">Consistent tracking active.</p>
+</div>
+</div>
+<!-- Main Inventory Grid -->
+<div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-card-gap">
+<!-- Medicine Card 1 -->
+<div class="medicine-card-shadow bg-surface-container-lowest border border-outline-variant rounded-xl p-5 transition-all group">
+<div class="relative h-40 w-full mb-4 overflow-hidden rounded-lg bg-surface-container">
+<img class="w-full h-full object-cover transition-transform group-hover:scale-105" data-alt="A clean, professionally lit shot of a white prescription bottle placed on a minimalist marble surface. The lighting is soft and corporate, reflecting a modern healthcare environment. The overall color palette is dominated by whites, cool grays, and deep navy blue accents, conveying precision and reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv4ogaZFEMwi9bLPMueKru6Krq2sN43jbEDZvePYUaAADvo3YeyWU5qPDE21GmsIEftaB9kJShkduMpOOKKet1PlIeeM9jCQG9Xn14p6nJXXRlQ3qh2EvimRq7O2wjDw79ltjiycBgDStixOBkC0m4w_5jeVrc34dPvu17DKzVOBiiXdTPSMQch1JuomxyoDkJjpoih-dK6p60ZNQvlQ0PW6Bw5vOmvlRnebAg4FhUSUxbjd8iZ290scyvtrRkSGjjhCS9oCNy5q2P"/>
+<div class="absolute top-3 right-3">
+<span class="bg-secondary/10 text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">
+                                6 months left
+                            </span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-primary">Lipitor 20mg</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            Exp: Oct 2024
+                        </p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Active</span>
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">more_vert</button>
+</div>
+</div>
+</div>
+<!-- Medicine Card 2 -->
+<div class="medicine-card-shadow bg-surface-container-lowest border border-outline-variant rounded-xl p-5 transition-all group">
+<div class="relative h-40 w-full mb-4 overflow-hidden rounded-lg bg-surface-container">
+<img class="w-full h-full object-cover transition-transform group-hover:scale-105" data-alt="A macro shot of vibrant gelatin capsules arranged in a neat geometric pattern on a sterile white background. The photography is sharp and clinical, with high-key lighting that emphasizes the clarity of the medication. The aesthetic is modern and organized, using a palette of white, light teal, and dark blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-6AATtS9j6G_zwAlNuHW6N2nRRJuPglxPxaK9aR8DHqp7pihch4ch95dgJBpIKNC8QZsLs_YT0RrxMxqiNKTmoLoLiyl5KiZR09UKY5LcenOwrdnQ5KyMbqUB12xxYLlz-_Skpy1J6x9DYYjhL5DpxMOj-rgzxRj6PfA7dPnY_3xXFjhoFJjz7nPcKxtZUIo6k8l1XLyJeH69vFVgFQR0ImoXeprTSZjXDa6cACtwFGrXEI1_Wtuon2SWHOjcdxuNa12KPU7vzC49"/>
+<div class="absolute top-3 right-3">
+<span class="bg-secondary/10 text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">
+                                1 year left
+                            </span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-primary">Ibuprofen</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            Exp: Jan 2025
+                        </p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Active</span>
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">more_vert</button>
+</div>
+</div>
+</div>
+<!-- Medicine Card 3 (Expiring Soon) -->
+<div class="medicine-card-shadow bg-surface-container-lowest border border-outline-variant rounded-xl p-5 transition-all group">
+<div class="relative h-40 w-full mb-4 overflow-hidden rounded-lg bg-surface-container">
+<img class="w-full h-full object-cover transition-transform group-hover:scale-105" data-alt="A clean, overhead view of medical blisters and tubes placed systematically on a pale gray medical-grade surface. The scene is lit by a soft, diffused light source, creating a calm and professional atmosphere. The design focuses on order and accessibility, following a minimalist corporate style with neutral tones and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjKs93OpOLNhJHW0NHwLDHDOIKZnhqQKKsLjw-sAr75h-ysMPzfcd-diq-0yQGc15qTJXzQnhEwRooxCcXP9n6dfKqtBQWYuIusiVUwF7qwTqm2EaGuYTp8Kdh4lftBbqQA6BDrZ5td1Lx7P9gsaHdmCWgF-Cf-sDu6cqOX31ihTt3-EAYBcygBaq8vi5EnThmWrXT1o4HDnErf4gLXyzOoFFW8_4FA2fK0hBQB-iEzp5hZ5y-c5AmyIiW4JALNep0xgApwqqscx3I"/>
+<div class="absolute top-3 right-3">
+<span class="bg-tertiary-fixed-dim/20 text-on-tertiary-fixed-variant px-3 py-1 rounded-full font-label-sm text-label-sm">
+                                12 days left
+                            </span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-primary">Vicks DayQuil</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                            Exp: Jul 2024
+                        </p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-tertiary-container uppercase tracking-wider">Expiring</span>
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">more_vert</button>
+</div>
+</div>
+</div>
+<!-- Add Placeholder Card -->
+<button class="border-2 border-dashed border-outline-variant rounded-xl p-5 flex flex-col items-center justify-center gap-4 hover:bg-surface-container/30 transition-colors group">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">add</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Add manually</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_12px_rgba(30,41,59,0.04)] h-20 px-2 pb-safe z-50 flex justify-around items-center rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full px-6 py-1 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-primary transition-colors active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-sm text-label-sm">Urgent</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-primary transition-colors active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">delete_sweep</span>
+<span class="font-label-sm text-label-sm">Archive</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-primary transition-colors active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Reminders</span>
+</a>
+</nav>
+<script>
+        // Simple search interactivity
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+
+        // Hover effect for cards
+        const cards = document.querySelectorAll('.medicine-card-shadow');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Subtle lift handled by CSS class
+            });
+        });
+    </script>
+</body></html>

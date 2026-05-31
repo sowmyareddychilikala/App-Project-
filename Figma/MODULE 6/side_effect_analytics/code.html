@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-container": "#dbf1fe",
+                    "on-tertiary-fixed-variant": "#374951",
+                    "on-background": "#071e27",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#8df5e4",
+                    "on-tertiary-container": "#00060a",
+                    "secondary": "#006b5f",
+                    "surface-container-low": "#e6f6ff",
+                    "secondary-fixed": "#8df5e4",
+                    "outline": "#727785",
+                    "on-secondary-fixed-variant": "#005048",
+                    "primary-fixed": "#d8e2ff",
+                    "surface": "#f3faff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#007165",
+                    "on-primary-container": "#ffffff",
+                    "outline-variant": "#c1c6d6",
+                    "tertiary-fixed-dim": "#b6cad2",
+                    "tertiary-fixed": "#d2e6ef",
+                    "on-surface-variant": "#414754",
+                    "inverse-primary": "#adc7ff",
+                    "on-secondary-fixed": "#00201c",
+                    "error": "#ba1a1a",
+                    "background": "#f3faff",
+                    "on-primary-fixed": "#001a41",
+                    "surface-variant": "#cfe6f2",
+                    "primary-container": "#1a73e8",
+                    "surface-bright": "#f3faff",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#677a82",
+                    "secondary-fixed-dim": "#70d8c8",
+                    "inverse-surface": "#1e333c",
+                    "on-tertiary-fixed": "#0b1e24",
+                    "surface-tint": "#005bc0",
+                    "tertiary": "#4f6169",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-surface": "#071e27",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#cfe6f2",
+                    "inverse-on-surface": "#dff4ff",
+                    "on-secondary": "#ffffff",
+                    "primary": "#005bbf",
+                    "surface-dim": "#c7dde9",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#d5ecf8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "sm": "12px",
+                    "margin-mobile": "20px",
+                    "md": "16px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "touch-target": "48px",
+                    "xs": "8px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .chart-bar {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface shadow-sm docked full-width top-0 z-50 fixed w-full h-touch-target flex items-center justify-between px-margin-mobile">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors w-10 h-10 flex items-center justify-center rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile md:text-headline-sm text-primary dark:text-primary-fixed-dim">Side Effect Insights</h1>
+</div>
+<button class="hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors w-10 h-10 flex items-center justify-center rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">account_circle</span>
+</button>
+</header>
+<main class="pt-24 px-margin-mobile max-w-5xl mx-auto space-y-lg">
+<!-- Summary Cards Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="glass-card p-md rounded-xl flex flex-col justify-between border-l-4 border-primary">
+<div>
+<span class="text-on-surface-variant font-label-md text-label-md">Active Reports</span>
+<h2 class="font-headline-md text-headline-md text-primary mt-1">1,284</h2>
+</div>
+<div class="mt-4 flex items-center text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined mr-1" style="font-size: 16px;">trending_up</span>
+<span>12% from last week</span>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col justify-between border-l-4 border-secondary">
+<div>
+<span class="text-on-surface-variant font-label-md text-label-md">Dominant Symptom</span>
+<h2 class="font-headline-md text-headline-md text-secondary mt-1">Nausea</h2>
+</div>
+<div class="mt-4 text-on-surface-variant font-label-sm text-label-sm">
+                    30% of total reports
+                </div>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col justify-between border-l-4 border-error">
+<div>
+<span class="text-on-surface-variant font-label-md text-label-md">Average Severity</span>
+<h2 class="font-headline-md text-headline-md text-error mt-1">Moderate</h2>
+</div>
+<div class="mt-4 flex items-center text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined mr-1" style="font-size: 16px;">info</span>
+<span>Stable for 14 days</span>
+</div>
+</div>
+</section>
+<!-- Insights Summary Section -->
+<section class="glass-card p-lg rounded-xl">
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h3 class="font-headline-sm text-headline-sm">Key Insights</h3>
+</div>
+<div class="space-y-sm">
+<div class="flex items-start gap-sm bg-surface-container-low p-sm rounded-lg">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<p class="text-on-surface-variant font-body-md">
+<strong>30% of users report mild nausea</strong> within the first 48 hours of starting medication. This usually subsides by day 4.
+                    </p>
+</div>
+<div class="flex items-start gap-sm bg-surface-container-low p-sm rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-on-surface-variant font-body-md">
+                        Evening doses are associated with <strong>15% fewer reported fatigue episodes</strong> compared to morning administration.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Charts Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Most Reported Symptoms Bar Chart -->
+<section class="glass-card p-lg rounded-xl">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-sm text-headline-sm">Most Reported Symptoms</h3>
+<span class="material-symbols-outlined text-on-surface-variant">bar_chart</span>
+</div>
+<div class="space-y-md">
+<!-- Nausea -->
+<div class="space-y-xs">
+<div class="flex justify-between text-label-md font-label-md">
+<span>Nausea</span>
+<span class="text-primary">30%</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary chart-bar" style="width: 30%;"></div>
+</div>
+</div>
+<!-- Fatigue -->
+<div class="space-y-xs">
+<div class="flex justify-between text-label-md font-label-md">
+<span>Fatigue</span>
+<span class="text-primary">22%</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary chart-bar" style="width: 22%;"></div>
+</div>
+</div>
+<!-- Headache -->
+<div class="space-y-xs">
+<div class="flex justify-between text-label-md font-label-md">
+<span>Headache</span>
+<span class="text-primary">18%</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary chart-bar" style="width: 18%;"></div>
+</div>
+</div>
+<!-- Insomnia -->
+<div class="space-y-xs">
+<div class="flex justify-between text-label-md font-label-md">
+<span>Insomnia</span>
+<span class="text-primary">12%</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary chart-bar" style="width: 12%;"></div>
+</div>
+</div>
+<!-- Dizziness -->
+<div class="space-y-xs">
+<div class="flex justify-between text-label-md font-label-md">
+<span>Dizziness</span>
+<span class="text-primary">8%</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary chart-bar" style="width: 8%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Report Trends Line Graph -->
+<section class="glass-card p-lg rounded-xl flex flex-col">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-sm text-headline-sm">Report Trends</h3>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-label-sm font-label-sm">Reports</span>
+</div>
+</div>
+</div>
+<div class="flex-grow flex items-end justify-between h-48 w-full gap-2 px-2 relative border-b border-l border-outline-variant">
+<!-- Grid Lines Mockup -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+<div class="w-full border-t border-on-surface"></div>
+<div class="w-full border-t border-on-surface"></div>
+<div class="w-full border-t border-on-surface"></div>
+</div>
+<!-- Line Chart Visual Representation -->
+<div class="w-full h-full absolute flex items-end">
+<svg class="w-full h-4/5 text-secondary" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 Q20,20 40,60 T100,10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3" vector-effect="non-scaling-stroke"></path>
+<circle cx="0" cy="80" fill="currentColor" r="1" vector-effect="non-scaling-stroke"></circle>
+<circle cx="25" cy="40" fill="currentColor" r="1" vector-effect="non-scaling-stroke"></circle>
+<circle cx="50" cy="55" fill="currentColor" r="1" vector-effect="non-scaling-stroke"></circle>
+<circle cx="75" cy="30" fill="currentColor" r="1" vector-effect="non-scaling-stroke"></circle>
+<circle cx="100" cy="10" fill="currentColor" r="1" vector-effect="non-scaling-stroke"></circle>
+</svg>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute -bottom-6 left-0 w-full flex justify-between text-label-sm font-label-sm text-on-surface-variant">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+</div>
+<div class="mt-12 p-sm bg-surface-container rounded-lg flex items-center gap-md">
+<img alt="Growth" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC05_O95rTf0lulFlM1qjvOTkj_mgLcwpYPK28qxVTEvQfmQAsxNdbbQkUZqgEijoqwSJBmw0I7_TOmx6X_ifPxX-qaLigzbtN2yl0ma3tGRH9B6WvBcUWWljUk7fJYDfcjcF68rMNs_p0_-SnkLrF7y2e-TMD-fEnmFJs70fJtGENvzgdtlTteMGf87Bl4Yj4Q9WieNdgr3pnszC30fhjlAnRuAeiZt_yH5xGd_q_hPdWRRTc44RAiYPOaDN5xIQQ8mdwuKHvYVniJ"/>
+<p class="text-label-md font-label-md">Total reports are up <span class="text-secondary font-bold">14.2%</span> compared to the previous 7-day period.</p>
+</div>
+</section>
+</div>
+<!-- Featured Visualization Card -->
+<section class="glass-card rounded-xl overflow-hidden group">
+<div class="relative h-64 w-full">
+<img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" data-alt="A sophisticated data visualization dashboard showing interconnected health metrics with a clean, clinical aesthetic. The interface uses a palette of soft primary blues and secondary teals, featuring smooth gradients and semi-transparent layers. Subtle data points and glowing nodes create a sense of advanced medical technology in a bright, modern light-mode setting. The mood is professional, calm, and information-rich." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiOPxcvXMkZD9Ox7IFQ8EZgEQI_M5IFLhN8PdFPMn_c9oGoNHeQc7R_4zPT2ajPy31b0hUCS9D9wnU_ZvjZruK_j6fX3-0npt15BqoV4cQzQ157qyzK-HwcrEOfIFNCs8U6iLPhwILDTMTjLyp3VTtdHjPKTxHhDlPbIHikGWgeHNN_HnvUUTLaR5TXYW3xwBgAMB4CwCnh5-cqLkJ-G6o_FFK2omEhmiJb7Mf4kgI9LoWpsABTTqCoauIh22XWikyUS6OHLIC5OCc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-lg">
+<span class="text-secondary-fixed font-label-md text-label-md mb-2">New Feature</span>
+<h3 class="text-white font-headline-md text-headline-md">Advanced Correlative Mapping</h3>
+<p class="text-white/80 font-body-md mt-2 max-w-lg">Discover how your activity levels and diet directly impact the frequency of specific side effects using our AI-driven model.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 pb-safe bg-surface dark:bg-surface border-t border-outline-variant shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-label-sm text-label-sm mt-1">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm mt-1">Report</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-fixed text-on-secondary-container dark:text-on-secondary-fixed-variant rounded-full px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-label-sm text-label-sm mt-1">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">pill</span>
+<span class="font-label-sm text-label-sm mt-1">Meds</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction: Update progress bars on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = targetWidth;
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

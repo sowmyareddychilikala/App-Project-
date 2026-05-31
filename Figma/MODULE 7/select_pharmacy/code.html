@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PharmaVerify - Select Pharmacy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#00531a",
+                    "inverse-primary": "#a9c7ff",
+                    "surface-container-high": "#e0e9f2",
+                    "on-surface-variant": "#424752",
+                    "surface-container": "#e6eff8",
+                    "surface-container-low": "#ecf5fe",
+                    "on-primary-fixed-variant": "#00468c",
+                    "on-primary-container": "#c8daff",
+                    "background": "#f6faff",
+                    "outline-variant": "#c2c6d4",
+                    "primary-fixed": "#d6e3ff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#005db6",
+                    "tertiary": "#94001f",
+                    "surface-dim": "#d2dbe4",
+                    "surface-container-highest": "#dbe4ed",
+                    "tertiary-fixed": "#ffdad9",
+                    "on-surface": "#141d23",
+                    "secondary-fixed": "#83fc8e",
+                    "on-primary-fixed": "#001b3d",
+                    "on-secondary-container": "#007327",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#293138",
+                    "surface-variant": "#dbe4ed",
+                    "secondary": "#006e25",
+                    "tertiary-container": "#bb1931",
+                    "primary-fixed-dim": "#a9c7ff",
+                    "on-tertiary-fixed": "#410008",
+                    "on-tertiary-container": "#ffcecd",
+                    "tertiary-fixed-dim": "#ffb3b2",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#66df75",
+                    "on-secondary-fixed": "#002106",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#92001f",
+                    "outline": "#727783",
+                    "secondary-container": "#80f98b",
+                    "primary-container": "#005eb8",
+                    "surface": "#f6faff",
+                    "error": "#ba1a1a",
+                    "on-background": "#141d23",
+                    "primary": "#00478d",
+                    "surface-bright": "#f6faff",
+                    "inverse-on-surface": "#e9f2fb",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "score-display": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "score-display": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .trust-score-glow-success {
+            box-shadow: 0 0 12px rgba(128, 249, 139, 0.3);
+        }
+        .trust-score-glow-error {
+            box-shadow: 0 0 12px rgba(186, 26, 26, 0.2);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80 duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-on-surface">CVS Pharmacy</h1>
+</div>
+<button class="hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80 duration-150">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-20 pb-24 px-margin-mobile md:px-margin-desktop max-w-5xl mx-auto w-full">
+<!-- Search Info & Filters -->
+<section class="mb-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-md">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">24 Pharmacies Found</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Showing results near "Downtown Metro Area"</p>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-sm overflow-x-auto hide-scrollbar py-1">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full font-label-md text-label-md flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="sort">sort</span>
+                        Trust Score
+                    </button>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                        Distance
+                    </button>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                        Open Now
+                    </button>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Pharmacy Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Card 1: High Trust -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex flex-col justify-between hover:shadow-md transition-shadow group cursor-pointer relative overflow-hidden">
+<div class="flex justify-between items-start mb-md">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">CVS Health Center</h3>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+                            0.8 miles away
+                        </p>
+</div>
+<!-- Trust Score Badge -->
+<div class="bg-secondary-container text-on-secondary-container px-3 py-2 rounded-xl flex flex-col items-center trust-score-glow-success border border-secondary/20">
+<span class="font-label-md text-label-md opacity-80">TRUST</span>
+<span class="font-headline-sm text-headline-sm font-bold">98</span>
+</div>
+</div>
+<div class="space-y-sm">
+<p class="font-body-md text-body-md text-on-surface leading-snug">1242 Medical Plaza, Suite 400<br/>Central District, NY 10001</p>
+<div class="flex gap-2">
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-2 py-1 rounded">24/7 Open</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-2 py-1 rounded">Vaccines Available</span>
+</div>
+</div>
+<div class="mt-lg flex items-center justify-between">
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 group-hover:underline">
+                        View Detailed Report
+                        <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md active:scale-95 transition-transform">
+                        Select
+                    </button>
+</div>
+</div>
+<!-- Card 2: Moderate Trust -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex flex-col justify-between hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-md">
+<div class="flex-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Walgreens Pharmacy</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+                            1.2 miles away
+                        </p>
+</div>
+<div class="bg-surface-container-high text-on-surface px-3 py-2 rounded-xl flex flex-col items-center border border-outline-variant/30">
+<span class="font-label-md text-label-md opacity-80">TRUST</span>
+<span class="font-headline-sm text-headline-sm font-bold">84</span>
+</div>
+</div>
+<div class="space-y-sm">
+<p class="font-body-md text-body-md text-on-surface leading-snug">88 Lexington Ave<br/>Flatiron, NY 10010</p>
+<div class="flex gap-2">
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-2 py-1 rounded">Closes 10PM</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-2 py-1 rounded">Drive-thru</span>
+</div>
+</div>
+<div class="mt-lg flex items-center justify-between">
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 group-hover:underline">
+                        View Detailed Report
+                        <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md active:scale-95 transition-transform">
+                        Select
+                    </button>
+</div>
+</div>
+<!-- Card 3: Warning/Low Trust -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex flex-col justify-between hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-md">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Community Rx</h3>
+<span class="material-symbols-outlined text-error text-[20px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+                            2.5 miles away
+                        </p>
+</div>
+<div class="bg-error-container text-on-error-container px-3 py-2 rounded-xl flex flex-col items-center trust-score-glow-error border border-error/20">
+<span class="font-label-md text-label-md opacity-80">TRUST</span>
+<span class="font-headline-sm text-headline-sm font-bold">42</span>
+</div>
+</div>
+<div class="space-y-sm">
+<p class="font-body-md text-body-md text-on-surface leading-snug">452 Broadway<br/>SoHo, NY 10013</p>
+<div class="flex gap-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md px-2 py-1 rounded">Compliance Alert</span>
+</div>
+</div>
+<div class="mt-lg flex items-center justify-between">
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 group-hover:underline">
+                        View Issues
+                        <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md active:scale-95 transition-transform">
+                        Select
+                    </button>
+</div>
+</div>
+<!-- Card 4: High Trust -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex flex-col justify-between hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-md">
+<div class="flex-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Duane Reade Metro</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+                            3.1 miles away
+                        </p>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-2 rounded-xl flex flex-col items-center border border-secondary/20">
+<span class="font-label-md text-label-md opacity-80">TRUST</span>
+<span class="font-headline-sm text-headline-sm font-bold">92</span>
+</div>
+</div>
+<div class="space-y-sm">
+<p class="font-body-md text-body-md text-on-surface leading-snug">1627 Broadway<br/>Times Square, NY 10019</p>
+<div class="flex gap-2">
+<span class="bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-2 py-1 rounded">24/7 Open</span>
+</div>
+</div>
+<div class="mt-lg flex items-center justify-between">
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 group-hover:underline">
+                        View Detailed Report
+                        <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md active:scale-95 transition-transform">
+                        Select
+                    </button>
+</div>
+</div>
+</div>
+<!-- Pagination/Load More (Simplified for Mobile/Bento feel) -->
+<div class="mt-xl flex justify-center">
+<button class="border border-outline text-primary font-label-md text-label-md px-xl py-3 rounded-full hover:bg-surface-container-low transition-colors">
+                Load More Pharmacies
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-lowest border-t border-outline-variant shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label-md text-label-md">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-label-md text-label-md">Favorites</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for filter buttons
+        const filterButtons = document.querySelectorAll('button.rounded-full');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Simplified toggle logic for demo
+                if (!btn.classList.contains('bg-primary')) {
+                    filterButtons.forEach(b => {
+                        b.classList.remove('bg-primary', 'text-on-primary');
+                        b.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+                    });
+                    btn.classList.add('bg-primary', 'text-on-primary');
+                    btn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+                }
+            });
+        });
+    </script>
+</body></html>

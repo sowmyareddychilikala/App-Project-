@@ -1,0 +1,32 @@
+1. Splash Screen
+App logo
+Loading animation
+2. Welcome Screen
+App introduction
+Benefits
+3. Login Screen
+Email/Mobile login
+4. Registration Screen
+Create account
+5. Forgot Password Screen
+OTP verification
+
+App Description:
+MODULE 1: Authentication & User Management
+Purpose
+
+This module handles user registration, login, account security, and profile management.
+
+What This Module Does
+Creates user accounts.
+Stores user information.
+Allows secure login.
+Handles password recovery.
+Maintains user preferences.
+Why It Exists
+
+Every medicine scan, report, side-effect submission, and medicine inventory must be linked to a verified user account.
+
+User Workflow
+
+User opens app → Registers/Login → Accesses MediGuard AI services.

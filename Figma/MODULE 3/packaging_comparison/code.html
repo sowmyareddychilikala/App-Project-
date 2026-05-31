@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedVerify - Packaging Comparison</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#ffffff",
+            "tertiary": "#3f4447",
+            "outline-variant": "#c3c6d6",
+            "on-surface": "#011d35",
+            "surface-container-highest": "#d1e4ff",
+            "surface-bright": "#f8f9ff",
+            "secondary-fixed": "#cee5ff",
+            "primary-fixed-dim": "#b2c5ff",
+            "surface-tint": "#0c56d0",
+            "error": "#ba1a1a",
+            "on-primary-fixed-variant": "#0040a2",
+            "secondary-fixed-dim": "#aec9e7",
+            "surface-container-low": "#eef4ff",
+            "on-secondary-container": "#48637d",
+            "on-secondary": "#ffffff",
+            "on-primary-fixed": "#001848",
+            "surface-dim": "#c4dcfd",
+            "on-tertiary-fixed-variant": "#43474b",
+            "on-secondary-fixed": "#001d32",
+            "on-error-container": "#93000a",
+            "tertiary-fixed": "#dfe3e7",
+            "surface-container-high": "#dbe9ff",
+            "on-surface-variant": "#434654",
+            "primary": "#003d9b",
+            "surface": "#f8f9ff",
+            "primary-container": "#0052cc",
+            "tertiary-fixed-dim": "#c3c7cb",
+            "outline": "#737685",
+            "surface-container": "#e4efff",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#171c1f",
+            "on-primary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "inverse-surface": "#19324b",
+            "on-tertiary-container": "#cfd3d7",
+            "secondary-container": "#c4e0fe",
+            "background": "#f8f9ff",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#2e4962",
+            "inverse-primary": "#b2c5ff",
+            "inverse-on-surface": "#e9f1ff",
+            "surface-variant": "#d1e4ff",
+            "tertiary-container": "#565b5f",
+            "secondary": "#46617b",
+            "primary-fixed": "#dae2ff",
+            "on-primary-container": "#c4d2ff",
+            "on-background": "#011d35"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "lg": "24px",
+            "xl": "32px",
+            "base": "8px",
+            "xs": "4px",
+            "margin-mobile": "16px",
+            "margin-desktop": "48px",
+            "max-width": "1200px",
+            "gutter": "16px",
+            "md": "16px",
+            "sm": "8px"
+          },
+          "fontFamily": {
+            "headline-lg-mobile": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-xl": ["Inter"],
+            "headline-xl-mobile": ["Inter"],
+            "label-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+            "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-xl-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+            "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .scanner-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #0c56d0, transparent);
+      animation: scan 3s linear infinite;
+    }
+    @keyframes scan {
+      0% { top: 0%; }
+      100% { top: 100%; }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-surface flex items-center justify-between px-margin-mobile w-full h-16 docked full-width top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary dark:text-primary-fixed">MedVerify</h1>
+</div>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="more_vert">more_vert</span>
+</div>
+</header>
+<main class="flex-grow w-full max-w-max-width mx-auto px-margin-mobile md:px-margin-desktop py-base mb-24">
+<!-- Hero Message -->
+<div class="mt-lg mb-xl text-center md:text-left">
+<h2 class="font-headline-lg text-headline-lg-mobile text-on-surface">Compare packaging to ensure authenticity</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Carefully inspect the security features and visual alignments between your scan and the master reference.</p>
+</div>
+<!-- Comparison Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Uploaded Image Section -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center justify-between px-sm">
+<span class="font-label-md text-label-md text-primary bg-primary-container px-3 py-1 rounded-full uppercase tracking-wider">Uploaded Image</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">Captured 2m ago</span>
+</div>
+<div class="relative aspect-square rounded-xl overflow-hidden border-2 border-primary bg-surface-container-low shadow-md group">
+<img class="w-full h-full object-cover" data-alt="A high-resolution, close-up photograph of a pharmaceutical medication box captured under bright clinical lighting. The packaging is white with blue accents and features crisp black typography. A slightly blurred background suggests a pharmacy setting. The image represents a real-world photo taken by a smartphone, showing slight natural perspective distortion and realistic shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu9d53hyyUVSOIDMS_BaeGaImHEiorDt1J26uhv6xgQ6nN8UiQN28ZJUWuK8wG_7UUaiNas4YdE3GgxGA2tZVJQ6utY94jBwkpEa6XaX11VPH2QgLRwBru4i2to8jlCjmttzOe6iYnaUbSC5-rBikMCwbpnaP4W45ANcDOYXTaup24AHy6FDRQ9CFES8PElwHQm41V3iSYa8fn3GS-X6BNBU2PX-n7yhUVuSUeBGTJquy8kIINBNFIKGhaxSQt2KHjQ9sPQUdqP_El"/>
+<!-- Difference Highlight 1 -->
+<div class="absolute top-1/4 left-1/3 w-16 h-16 border-2 border-error rounded-full bg-error/10 animate-pulse flex items-center justify-center">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<!-- Scanning Overlay Effect -->
+<div class="absolute inset-0 scanner-line opacity-50 pointer-events-none"></div>
+</div>
+</div>
+<!-- Reference Pattern Section -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center justify-between px-sm">
+<span class="font-label-md text-label-md text-secondary bg-secondary-container px-3 py-1 rounded-full uppercase tracking-wider">Reference Pattern</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">V3.2 Authenticated</span>
+</div>
+<div class="relative aspect-square rounded-xl overflow-hidden border border-outline-variant bg-surface-container-highest shadow-sm">
+<img class="w-full h-full object-cover opacity-90" data-alt="A pristine, digital render of an official pharmaceutical box for medical comparison purposes. The design is perfectly aligned, with vibrant blue logos and sharp, legible serial numbers on a clean white background. The lighting is perfectly even and studio-quality, creating a sterile and authoritative appearance. This serves as the master reference image for authenticity verification." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYwv_9QLPzjnZUmTdT1t30XVkOmsA4ZKmlK4-Rvk1NJdc0J7EU2Kb3SJACnxRkNJlPU1_WcrHEvJdJcp8imLweopzN6wDw0RTsNhe87M9H0InRPyKgkbXW3w4juUaoHSizNZjoRM0K8VNvlo-9d3mxrbgeGfx6P6JyBp02TvPiGkImuf3YvfoMmZhLfWbBD5bppGlIgg4C3ona0FgJZQgJktxB0J3qlni3aZMKgD4Elh2Mdh33jxDJNs_35IjwTWD1yeh1QDA2bJFU"/>
+<div class="absolute inset-0 bg-primary/5"></div>
+</div>
+</div>
+</div>
+<!-- Extraction Results / Discrepancy Details -->
+<div class="mt-xl grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<div class="lg:col-span-2 glass-card border border-outline-variant rounded-xl p-lg shadow-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+          Verification Details
+        </h3>
+<div class="space-y-base">
+<div class="flex justify-between py-sm border-b border-surface-container">
+<span class="font-body-md text-body-md text-on-surface-variant">Serial Number</span>
+<span class="font-label-md text-label-md text-on-surface">MB-99234-X</span>
+</div>
+<div class="flex justify-between py-sm border-b border-surface-container">
+<span class="font-body-md text-body-md text-on-surface-variant">Hologram Alignment</span>
+<div class="flex items-center gap-xs">
+<span class="font-label-md text-label-md text-error">3.2mm Offset</span>
+<span class="material-symbols-outlined text-error text-[18px]">info</span>
+</div>
+</div>
+<div class="flex justify-between py-sm border-b border-surface-container">
+<span class="font-body-md text-body-md text-on-surface-variant">Color Profile</span>
+<span class="font-label-md text-label-md text-primary">Match Confirmed</span>
+</div>
+<div class="flex justify-between py-sm">
+<span class="font-body-md text-body-md text-on-surface-variant">Manufacturing Date</span>
+<span class="font-label-md text-label-md text-on-surface">Oct 2023</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-gutter">
+<div class="bg-error-container p-lg rounded-xl flex flex-col gap-sm">
+<div class="flex items-center gap-2 text-on-error-container">
+<span class="material-symbols-outlined">report_problem</span>
+<h4 class="font-headline-sm text-headline-sm">Discrepancy Found</h4>
+</div>
+<p class="font-body-sm text-body-sm text-on-error-container opacity-90">
+            The security seal alignment on the left panel does not match the official master template. This could indicate potential tampering.
+          </p>
+</div>
+<div class="bg-surface-container border border-outline-variant p-lg rounded-xl flex items-center justify-center text-center">
+<div class="space-y-xs">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Confidence Score</p>
+<p class="font-headline-xl text-headline-xl text-primary">82%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Tray -->
+<div class="mt-xl flex flex-col sm:flex-row gap-md">
+<button class="flex-1 h-14 bg-primary text-on-primary font-headline-sm text-headline-sm rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md hover:bg-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        Confirm
+      </button>
+<button class="flex-1 h-14 border-2 border-error text-error font-headline-sm text-headline-sm rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all hover:bg-error-container">
+<span class="material-symbols-outlined">report</span>
+        Report
+      </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center py-2 bg-surface dark:bg-on-surface shadow-md rounded-t-xl border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="photo_camera" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+<span class="font-label-sm text-label-sm">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</nav>
+<script>
+    // Simple micro-interaction for the report button
+    const reportBtn = document.querySelector('button.border-error');
+    reportBtn.addEventListener('click', () => {
+      alert('Alerting security protocols. Discrepancy report generated.');
+    });
+
+    // Confirmation interaction
+    const confirmBtn = document.querySelector('button.bg-primary');
+    confirmBtn.addEventListener('click', () => {
+      confirmBtn.innerHTML = '<span class="material-symbols-outlined">verified</span> Verified';
+      confirmBtn.classList.replace('bg-primary', 'bg-tertiary-container');
+    });
+  </script>
+</body></html>

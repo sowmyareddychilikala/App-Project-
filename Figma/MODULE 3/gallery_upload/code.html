@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#3f4447",
+                    "outline-variant": "#c3c6d6",
+                    "on-surface": "#011d35",
+                    "surface-container-highest": "#d1e4ff",
+                    "surface-bright": "#f8f9ff",
+                    "secondary-fixed": "#cee5ff",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "surface-tint": "#0c56d0",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#0040a2",
+                    "secondary-fixed-dim": "#aec9e7",
+                    "surface-container-low": "#eef4ff",
+                    "on-secondary-container": "#48637d",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#001848",
+                    "surface-dim": "#c4dcfd",
+                    "on-tertiary-fixed-variant": "#43474b",
+                    "on-secondary-fixed": "#001d32",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#dfe3e7",
+                    "surface-container-high": "#dbe9ff",
+                    "on-surface-variant": "#434654",
+                    "primary": "#003d9b",
+                    "surface": "#f8f9ff",
+                    "primary-container": "#0052cc",
+                    "tertiary-fixed-dim": "#c3c7cb",
+                    "outline": "#737685",
+                    "surface-container": "#e4efff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#171c1f",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#19324b",
+                    "on-tertiary-container": "#cfd3d7",
+                    "secondary-container": "#c4e0fe",
+                    "background": "#f8f9ff",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#2e4962",
+                    "inverse-primary": "#b2c5ff",
+                    "inverse-on-surface": "#e9f1ff",
+                    "surface-variant": "#d1e4ff",
+                    "tertiary-container": "#565b5f",
+                    "secondary": "#46617b",
+                    "primary-fixed": "#dae2ff",
+                    "on-primary-container": "#c4d2ff",
+                    "on-background": "#011d35"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "max-width": "1200px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-xl-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-xl-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+        .selection-overlay {
+            background: rgba(0, 61, 155, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface flex items-center justify-between px-margin-mobile w-full h-16 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-primary p-2 hover:bg-surface-container rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile text-on-surface">Select Image</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-primary font-label-md px-4 py-2 hover:bg-surface-container rounded-full transition-colors">
+                Cancel
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto pb-20">
+<!-- Headline Section -->
+<div class="px-margin-mobile pt-6 pb-4">
+<h2 class="font-headline-md text-headline-md-mobile text-on-surface">Recent Photos</h2>
+<p class="font-body-sm text-on-surface-variant mt-1">Select a clear photo of the medication packaging or label.</p>
+</div>
+<!-- Album Selector / Filter Chip -->
+<div class="px-margin-mobile pb-4 overflow-x-auto flex gap-2 no-scrollbar">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full font-label-md flex items-center gap-2 whitespace-nowrap">
+                Recents <span class="material-symbols-outlined text-[18px]" data-icon="expand_more">expand_more</span>
+</button>
+<button class="bg-surface-container-low border border-outline-variant text-on-surface-variant px-4 py-1.5 rounded-full font-label-md whitespace-nowrap">
+                Screenshots
+            </button>
+<button class="bg-surface-container-low border border-outline-variant text-on-surface-variant px-4 py-1.5 rounded-full font-label-md whitespace-nowrap">
+                Camera
+            </button>
+</div>
+<!-- Gallery Grid -->
+<div class="gallery-grid">
+<!-- Camera Tile -->
+<button class="aspect-square bg-surface-container-high flex flex-col items-center justify-center gap-2 active:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="photo_camera">photo_camera</span>
+<span class="font-label-sm text-primary">Camera</span>
+</button>
+<!-- Photo Item 1 (Selected) -->
+<div class="relative aspect-square cursor-pointer group" onclick="toggleSelection(this)">
+<img class="w-full h-full object-cover" data-alt="A clean, clinical macro photograph of a white medicine bottle with a professional pharmaceutical label, set against a sterile white and blue medical background. The lighting is soft and even, highlighting the sharp typography on the packaging. The image reflects a modern healthcare aesthetic with high contrast and reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlKneOKQAgTlHtsXseh6eNoHDHOxbNi4TXYIh-3cvCLmWMoAy3FslMUNGOK080-UB6uTjKsnIaOywQei966Bri9DTEXZNhk2_zAE5BfiWdFhQxPNQUrf-718kOZRy_sVeu9Jd1PhiYLqRlwq1HvYsb3blSMcAtHbb0Wnsi5mc93JE-m-Hfevg041PPnKZtP7dlsNWK09-V6pSCWi0k9rlQDXm3H3KyUl7nXv4-71YOABLvFyyWiVJhcFhzEFJI-mPkXwBjBwrAqyqE"/>
+<div class="absolute inset-0 selection-overlay border-4 border-primary opacity-100 flex items-start justify-end p-2 pointer-events-none transition-opacity">
+<div class="bg-primary text-on-primary rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[16px] font-bold" data-icon="check">check</span>
+</div>
+</div>
+</div>
+<!-- Photo Item 2 -->
+<div class="relative aspect-square cursor-pointer group" onclick="toggleSelection(this)">
+<img class="w-full h-full object-cover" data-alt="Close-up shot of several blister packs filled with blue and white capsules resting on a reflective medical surface. The scene is illuminated by cool, bright surgical lighting, creating a high-stakes clinical atmosphere. The color palette is dominated by medical blues, sterile whites, and metallic silvers, emphasizing precision and authenticity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ2CdN0YtS1KwT78BwNUQAFTtTI_jcfNe8JNvZL0Goa7HKLZ6en7gvfzawSGWpy2kJt_GpkczMDF4XYiNevrTdrnKRaI_tLort-m1dd86_z2YaO280eQDrKpU3N-uE4V_l8KBNEndJp6zsozQBXcA0JI2ml4MPpX7kvb3C-VLa5ms9XYTefelxc96vUG2DtOhmyzUsNUhYRfcKjEpQHTZwL3qMxPwyJULPwpV89bbu-lwoCQXDMMIMXUZHTlH--g7mojTouKGJ5y7A"/>
+<div class="absolute inset-0 selection-overlay border-4 border-primary opacity-0 flex items-start justify-end p-2 pointer-events-none transition-opacity group-active:opacity-40">
+<div class="bg-white/90 text-primary rounded-full w-6 h-6 border-2 border-primary flex items-center justify-center shadow-sm"></div>
+</div>
+</div>
+<!-- Photo Item 3 -->
+<div class="relative aspect-square cursor-pointer" onclick="toggleSelection(this)">
+<img class="w-full h-full object-cover" data-alt="A pharmaceutical laboratory setting featuring rows of neatly arranged medication vials with vibrant liquid contents. The environment is impeccably clean with bright, clinical lighting and a professional blue-toned color grade. The composition is structured and geometric, conveying a sense of organized medical verification and scientific rigor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu5TQGgfb_E6-1EtlLFCwfeiYdcmCUru6Sn6h8-NbSHIngdLD382X2uNeRnTOmimUCK2mKavu8cDoQR-2f3aCaXqYLaJGV7jNnX9gLfiuxCW3NkBiJsUgdPGyjOFqYkTI2B3ZXo1rPXvIkzz8Gmfxq9hauQkwwpy6o--WGZd1jz5UjE_6LSHK9gCU79VZHDv0AoZDKNCOXBlKH9-sdorrAzZODintF60kTeqz4vK6JsaukHSo7n3f_VEQ_rAZ_0hjKKCe_CrExekwB"/>
+</div>
+<!-- Photo Item 4 -->
+<div class="relative aspect-square cursor-pointer" onclick="toggleSelection(this)">
+<img class="w-full h-full object-cover" data-alt="Detail shot of a prescription label being held by a healthcare professional wearing blue nitrile gloves. The background is a blurred hospital corridor with soft, warm fluorescent lighting. The focus is sharp on the text of the label, symbolizing the verification process in a modern clinical environment with corporate efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHLmg08C9z3m3ZwS6PeYaYbzld6tz5_pPUpMznArSNsbxYYpSuILQIaSb27SSronBuGm12yel47x1fqlNTqj6M_6pICrGXyG4NvJyxVoFbAE8V1WMddqA8_pgN4uuGQq8g9fyIoNm6Ogw59f3GKk_P-ZbRJRrwnYdTMUhQ6AC6MMDVUpfedEQp0TWiRBgyfIgDT4t7gjX23rQntd51sEAVIUIDj4DTvY-JxTAFyDArjuyR_flitGplJLDo0ZGovlH5GB-xl63vR_8W"/>
+</div>
+<!-- Photo Item 5 -->
+<div class="relative aspect-square cursor-pointer" onclick="toggleSelection(this)">
+<img class="w-full h-full object-cover" data-alt="A minimalist overhead view of a single pill bottle and a digital tablet showing medical data on a light blue table. The lighting is high-key and airy, creating a trustworthy and modern healthcare tech vibe. The color palette consists of crisp whites, corporate blues, and soft grey shadows for a professional flat UI appearance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmPG_N1I4pe38shDiVsCTQXQzz4coeIG8esh1_sfo2hDAgaZFtwBnZeYwmRx6fHxvA5SAElM8ykZi3z0j251joaEZAzacwK-N_UMyToWHdoDDebXsKgkVGSOZKRn60kvY47NO0UsUs3Icus1c0QjzSr7prwurlet1lfigNadICUBWKGbQVojgF_sP8tG0_eU2ivIvqXYse-If0qixjaWCd66_CnwZMmjmeTSVs4cRAmpyQEVZYyFolpL8nnhP7L1KJM7EysH-4gyM-"/>
+</div>
+<!-- Photo Item 6 -->
+<div class="relative aspect-square cursor-pointer" onclick="toggleSelection(this)">
+<img class="w-full h-full object-cover" data-alt="A professional pharmacist in a modern pharmacy setting, scanning a barcode on a medication box with a handheld scanner. The shelves behind are stocked with various white boxes. The atmosphere is efficient and clinical, with bright, balanced lighting and a focus on technology-driven healthcare management." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH_UzPR5zoqoeZgCn0Dzq6K8cpszbbxmGcnKEAOf5y8Lol1r6oPwthELVX6BLQSN8Tvs-RF9yxvr1eAtA-HKIiiuPM2hlBd34obE_GowEYklNgPQbPXHcPvnva1eZbGj5XTLeqD3wgeiaKDeGdYJmHz_50KRojbYAShUjrEBgV48D0vRA4rLn4cQleKaXTySFZzmEefWfpt-asqsEV6hIxgNT3nuX7DiHgEj6CLhLGQts7Qf4JPvC5Xp3vxVOwftvsWt40eB9qALhN"/>
+</div>
+<!-- More placeholders to fill grid -->
+<div class="bg-surface-container-low aspect-square"></div>
+<div class="bg-surface-container-low aspect-square"></div>
+<div class="bg-surface-container-low aspect-square"></div>
+<div class="bg-surface-container-low aspect-square"></div>
+<div class="bg-surface-container-low aspect-square"></div>
+<div class="bg-surface-container-low aspect-square"></div>
+</div>
+</main>
+<!-- Bottom Action Bar (Contextual) -->
+<div class="fixed bottom-0 w-full bg-surface-container px-margin-mobile py-4 shadow-lg flex items-center justify-between border-t border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-md text-on-surface">1 Photo Selected</span>
+<span class="font-label-sm text-on-surface-variant">Tap to preview</span>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label-md shadow-md active:scale-95 transition-all">
+            Upload
+        </button>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        function toggleSelection(element) {
+            const overlay = element.querySelector('.selection-overlay');
+            if (overlay) {
+                const isSelected = overlay.classList.contains('opacity-100');
+                if (isSelected) {
+                    overlay.classList.remove('opacity-100');
+                    overlay.classList.add('opacity-0');
+                } else {
+                    overlay.classList.remove('opacity-0');
+                    overlay.classList.add('opacity-100');
+                }
+            } else {
+                // Add overlay if it doesn't exist (simplified for demo)
+                const newOverlay = document.createElement('div');
+                newOverlay.className = "absolute inset-0 selection-overlay border-4 border-primary opacity-100 flex items-start justify-end p-2 pointer-events-none transition-opacity";
+                newOverlay.innerHTML = `
+                    <div class="bg-primary text-on-primary rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                        <span class="material-symbols-outlined text-[16px] font-bold" data-icon="check">check</span>
+                    </div>
+                `;
+                element.appendChild(newOverlay);
+            }
+            
+            // Trigger haptic feel
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(5);
+            }
+        }
+    </script>
+</body></html>

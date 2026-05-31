@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #E9ECEF;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#00531a",
+                      "inverse-primary": "#a9c7ff",
+                      "surface-container-high": "#e0e9f2",
+                      "on-surface-variant": "#424752",
+                      "surface-container": "#e6eff8",
+                      "surface-container-low": "#ecf5fe",
+                      "on-primary-fixed-variant": "#00468c",
+                      "on-primary-container": "#c8daff",
+                      "background": "#f6faff",
+                      "outline-variant": "#c2c6d4",
+                      "primary-fixed": "#d6e3ff",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#005db6",
+                      "tertiary": "#94001f",
+                      "surface-dim": "#d2dbe4",
+                      "surface-container-highest": "#dbe4ed",
+                      "tertiary-fixed": "#ffdad9",
+                      "on-surface": "#141d23",
+                      "secondary-fixed": "#83fc8e",
+                      "on-primary-fixed": "#001b3d",
+                      "on-secondary-container": "#007327",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "inverse-surface": "#293138",
+                      "surface-variant": "#dbe4ed",
+                      "secondary": "#006e25",
+                      "tertiary-container": "#bb1931",
+                      "primary-fixed-dim": "#a9c7ff",
+                      "on-tertiary-fixed": "#410008",
+                      "on-tertiary-container": "#ffcecd",
+                      "tertiary-fixed-dim": "#ffb3b2",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed-dim": "#66df75",
+                      "on-secondary-fixed": "#002106",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#92001f",
+                      "outline": "#727783",
+                      "secondary-container": "#80f98b",
+                      "primary-container": "#005eb8",
+                      "surface": "#f6faff",
+                      "error": "#ba1a1a",
+                      "on-background": "#141d23",
+                      "primary": "#00478d",
+                      "surface-bright": "#f6faff",
+                      "inverse-on-surface": "#e9f2fb",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "score-display": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "score-display": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-surface docked full-width top-0 border-b border-outline-variant z-40 fixed w-full">
+<div class="flex justify-between items-center w-full px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-low transition-colors rounded-full p-2 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">PharmaVerify</h1>
+</div>
+<button class="hover:bg-surface-container-low transition-colors rounded-full p-2 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile max-w-2xl mx-auto">
+<!-- Search Hero Section -->
+<section class="mt-6 mb-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Find a Pharmacy</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Verify authenticity and check local availability.</p>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm font-body-md text-body-md outline-none" placeholder="Search pharmacy name or location" type="text"/>
+</div>
+<!-- Near Me Toggle -->
+<div class="flex items-center justify-between mt-6 p-4 bg-primary-fixed rounded-xl border border-primary-fixed-dim">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="my_location">my_location</span>
+<span class="font-body-md text-body-md font-bold text-on-primary-fixed">Find pharmacies near me</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</section>
+<!-- Quick Filters (Asymmetric Layout) -->
+<section class="mb-10 overflow-x-auto">
+<div class="flex gap-3 pb-2">
+<button class="whitespace-nowrap px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full font-label-md text-label-md flex items-center gap-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified">verified</span>
+                    Verified Only
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+                    Open Now
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="local_shipping">local_shipping</span>
+                    Delivery
+                </button>
+</div>
+</section>
+<!-- Recent Searches List -->
+<section class="mb-10">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Recent Searches</h3>
+<button class="text-primary font-label-md text-label-md hover:underline">Clear all</button>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low rounded-xl transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">City Care Pharmacy</p>
+<p class="font-label-md text-label-md text-on-surface-variant">North Manhattan, NY</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="north_west">north_west</span>
+</div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low rounded-xl transition-colors cursor-pointer group border-t border-outline-variant/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">HealthWay Clinic</p>
+<p class="font-label-md text-label-md text-on-surface-variant">2.4 miles away • Bronx</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="north_west">north_west</span>
+</div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low rounded-xl transition-colors cursor-pointer group border-t border-outline-variant/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+<div>
+<p class="font-body-md text-body-md text-on-surface">MediQuick 24/7</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Recently viewed</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="north_west">north_west</span>
+</div>
+</div>
+</section>
+<!-- Featured Map Section (Bento Grid Style) -->
+<section class="mb-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="relative h-48 rounded-2xl overflow-hidden border border-outline-variant shadow-sm group">
+<img alt="Location Map" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A detailed, high-contrast digital map interface showing a modern urban layout of Manhattan. The map is rendered in a sleek light-mode aesthetic with soft blue water bodies and clean white streets. Bright medical-blue circular pins indicate various pharmacy locations, creating a sense of density and accessibility. The overall lighting is professional and clear, suggesting a high-trust healthcare application environment." data-location="New York" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6f8TibISkc_YJY5_zVcNVQXy3G0gsy2eKpy8VqfA5Sqx1i8xljcn7GrRxEZAyyjuhgdztsPjATBNtJAew7RFSJDEat53XLFViGjf4IpylrlBYSPYfmurNj6sIVLrDfCeFVnwm-yUBBtuG1ybbyBXwRR_7XGHJQHwrXCO9hx9Kec47FQNWb5LMaPRYAyfTPwAjgoIVnttnO_bgRcwa1Yy3kbnfFayta2T6EgluAR8bpU8DEoo_VltwjP0QWaIO3nnsacUsL7c18Ws"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+<div class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-md text-label-md">Explore Interactive Map</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-highest p-6 rounded-2xl border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">Verified Networks</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Connect only with certified pharmaceutical distributors.</p>
+</div>
+<button class="mt-4 text-primary font-bold font-label-md text-label-md flex items-center gap-1 hover:gap-2 transition-all">
+                        View standards <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container-lowest border-t border-outline-variant shadow-sm rounded-t-xl">
+<!-- Search Active -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label-md text-label-md">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-label-md text-label-md">Favorites</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+<span class="font-label-md text-label-md">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<!-- Floating Action Button (FAB) - Suppressed as per rule for Search/Detail context, but adding a micro-interaction script for the search bar -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.querySelector('input[type="text"]');
+            
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('scale-[1.01]');
+            });
+            
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('scale-[1.01]');
+            });
+            
+            // Subtle scroll effect for the header
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 10) {
+                    header.classList.add('shadow-md');
+                } else {
+                    header.classList.remove('shadow-md');
+                }
+            });
+        });
+    </script>
+</body></html>

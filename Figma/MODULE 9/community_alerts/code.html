@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Safety Monitor - Community Alerts</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2a1700",
+                        "inverse-primary": "#bec6e0",
+                        "tertiary": "#000000",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e0e3e5",
+                        "secondary": "#515f74",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "background": "#f7f9fb",
+                        "primary-container": "#131b2e",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-container": "#eceef0",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "surface": "#f7f9fb",
+                        "outline-variant": "#c6c6cd",
+                        "primary-fixed-dim": "#bec6e0",
+                        "tertiary-container": "#2a1700",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary": "#000000",
+                        "secondary-container": "#d5e3fc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-background": "#191c1e",
+                        "on-secondary-container": "#57657a",
+                        "surface-bright": "#f7f9fb",
+                        "on-surface": "#191c1e",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-tint": "#565e74",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-container": "#7c839b",
+                        "secondary-fixed": "#d5e3fc",
+                        "outline": "#76777d",
+                        "tertiary-fixed": "#ffddb8",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary-container": "#b87500",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#dae2fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "4px",
+                        "unit": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "12px",
+                        "container-margin": "16px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Atkinson Hyperlegible Next"],
+                        "headline-xl": ["Public Sans"],
+                        "body-md": ["Atkinson Hyperlegible Next"],
+                        "status-tag": ["Atkinson Hyperlegible Next"],
+                        "headline-lg-mobile": ["Public Sans"],
+                        "headline-lg": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-xl": ["30px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "status-tag": ["12px", {"lineHeight": "16px", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Atkinson Hyperlegible Next', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .alert-card {
+            transition: transform 0.1s ease-in-out;
+        }
+        .alert-card:active {
+            transform: scale(0.98);
+        }
+        .backdrop-blur-sheet {
+            backdrop-filter: blur(20px);
+            background-color: rgba(247, 249, 251, 0.8);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-on-background border-b border-outline-variant dark:border-outline flex justify-between items-center px-container-margin h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-on-primary">location_on</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-on-primary">Safety Monitor</h1>
+</div>
+<button class="hover:bg-surface-container dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-100 rounded-full p-2">
+<span class="material-symbols-outlined text-primary dark:text-on-primary">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-16 pb-24 px-container-margin">
+<!-- Filter Section -->
+<section class="py-stack-md flex flex-col gap-unit">
+<div class="flex items-center justify-between">
+<h2 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-widest">Active Filters</h2>
+<button class="text-primary font-label-bold text-label-bold">Clear All</button>
+</div>
+<!-- Horizontal Filter Scroll -->
+<div class="flex gap-2 overflow-x-auto custom-scrollbar pb-2">
+<button class="flex items-center gap-1 bg-primary text-on-primary px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap">
+                    All Risks
+                    <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex items-center gap-1 bg-surface-container-high border border-outline-variant px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap hover:bg-surface-container transition-colors">
+                    Region: North
+                    <span class="material-symbols-outlined text-sm">close</span>
+</button>
+<button class="flex items-center gap-1 bg-surface-container-high border border-outline-variant px-4 py-2 rounded-full font-label-bold text-label-bold whitespace-nowrap hover:bg-surface-container transition-colors">
+                    Medicine
+                    <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</section>
+<!-- Alerts Feed -->
+<div class="flex flex-col gap-4">
+<!-- High Risk Alert -->
+<article class="alert-card bg-surface-container-lowest border-2 border-error rounded-xl p-4 shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-error text-on-error font-status-tag text-status-tag px-2 py-1 rounded-sm uppercase">High Risk</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">2m ago</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-1">Inconsistent Packaging</h3>
+<p class="font-label-bold text-label-bold text-secondary mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-base">pill</span>
+                    Amoxicillin 500mg
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-3">Reported batch numbers #AX-2024 showing compromised seals and inconsistent typography in North District pharmacies.</p>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-label-bold text-label-bold">North District</span>
+</div>
+</article>
+<!-- Medium Risk Alert -->
+<article class="alert-card bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-tertiary-fixed-dim text-on-tertiary-fixed font-status-tag text-status-tag px-2 py-1 rounded-sm uppercase">Elevated Risk</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">45m ago</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-1">Storage Violation</h3>
+<p class="font-label-bold text-label-bold text-secondary mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-base">medical_services</span>
+                    Insulin Glargine
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-3">Temperature control failure detected during transport to Central Hospital. Potential potency loss suspected.</p>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-label-bold text-label-bold">Central District</span>
+</div>
+</article>
+<!-- Low Risk Alert -->
+<article class="alert-card bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-secondary-container text-on-secondary-container font-status-tag text-status-tag px-2 py-1 rounded-sm uppercase">Low Risk</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">3h ago</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-1">Labeling Update</h3>
+<p class="font-label-bold text-label-bold text-secondary mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-base">science</span>
+                    Common Pain Relief
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-3">Manufacturer issuing minor labeling correction regarding shelf-life extension from 24 to 36 months.</p>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-label-bold text-label-bold">East District</span>
+</div>
+</article>
+<!-- Map Context Section (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div class="h-48 bg-surface-container-highest rounded-xl relative overflow-hidden border border-outline-variant group">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" data-alt="A detailed digital map interface showing a stylized city layout with a minimalist aesthetic. The map uses a clean palette of slate blues and soft whites, with bright red pulsating circles indicating active safety hazard zones. High-contrast labels and sharp UI elements suggest a professional emergency monitoring dashboard with modern corporate styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuBvXweM6dO_54ihtmMS8ll4QDVfJYYd8muAv2WbtXMCGW_HdbAAurG6Qr8kGOokTa3csq_yrB0KMS2oL7EmMU9qRPVuLNTVOxI-O5GntZNfDtuJSRGyt00eaIJ-CUHC8WUmhbnSFbMptpINwygJa2wvkZ3vdek-1dSoohdxtIBchMkCXQXy1AMHw6T7L2XhqVEZ6ZSdBvsmoryzIrLYfHEQMOu5XfRmWPCB5i7Hjk9dhxXUfK306R9jPZcNxXZIaLp5S9Kt5QWM97"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
+<p class="text-white font-label-bold text-label-bold">Hotspot Visualizer</p>
+<p class="text-white/80 font-body-md text-xs">3 active clusters in North District</p>
+</div>
+</div>
+<div class="bg-primary-container p-4 rounded-xl flex flex-col justify-between border border-outline-variant">
+<div class="flex justify-between items-center">
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+<span class="text-primary-fixed-dim font-status-tag text-status-tag uppercase">Active Monitoring</span>
+</div>
+<div class="mt-4">
+<h4 class="text-on-primary font-headline-lg-mobile text-headline-lg-mobile leading-tight">Volunteer Network Live</h4>
+<p class="text-on-primary-container font-body-md text-sm mt-1">128 active community responders on standby.</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-24 right-container-margin w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-40 border-4 border-surface">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 pb-safe bg-surface dark:bg-on-background border-t border-outline-variant dark:border-outline shadow-lg dark:shadow-none rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-bold text-label-bold mt-1">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+<span class="font-label-bold text-label-bold mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">pill</span>
+<span class="font-label-bold text-label-bold mt-1">Medicines</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-bold text-label-bold mt-1">Recalls</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('.alert-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Future implementation for alert details
+                console.log('Alert Details Tapped');
+            });
+        });
+
+        // Sticky header transition on scroll
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const header = document.querySelector('header');
+            
+            if (currentScroll > lastScroll && currentScroll > 80) {
+                header.classList.add('-translate-y-full');
+                header.classList.remove('translate-y-0');
+            } else {
+                header.classList.remove('-translate-y-full');
+                header.classList.add('translate-y-0');
+            }
+            lastScroll = currentScroll;
+            header.style.transition = 'transform 0.3s ease-out';
+        });
+    </script>
+</body></html>

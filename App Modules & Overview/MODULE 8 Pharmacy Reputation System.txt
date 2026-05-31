@@ -1,0 +1,45 @@
+40. Nearby Pharmacies Screen
+41. Trusted Pharmacies Screen
+42. Under Observation Pharmacies Screen
+43. High-Risk Pharmacies Screen
+App description
+MODULE 8: Pharmacy Reputation System
+Purpose
+
+Help citizens identify safer pharmacies.
+
+What This Module Does
+
+Categorizes pharmacies into:
+
+Trusted
+
+Consistently positive reputation.
+
+Under Observation
+
+Moderate number of concerns.
+
+High Risk
+
+Multiple serious complaints.
+
+Nearby
+
+Location-based recommendations.
+
+Why It Exists
+
+Encourages transparency and responsible pharmacy practices.
+
+User Workflow
+
+Find Nearby Pharmacy
+
+↓
+
+Check Reputation Category
+
+↓
+
+Choose Safer Pharmacy

@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "MediTrust",
+    "slug": "meditrust",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./Figma/mediguard_ai_logo/screen.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./Figma/splash_screen/screen.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f8f9fb"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./Figma/mediguard_ai_logo/screen.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./Figma/mediguard_ai_logo/screen.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you verify clinical packages.",
+          "cameraPermission": "The app accesses your camera to capture clinical medicines packaging."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "024ab1de-bcb7-47e7-b79a-b4441b457215"
+      }
+    },
+    "owner": "sowmyareddy123"
+  }
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#4d5d73",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#93ccff",
+                    "secondary": "#006a61",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary-container": "#006f66",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#93ccff",
+                    "primary-container": "#007bb9",
+                    "on-background": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "secondary-container": "#86f2e4",
+                    "on-surface-variant": "#3f4850",
+                    "on-surface": "#191c1e",
+                    "surface": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#005049",
+                    "on-tertiary-container": "#fdfcff",
+                    "surface-container-high": "#e6e8ea",
+                    "outline-variant": "#bfc7d2",
+                    "tertiary-container": "#66768d",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "inverse-surface": "#2d3133",
+                    "surface-variant": "#e0e3e5",
+                    "surface-tint": "#006398",
+                    "secondary-fixed": "#89f5e7",
+                    "on-primary-fixed-variant": "#004b73",
+                    "outline": "#707881",
+                    "background": "#f7f9fb",
+                    "surface-container": "#eceef0",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "surface-dim": "#d8dadc",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#cce5ff",
+                    "primary": "#006194",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "on-primary-container": "#fdfcff",
+                    "on-primary-fixed": "#001d31",
+                    "on-secondary-fixed": "#00201d",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "unit": "8px",
+                    "margin-desktop": "40px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "margin-mobile": "16px",
+                    "stack-xs": "4px",
+                    "gutter": "24px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar Shell -->
+<header class="bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline w-full top-0 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm sticky z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim cursor-pointer active:scale-95 transition-transform" data-icon="search">search</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">PharmaTrust</h1>
+</div>
+<div class="hidden md:flex items-center gap-stack-lg">
+<nav class="flex gap-6">
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Nearby</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Trusted</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors" href="#">Observation</a>
+<a class="text-primary font-label-md text-label-md font-bold border-b-2 border-primary pb-1" href="#">High-Risk</a>
+</nav>
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim cursor-pointer active:scale-95 transition-transform" data-icon="location_on">location_on</span>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim cursor-pointer" data-icon="location_on">location_on</span>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
+<!-- High-Alert Banner -->
+<section class="mb-stack-lg bg-error-container text-on-error-container p-6 rounded-xl border-l-4 border-error flex flex-col md:flex-row items-center gap-stack-md">
+<div class="bg-error rounded-full p-3 flex-shrink-0">
+<span class="material-symbols-outlined text-on-error" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-error font-bold mb-1">Public Safety Alert</h2>
+<p class="font-body-md text-body-md">The following entities have been flagged for severe health violations, fraudulent operations, or expired credentials. We strongly advise seeking alternatives for your medication needs.</p>
+</div>
+</section>
+<!-- Pharmacy Grid (Asymmetric Layout) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main List (Left Column) -->
+<div class="md:col-span-8 flex flex-col gap-6">
+<!-- Entry 1: Critical Risk -->
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-md rounded-xl transition-all hover:shadow-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-error text-on-error px-4 py-1 font-label-md text-label-md rounded-bl-xl uppercase tracking-wider">
+                        High Risk
+                    </div>
+<div class="flex flex-col md:flex-row gap-6">
+<div class="w-full md:w-32 h-32 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="Pharmacy Facility" class="w-full h-full object-cover grayscale opacity-80" data-alt="A cold, clinical exterior of a commercial building with sterile lighting and a prominent medical cross. The scene is shot in a high-contrast style with sharp edges and clinical precision, using a medical color palette of slate and sharp whites. The mood is somber and high-alert, emphasizing regulatory concern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-CTxMOz9B3T_1CxSzMfohwKFZ8IKiaEwkqfJcgi6piRcy8jqFhCnhGZMGhsSl5vozbynI5NW5uwsbfhhqWVrBptguF5VFsav8aDfbEDj9atXcD_0XSHOWbzi9Bp0_qqt7a2Bk7Oaid8f-sPsMRrMHGcJ4RTNG4zwaLqcDkDRIGMjkcnIwJFRVGCxZY1n_miZO9vxuzUaszjijl0GgKlSZsmlsMyiBOTI_EMgFRG21pwboD_12cvCddZIbZTGWU8KDJisZ_YoYKj0"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Apex Med-Solutions</h3>
+<p class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span> 1204 Industrial Way, North District
+                            </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-error-container text-on-error-container text-label-sm font-label-sm px-2 py-1 rounded">Expired License</span>
+<span class="bg-error-container text-on-error-container text-label-sm font-label-sm px-2 py-1 rounded">Counterfeit Claims</span>
+</div>
+<div class="flex flex-col md:flex-row gap-4 items-center justify-between border-t border-outline-variant pt-4">
+<div class="flex items-center gap-2">
+<div class="w-12 h-12 rounded-full border-4 border-error/20 flex items-center justify-center">
+<span class="font-bold text-error text-label-md">12%</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Safety Rating</span>
+</div>
+<div class="flex gap-stack-sm w-full md:w-auto">
+<button class="flex-grow md:flex-none px-6 py-2 bg-error text-on-error font-label-md text-label-md rounded-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                                        View Violations
+                                        <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Entry 2: Warning Risk -->
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-md rounded-xl transition-all hover:shadow-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-error text-on-error px-4 py-1 font-label-md text-label-md rounded-bl-xl uppercase tracking-wider">
+                        High Risk
+                    </div>
+<div class="flex flex-col md:flex-row gap-6">
+<div class="w-full md:w-32 h-32 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="Pharmacy Facility" class="w-full h-full object-cover grayscale opacity-80" data-alt="A dark and moody internal view of a pharmaceutical storage area with flickering fluorescent lights and metal shelving. The image uses a desaturated color palette with intense red highlights to signify danger. The lighting is harsh and dramatic, reflecting a state of emergency or critical health warning." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf3H_xhCmENOjF7NBoG_PfmHu_BNYTiDNyQ491PXjWg-y0t1pRtdu7d4nVJ2lYYmDoGqG1S4353o-hgrA99X-VBOBvuSqp2ZAMTK_dth9WIE_9k7LOUeHs6CrTLQwueLAn19Jxs8Vdx5akbJP0F9HrPfoiVDA4Hx5tTZw5O37q_2dcHYFbhQMvziBOaA5dgNC4GYnIUNKyKOypldapGrmvH_xMx-z856rLwnfBWneAGRGBii87JYfB2BDBDqFiK1KSMzz8zQs-vN0"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Global Health Plus</h3>
+<p class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span> 44 West Commercial Blvd
+                            </p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="bg-error-container text-on-error-container text-label-sm font-label-sm px-2 py-1 rounded">Storage Violations</span>
+<span class="bg-error-container text-on-error-container text-label-sm font-label-sm px-2 py-1 rounded">Staff Shortage</span>
+</div>
+<div class="flex flex-col md:flex-row gap-4 items-center justify-between border-t border-outline-variant pt-4">
+<div class="flex items-center gap-2">
+<div class="w-12 h-12 rounded-full border-4 border-error/20 flex items-center justify-center">
+<span class="font-bold text-error text-label-md">24%</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Safety Rating</span>
+</div>
+<div class="flex gap-stack-sm w-full md:w-auto">
+<button class="flex-grow md:flex-none px-6 py-2 bg-error text-on-error font-label-md text-label-md rounded-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                                        View Violations
+                                        <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Cards (Right Column) -->
+<div class="md:col-span-4 flex flex-col gap-6">
+<!-- Urgent Recommendation -->
+<div class="bg-surface-container-high p-6 rounded-xl border border-outline">
+<h4 class="font-title-lg text-title-lg text-on-surface mb-4">Trusted Alternatives</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">For your safety, please consider these top-rated facilities nearby instead:</p>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest rounded-lg border border-secondary/20">
+<div>
+<p class="font-label-md text-label-md text-on-surface">City Health Main</p>
+<p class="font-label-sm text-label-sm text-secondary">98% Verified</p>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest rounded-lg border border-secondary/20">
+<div>
+<p class="font-label-md text-label-md text-on-surface">North Park Pharmacy</p>
+<p class="font-label-sm text-label-sm text-secondary">95% Verified</p>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-primary/5 transition-colors">
+                        View More Trusted
+                    </button>
+</div>
+<!-- Incident Map -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden border border-outline">
+<div class="h-48 bg-surface-variant relative">
+<img alt="Area Risk Map" class="w-full h-full object-cover opacity-60 grayscale" data-alt="A clean, minimalist topographical map of a city grid with high-contrast red markers indicating risk areas. The aesthetic is professional and medical, using muted grays and crisp lines with vibrant hazard icons. The lighting is even and bright, emphasizing clarity and data-driven visualization for healthcare logistics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDV6T4ESzc1gtZ504rGFdnNba5Be055yjrPjfaKTXaYz-COAdUPngUH4PFmWcPqKkX3vtR9m6p328dYzNT7Tabh-iCjy8m_-jqSU_gbZ5BuYqAEzNFApEfh6_Qq6CC7zARES2UIRx2QhBeGsE2wxJFSSQP9pxwZ2PG4AGvZ0xGTdAUpyCroMp3xZ2Tn5O7BUrnYNo_IuZTuW3XadsDpD3nAImt4RoReR9Fn5hP-jfjoWzp5AbxfgYKx-quXbgJk7t3mJIPUa1b6og"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-error text-on-error px-4 py-2 rounded-full font-label-md text-label-md shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="warning">warning</span>
+                                3 High-Risk Sites Nearby
+                            </div>
+</div>
+</div>
+<div class="p-4">
+<h4 class="font-label-md text-label-md text-on-surface uppercase tracking-wider mb-2">Location Awareness</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your current location shows 3 facilities with active safety citations within a 5-mile radius.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-surface dark:bg-surface-dim pb-safe pt-2 border-t border-outline-variant dark:border-outline shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-sm text-label-sm">Nearby</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-sm text-label-sm">Trusted</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-label-sm text-label-sm">Observation</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container dark:bg-primary-fixed dark:text-on-primary-fixed rounded-full px-4 py-1 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem" style="font-variation-settings: 'FILL' 1;">report_problem</span>
+<span class="font-label-sm text-label-sm">High-Risk</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for interactive elements
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Mock interaction
+                console.log('Action initiated');
+            });
+        });
+
+        // Add some atmospheric scanning effect to the error banner
+        const banner = document.querySelector('.bg-error-container');
+        if (banner) {
+            banner.style.position = 'relative';
+            const scanLine = document.createElement('div');
+            scanLine.style.position = 'absolute';
+            scanLine.style.top = '0';
+            scanLine.style.left = '0';
+            scanLine.style.width = '100%';
+            scanLine.style.height = '2px';
+            scanLine.style.background = 'rgba(186, 26, 26, 0.1)';
+            scanLine.style.boxShadow = '0 0 10px rgba(186, 26, 26, 0.2)';
+            banner.appendChild(scanLine);
+
+            let pos = 0;
+            function animate() {
+                pos += 0.5;
+                if (pos > 100) pos = 0;
+                scanLine.style.top = pos + '%';
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body></html>

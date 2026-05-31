@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-primary-container": "#8590a6",
+                        "on-surface-variant": "#45474c",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1e293b",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "inverse-primary": "#bcc7de",
+                        "secondary-fixed": "#89f5e7",
+                        "tertiary-container": "#3c2300",
+                        "primary": "#091426",
+                        "background": "#f7f9fb",
+                        "surface-container": "#eceef0",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary": "#201100",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-dim": "#d8dadc",
+                        "surface": "#f7f9fb",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "secondary": "#006a61",
+                        "surface-container-high": "#e6e8ea",
+                        "on-surface": "#191c1e",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c5c6cd",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed-variant": "#005049",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#545f73",
+                        "on-primary-fixed": "#111c2d",
+                        "outline": "#75777d",
+                        "secondary-container": "#86f2e4",
+                        "on-tertiary-container": "#c88000",
+                        "on-tertiary-fixed": "#2a1700",
+                        "primary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#006f66",
+                        "primary-fixed": "#d8e3fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding-mobile": "16px",
+                        "container-padding-desktop": "40px",
+                        "gutter": "24px",
+                        "card-gap": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-[0_4px_12px_rgba(30,41,59,0.04)] h-16 flex justify-between items-center px-container-padding-mobile md:px-container-padding-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="medication">medication</span>
+<h1 class="font-headline-sm text-headline-sm text-primary font-bold">MedClarity</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors active:opacity-80">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="qr_code_scanner">qr_code_scanner</span>
+</button>
+<button class="hidden md:flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-label-md text-label-md transition-transform active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Medicine
+            </button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pt-24 pb-12 px-container-padding-mobile max-w-2xl mx-auto">
+<!-- Header Section -->
+<div class="mb-8">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors mb-4 group" onclick="history.back()">
+<span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform" data-icon="arrow_back">arrow_back</span>
+<span class="font-label-md text-label-md">Back to Inventory</span>
+</button>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Set Reminder</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Choose how and when you'd like to be notified for your medication.</p>
+</div>
+<!-- Form Container -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(30,41,59,0.04)] overflow-hidden">
+<form class="p-6 md:p-8 space-y-8" id="reminder-form">
+<!-- Medicine Selection (Visual Card) -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<div class="w-12 h-12 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" data-icon="pill">pill</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Lisinopril</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">10mg Oral Tablet</p>
+</div>
+</div>
+<!-- Date Picker Section -->
+<section>
+<label class="block font-label-md text-label-md text-primary mb-3">Reminder Date</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="calendar_today">calendar_today</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md text-body-md" required="" type="date"/>
+</div>
+</section>
+<!-- Frequency Selection -->
+<section>
+<label class="block font-label-md text-label-md text-primary mb-3">Frequency Strategy</label>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="frequency" type="radio" value="daily"/>
+<div class="flex flex-col items-center justify-center p-4 border border-outline-variant rounded-lg transition-all peer-checked:border-primary peer-checked:bg-primary-container/5 hover:bg-surface-container-low">
+<span class="material-symbols-outlined mb-2 text-outline group-hover:text-primary transition-colors" data-icon="event_repeat">event_repeat</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-primary">Daily</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="frequency" type="radio" value="weekly"/>
+<div class="flex flex-col items-center justify-center p-4 border border-outline-variant rounded-lg transition-all peer-checked:border-primary peer-checked:bg-primary-container/5 hover:bg-surface-container-low">
+<span class="material-symbols-outlined mb-2 text-outline group-hover:text-primary transition-colors" data-icon="date_range">date_range</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-primary">Weekly</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="frequency" type="radio" value="expiry"/>
+<div class="flex flex-col items-center justify-center p-4 border border-outline-variant rounded-lg transition-all peer-checked:border-primary peer-checked:bg-primary-container/5 hover:bg-surface-container-low">
+<span class="material-symbols-outlined mb-2 text-outline group-hover:text-primary transition-colors" data-icon="running_with_errors">running_with_errors</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-primary">Before Expiry</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Time & Custom Options -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<section>
+<label class="block font-label-md text-label-md text-primary mb-3">Time of Day</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="schedule">schedule</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md text-body-md" type="time" value="08:00"/>
+</div>
+</section>
+<section>
+<label class="block font-label-md text-label-md text-primary mb-3">Notification Priority</label>
+<select class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md text-body-md appearance-none">
+<option>Standard Alert</option>
+<option>Persistent Ringing</option>
+<option>Silent Notification</option>
+</select>
+</section>
+</div>
+<!-- Custom Note Field -->
+<section>
+<label class="block font-label-md text-label-md text-primary mb-3">Medication Note (Optional)</label>
+<textarea class="w-full p-4 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md text-body-md resize-none" placeholder="e.g., Take with a full glass of water or food..." rows="4"></textarea>
+</section>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
+<button class="flex-1 py-4 bg-primary text-on-primary rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all" type="submit">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+                        Create Reminder
+                    </button>
+<button class="sm:w-32 py-4 border border-outline-variant text-on-surface-variant rounded-xl font-label-md text-label-md hover:bg-surface-container-low active:scale-95 transition-all" type="button">
+                        Cancel
+                    </button>
+</div>
+</form>
+</div>
+<!-- Visual Context Card (Bento Style) -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-card-gap">
+<div class="bg-white p-6 rounded-xl border border-outline-variant flex flex-col gap-4 shadow-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary">Clinician's Tip</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">Consistency is key for Lisinopril. Setting a reminder at the same time each day helps maintain steady blood pressure levels.</p>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl border border-outline-variant group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A clean, minimalist medical desktop scene with a glass of water, a white pill bottle, and a sleek smartphone displaying a healthcare application. The lighting is bright and airy, reflecting a high-end corporate clinical aesthetic with soft blue and white tones. The atmosphere is professional, calm, and highly organized." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE0NCOdIW7Dd9d4QJDAiZdhoM70S00WYKbcbPhiMABtNpKoWl1O7BmyrDjJPixlUe18gYuM1hPQq8gaHhF_dM_U7Zp9pnj8-RVOdulVc5l8YBmYsjWB4mF1SLbGQuKypsY3lHO3j0k0DR0BbXiw_4tXflbvBUo053mi5JwifC40KIGCI-1MOpu3ZXuE68pc17Ohkn8zY9CLLi9Ho7zUW_YNm_YKjv_Ko3pwNjN2BYXs4bAi67D2y8gZI08B3tfy7DKPdew9H8rYcel"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent flex flex-col justify-end p-6">
+<p class="text-white font-label-sm text-label-sm uppercase tracking-widest opacity-80">Safety First</p>
+<h4 class="text-white font-headline-sm text-headline-sm">Never miss a dose</h4>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 rounded-t-xl bg-surface-container-lowest shadow-[0_-4px_12px_rgba(30,41,59,0.04)] h-20 flex justify-around items-center px-2 pb-safe">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm mt-1">Inventory</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="font-label-sm text-label-sm mt-1">Urgent</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm mt-1">Reminders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="delete_sweep">delete_sweep</span>
+<span class="font-label-sm text-label-sm mt-1">Archive</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for form submission
+        document.getElementById('reminder-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.submitter;
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span> Saving...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span> Saved Successfully';
+                btn.classList.replace('bg-primary', 'bg-secondary');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.replace('bg-secondary', 'bg-primary');
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+        });
+
+        // Focus ring effect for custom radio cards
+        const radioLabels = document.querySelectorAll('input[name="frequency"]');
+        radioLabels.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                console.log('Frequency changed to:', e.target.value);
+            });
+        });
+    </script>
+</body></html>

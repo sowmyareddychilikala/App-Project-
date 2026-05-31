@@ -1,0 +1,45 @@
+18. My Medicines Screen
+19. Medicine Details Screen
+20. Add Reminder Screen
+21. Upcoming Expiry Screen
+22. Expired Medicines Screen
+
+App Description:
+MODULE 4: Medicine Expiry Management
+Purpose
+
+Prevent accidental consumption of expired medicines.
+
+What This Module Does
+Stores scanned medicines.
+Tracks expiry dates.
+Sends reminders.
+Categorizes medicines:
+Active
+Near Expiry
+Expired
+Why It Exists
+
+Many households unknowingly keep expired medicines.
+
+This module acts as a digital medicine cabinet.
+
+User Workflow
+
+Medicine Scanned
+
+↓
+
+Added To Inventory
+
+↓
+
+Expiry Tracked Automatically
+
+↓
+
+Notifications Sent
+
+↓
+
+User Disposes Expired Medicine

@@ -1,0 +1,313 @@
+If you're giving this to an AI app builder, UI designer, or developer, provide the workflow as a screen-connection map.
+
+# MediGuard AI - Complete App Workflow & Screen Connection Map
+
+## App Launch Flow
+
+```text
+1. Splash Screen
+        ↓
+2. Welcome Screen
+        ↓
+3. Login Screen
+        ↓
+4. Registration Screen (if new user)
+        ↓
+5. Forgot Password Screen (optional)
+        ↓
+6. Home Dashboard
+```
+
+---
+
+# Home Dashboard Navigation
+
+```text
+6. Home Dashboard
+    ├── Notifications Center (7)
+    ├── User Profile (8)
+    ├── Settings (9)
+    ├── Medicine Scanner Module
+    ├── Medicine Expiry Module
+    ├── Medicine Information Module
+    ├── Side Effects Community Module
+    ├── Pharmacy Verification Module
+    ├── Community Safety Module
+    └── Government Reporting Module
+```
+
+---
+
+# MODULE 3: Medicine Scanner & AI Verification Flow
+
+```text
+6. Home Dashboard
+        ↓
+10. Scan Options Screen
+        ├── Camera Scanner (11)
+        └── Gallery Upload (12)
+
+11 / 12
+        ↓
+13. OCR Processing Screen
+        ↓
+14. Extracted Medicine Details Screen
+        ↓
+15. AI Verification Result Screen
+        ↓
+16. Packaging Comparison Screen
+        ↓
+17. Scan History Screen
+
+15. AI Verification Result Screen
+        ↓
+18. My Medicines Screen
+```
+
+---
+
+# MODULE 4: Medicine Expiry Management Flow
+
+```text
+6. Home Dashboard
+        ↓
+18. My Medicines Screen
+        ↓
+19. Medicine Details Screen
+
+19. Medicine Details
+        ├── Add Reminder (20)
+        ├── Upcoming Expiry (21)
+        └── Expired Medicines (22)
+
+20. Add Reminder
+        ↓
+7. Notifications Center
+```
+
+---
+
+# MODULE 5: Medicine Information System Flow
+
+```text
+6. Home Dashboard
+        ↓
+23. Medicine Search Screen
+        ↓
+24. Search Results Screen
+        ↓
+25. Medicine Overview Screen
+        ├── Usage & Dosage (26)
+        └── Precautions & Warnings (27)
+```
+
+---
+
+# MODULE 6: Side Effects Community Hub Flow
+
+```text
+6. Home Dashboard
+        ↓
+28. Report Side Effect Screen
+        ↓
+29. Side Effect Category Selection Screen
+        ↓
+30. Existing Health Condition Screen
+        ↓
+31. Write Review Screen
+        ↓
+Submit Report
+
+After Submission
+        ↓
+32. Community Experiences Screen
+        ↓
+33. Side Effect Analytics Screen
+```
+
+---
+
+# MODULE 7: Pharmacy Verification & Monitoring Flow
+
+```text
+6. Home Dashboard
+        ↓
+35. Pharmacy Search Screen
+        ↓
+36. Pharmacy Details Screen
+
+36. Pharmacy Details
+        ├── Pharmacy Trust Score (37)
+        ├── Report Pharmacy (38)
+        └── Complaint History (39)
+
+38. Report Pharmacy
+        ↓
+39. Complaint History
+```
+
+Alternative Flow:
+
+```text
+34. Select Pharmacy Screen
+        ↓
+35. Pharmacy Search Screen
+        ↓
+36. Pharmacy Details Screen
+```
+
+---
+
+# MODULE 8: Pharmacy Reputation System Flow
+
+```text
+6. Home Dashboard
+        ↓
+40. Nearby Pharmacies Screen
+
+40. Nearby Pharmacies
+        ├── Trusted Pharmacies (41)
+        ├── Under Observation (42)
+        └── High Risk Pharmacies (43)
+
+41 / 42 / 43
+        ↓
+36. Pharmacy Details Screen
+```
+
+---
+
+# MODULE 9: Community Safety Network Flow
+
+```text
+6. Home Dashboard
+        ↓
+44. Safety Map Screen
+
+44. Safety Map
+        ├── Community Alerts (45)
+        ├── Recent Suspicious Medicines (46)
+        └── Medicine Recall Alerts (47)
+
+45. Community Alerts
+        ↓
+46. Suspicious Medicines
+
+46. Suspicious Medicines
+        ↓
+47. Recall Alerts
+```
+
+---
+
+# MODULE 10: Government & Emergency Reporting Flow
+
+```text
+6. Home Dashboard
+        ↓
+48. Regulatory Authority Report Screen
+        ↓
+49. Drug Inspector Alert Screen
+        ↓
+50. Report Status Tracking Screen
+```
+
+---
+
+# Cross-Module Smart Connections
+
+These connections make the app feel integrated instead of isolated.
+
+### Scan → Inventory
+
+```text
+15. AI Verification Result
+        ↓
+18. My Medicines
+```
+
+### Inventory → Medicine Information
+
+```text
+19. Medicine Details
+        ↓
+25. Medicine Overview
+```
+
+### Medicine Information → Side Effect Reporting
+
+```text
+25. Medicine Overview
+        ↓
+28. Report Side Effect
+```
+
+### Pharmacy Details → Report Pharmacy
+
+```text
+36. Pharmacy Details
+        ↓
+38. Report Pharmacy
+```
+
+### Community Alert → Recall Details
+
+```text
+45. Community Alerts
+        ↓
+47. Medicine Recall Alerts
+```
+
+### Suspicious Medicine Alert → Government Report
+
+```text
+46. Recent Suspicious Medicines
+        ↓
+48. Regulatory Authority Report
+```
+
+### High-Risk Pharmacy → Drug Inspector Alert
+
+```text
+43. High-Risk Pharmacies
+        ↓
+49. Drug Inspector Alert
+```
+
+---
+
+# Complete End-to-End User Journey
+
+```text
+Splash
+ ↓
+Welcome
+ ↓
+Login/Register
+ ↓
+Dashboard
+ ↓
+Scan Medicine
+ ↓
+OCR Extraction
+ ↓
+AI Verification
+ ↓
+Medicine Inventory
+ ↓
+Expiry Tracking
+ ↓
+Medicine Information
+ ↓
+Side Effect Reporting
+ ↓
+Community Safety Updates
+ ↓
+Pharmacy Verification
+ ↓
+Government Reporting (if required)
+ ↓
+Notifications & Alerts
+```
+
+This workflow gives the AI developer a clear navigation structure showing exactly how all 50 screens connect and how users move through the entire MediGuard AI ecosystem.

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Existing Health Conditions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container": "#dbf1fe",
+                        "on-tertiary-fixed-variant": "#374951",
+                        "on-background": "#071e27",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#8df5e4",
+                        "on-tertiary-container": "#00060a",
+                        "secondary": "#006b5f",
+                        "surface-container-low": "#e6f6ff",
+                        "secondary-fixed": "#8df5e4",
+                        "outline": "#727785",
+                        "on-secondary-fixed-variant": "#005048",
+                        "primary-fixed": "#d8e2ff",
+                        "surface": "#f3faff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#007165",
+                        "on-primary-container": "#ffffff",
+                        "outline-variant": "#c1c6d6",
+                        "tertiary-fixed-dim": "#b6cad2",
+                        "tertiary-fixed": "#d2e6ef",
+                        "on-surface-variant": "#414754",
+                        "inverse-primary": "#adc7ff",
+                        "on-secondary-fixed": "#00201c",
+                        "error": "#ba1a1a",
+                        "background": "#f3faff",
+                        "on-primary-fixed": "#001a41",
+                        "surface-variant": "#cfe6f2",
+                        "primary-container": "#1a73e8",
+                        "surface-bright": "#f3faff",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#677a82",
+                        "secondary-fixed-dim": "#70d8c8",
+                        "inverse-surface": "#1e333c",
+                        "on-tertiary-fixed": "#0b1e24",
+                        "surface-tint": "#005bc0",
+                        "tertiary": "#4f6169",
+                        "primary-fixed-dim": "#adc7ff",
+                        "on-surface": "#071e27",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#cfe6f2",
+                        "inverse-on-surface": "#dff4ff",
+                        "on-secondary": "#ffffff",
+                        "primary": "#005bbf",
+                        "surface-dim": "#c7dde9",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#d5ecf8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "margin-mobile": "20px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "touch-target": "48px",
+                        "xs": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-ui-card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface flex items-center justify-between px-margin-mobile h-touch-target w-full z-50 docked full-width top-0 shadow-sm fixed transition-all">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 duration-150" data-icon="arrow_back">arrow_back</button>
+<h1 class="font-headline-sm text-headline-sm-mobile text-primary">Health Conditions</h1>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 duration-150" data-icon="account_circle">account_circle</button>
+</header>
+<main class="mt-20 px-margin-mobile max-w-2xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-lg">
+<div class="relative overflow-hidden rounded-xl bg-primary-container p-lg flex flex-col gap-sm text-on-primary-container shadow-sm">
+<h2 class="font-headline-md text-headline-md z-10">Your Health Profile</h2>
+<p class="font-body-md text-body-md opacity-90 z-10 max-w-sm">Keeping track of your existing conditions helps us tailor your side effect analytics and community matches.</p>
+<!-- Abstract decorative element -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary-container opacity-20 rounded-full -mr-12 -mt-12"></div>
+</div>
+</section>
+<!-- Search Bar -->
+<div class="mb-lg sticky top-20 z-40">
+<div class="relative flex items-center bg-surface-container-lowest rounded-xl border border-outline-variant p-2 soft-ui-card transition-all focus-within:ring-2 focus-within:ring-primary">
+<span class="material-symbols-outlined ml-2 text-outline" data-icon="search">search</span>
+<input class="w-full border-none bg-transparent focus:ring-0 text-body-md px-2 py-2" placeholder="Search conditions (e.g. Diabetes)" type="text"/>
+<button class="bg-primary text-on-primary font-label-md px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                    Add New
+                </button>
+</div>
+</div>
+<!-- Selected Tags (Dynamic) -->
+<div class="mb-lg flex flex-wrap gap-xs" id="active-tags">
+<!-- Example of selected condition -->
+<div class="flex items-center gap-xs bg-secondary-container/10 border border-secondary text-secondary font-label-md px-3 py-1.5 rounded-full">
+                Asthma
+                <button class="material-symbols-outlined text-[16px] hover:bg-secondary/20 rounded-full" onclick="this.parentElement.remove()">close</button>
+</div>
+</div>
+<!-- Conditions Grid / List -->
+<div class="space-y-md">
+<h3 class="font-label-md text-outline uppercase tracking-wider">Suggested &amp; Common</h3>
+<!-- Condition Card 1 -->
+<label class="flex items-center justify-between p-md bg-surface-container-lowest rounded-xl soft-ui-card border border-transparent hover:border-primary-container cursor-pointer transition-all active:scale-[0.98]">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-error-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="favorite">favorite</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm-mobile">Hypertension</p>
+<p class="font-label-sm text-outline">High blood pressure management</p>
+</div>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</label>
+<!-- Condition Card 2 -->
+<label class="flex items-center justify-between p-md bg-surface-container-lowest rounded-xl soft-ui-card border border-transparent hover:border-primary-container cursor-pointer transition-all active:scale-[0.98]">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="glucose">glucose</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm-mobile">Type 2 Diabetes</p>
+<p class="font-label-sm text-outline">Blood sugar monitoring &amp; insulin</p>
+</div>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</label>
+<!-- Condition Card 3 -->
+<label class="flex items-center justify-between p-md bg-surface-container-lowest rounded-xl soft-ui-card border border-transparent hover:border-primary-container cursor-pointer transition-all active:scale-[0.98]">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="air">air</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm-mobile">COPD</p>
+<p class="font-label-sm text-outline">Chronic obstructive pulmonary disease</p>
+</div>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</label>
+<!-- Condition Card 4 -->
+<label class="flex items-center justify-between p-md bg-surface-container-lowest rounded-xl soft-ui-card border border-transparent hover:border-primary-container cursor-pointer transition-all active:scale-[0.98]">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-tertiary-fixed-dim flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="psychology">psychology</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm-mobile">Anxiety Disorder</p>
+<p class="font-label-sm text-outline">Mental health support</p>
+</div>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</label>
+</div>
+<!-- Medical Disclaimer -->
+<div class="mt-xl p-md bg-surface-container rounded-xl flex gap-md items-start">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="info">info</span>
+<p class="font-label-sm text-on-surface-variant italic">The data provided is used to filter community-sourced reports and is not shared with third parties. Consult your physician for professional medical advice.</p>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 pb-safe bg-surface dark:bg-surface rounded-t-xl shadow-lg border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="font-label-sm text-label-sm">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-label-sm">Report</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-label-sm text-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary-fixed text-on-secondary-container dark:text-on-secondary-fixed-variant rounded-full px-4 py-1 scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="pill">pill</span>
+<span class="font-label-sm text-label-sm">Meds</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('input[type="checkbox"]').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const card = this.closest('label');
+                if (this.checked) {
+                    card.classList.add('border-primary');
+                    // Simple animation feedback
+                    card.classList.add('scale-95');
+                    setTimeout(() => card.classList.remove('scale-95'), 150);
+                } else {
+                    card.classList.remove('border-primary');
+                }
+            });
+        });
+
+        // Search effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('label');
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body></html>

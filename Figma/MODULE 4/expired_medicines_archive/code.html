@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .expired-stamp-rotation {
+            transform: rotate(-12deg);
+        }
+        .glass-red {
+            background: rgba(255, 218, 214, 0.2);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-primary-container": "#8590a6",
+                        "on-surface-variant": "#45474c",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1e293b",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "inverse-primary": "#bcc7de",
+                        "secondary-fixed": "#89f5e7",
+                        "tertiary-container": "#3c2300",
+                        "primary": "#091426",
+                        "background": "#f7f9fb",
+                        "surface-container": "#eceef0",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary": "#201100",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-dim": "#d8dadc",
+                        "surface": "#f7f9fb",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "secondary": "#006a61",
+                        "surface-container-high": "#e6e8ea",
+                        "on-surface": "#191c1e",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c5c6cd",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed-variant": "#005049",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#545f73",
+                        "on-primary-fixed": "#111c2d",
+                        "outline": "#75777d",
+                        "secondary-container": "#86f2e4",
+                        "on-tertiary-container": "#c88000",
+                        "on-tertiary-fixed": "#2a1700",
+                        "primary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#006f66",
+                        "primary-fixed": "#d8e3fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding-mobile": "16px",
+                        "container-padding-desktop": "40px",
+                        "gutter": "24px",
+                        "card-gap": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-[0_4px_12px_rgba(30,41,59,0.04)] flex justify-between items-center h-16 px-container-padding-mobile md:px-container-padding-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary font-headline-md text-headline-md" data-icon="medication">medication</span>
+<h1 class="font-headline-md text-headline-md text-primary font-bold">MedClarity</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container transition-colors p-2 rounded-full" data-icon="qr_code_scanner">qr_code_scanner</button>
+</div>
+</header>
+<main class="pt-24 px-container-padding-mobile max-w-5xl mx-auto">
+<!-- Alert Banner -->
+<section class="mb-gutter">
+<div class="bg-error-container text-on-error-container p-6 rounded-xl flex items-start gap-4 shadow-sm border border-error/10">
+<span class="material-symbols-outlined text-[32px]" data-icon="warning" data-weight="fill" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm mb-1">Expired Medications Detected</h2>
+<p class="font-body-sm text-body-sm opacity-90">Your digital cabinet contains 3 items that have passed their expiration dates. Consumption of these medications may be ineffective or harmful. Please follow safe disposal protocols.</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid for Expired Items -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-card-gap mb-gutter">
+<!-- Medicine Card 1 -->
+<div class="relative bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(30,41,59,0.04)] transition-all hover:shadow-lg group">
+<div class="absolute top-4 right-4 z-10 expired-stamp-rotation border-4 border-error/30 text-error/30 font-headline-sm px-3 py-1 rounded-lg uppercase tracking-widest font-extrabold select-none opacity-40 group-hover:opacity-100 transition-opacity">
+                    Expired
+                </div>
+<div class="h-48 overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A macro photograph of white antibiotic capsules scattered on a clean white clinical surface. The lighting is bright and high-key, reflecting a professional medical environment. The color palette is dominated by sterile whites and soft grays, creating a sense of pharmaceutical precision. The mood is serious and informative, highlighting the details of the medication shells." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGIpTYk1PNRlM1RwyEaBcxmbrs9OzlMqU74msWE76GHh2kuqrh_EnXTe3nkEyKusMJupPRDDZvzT9HkZ6VCQo3pItngd9cNQ2zb9faqxJNvXRJKV_pNiAsIc31nAfA9DWrBr1mFpk205FYGTIGy4DeqN0Dz8gJl0ROfqosE_jzoI0X2akaShnjbd8t2RwNYp8E3McCQPF1k5TeI5WKofCj_H_bEKujgdwbVG8uRYnR04V82XpJgDcg3z8_C0orpuIOq1huPX7UsBKT"/>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-error/10 text-error px-2 py-0.5 rounded-full font-label-sm text-label-sm">Expired 12 days ago</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Amoxicillin 500mg</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Batch #AMX-2023-019 • 12 capsules left</p>
+<div class="flex flex-col gap-2">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_forever">delete_forever</span>
+                            Safe Disposal Instructions
+                        </button>
+<button class="w-full border border-outline-variant text-on-surface-variant py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">
+                            View Medication Info
+                        </button>
+</div>
+</div>
+</div>
+<!-- Medicine Card 2 -->
+<div class="relative bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(30,41,59,0.04)] transition-all hover:shadow-lg group">
+<div class="absolute top-4 right-4 z-10 expired-stamp-rotation border-4 border-error/30 text-error/30 font-headline-sm px-3 py-1 rounded-lg uppercase tracking-widest font-extrabold select-none opacity-40 group-hover:opacity-100 transition-opacity">
+                    Expired
+                </div>
+<div class="h-48 overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Close-up shot of a small liquid medicine bottle with a dropper tool resting beside it on a frosted glass surface. The lighting is soft and diffused, creating subtle highlights on the glass. The scene uses a clean corporate aesthetic with a palette of whites, pale blues, and soft neutrals. The atmosphere is clinical, orderly, and emphasizes pharmaceutical care." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa1u-yq3w3EIkjQWdH0b_GTHI2nB_ekSjx64F73p_0Sa_yWXeNPzGjgJSHbe5hoLchKNH5mrSyn8j7Ng31g7AV-QdSjYEsj6XLF6r9cXKDVHy8ubRX5jQfOuHOFIGUl5zv_IS_xeA_KA2_EuVkJRLPfw3NG6AuEUGg7TmwD_WKmTMc5Wj1zRtkj3QiphMTL2N6zC5HGKhIkoayyipjo97C2gZtySAdVMvyHsRLrUMER3gOBPoe-2XVFanzvPM6MJYTmm7urcw-0pmt"/>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-error/10 text-error px-2 py-0.5 rounded-full font-label-sm text-label-sm">Expired 2 months ago</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Cough Relief Syrup</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Batch #CRS-992-B • 45ml remaining</p>
+<div class="flex flex-col gap-2">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_forever">delete_forever</span>
+                            Safe Disposal Instructions
+                        </button>
+<button class="w-full border border-outline-variant text-on-surface-variant py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors">
+                            View Medication Info
+                        </button>
+</div>
+</div>
+</div>
+<!-- Medicine Card 3 (Bento-style variation) -->
+<div class="relative bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(30,41,59,0.04)] transition-all hover:shadow-lg group flex flex-col">
+<div class="absolute top-4 right-4 z-10 expired-stamp-rotation border-4 border-error/30 text-error/30 font-headline-sm px-3 py-1 rounded-lg uppercase tracking-widest font-extrabold select-none opacity-40 group-hover:opacity-100 transition-opacity">
+                    Expired
+                </div>
+<div class="p-5 flex-grow">
+<span class="bg-error/10 text-error px-2 py-0.5 rounded-full font-label-sm text-label-sm mb-4 inline-block">Expired 3 days ago</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Ibuprofen Softgels</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Batch #IBU-XL-001 • Full pack</p>
+<div class="bg-surface-container-low rounded-lg p-4 mb-6">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Safety Risk</span>
+<span class="font-label-sm text-label-sm text-error font-bold">CRITICAL</span>
+</div>
+<div class="w-full bg-outline-variant/30 h-2 rounded-full overflow-hidden">
+<div class="bg-error h-full w-full"></div>
+</div>
+</div>
+</div>
+<div class="p-5 bg-surface-container-low/30 mt-auto">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_forever">delete_forever</span>
+                        Safe Disposal Instructions
+                    </button>
+</div>
+</div>
+</section>
+<!-- Informational Section -->
+<section class="bg-white border border-outline-variant/20 rounded-2xl p-gutter shadow-sm mb-12">
+<h2 class="font-headline-md text-headline-md mb-6">Why Disposal Matters?</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[32px]" data-icon="water_drop">water_drop</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm mb-2">Environment</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Improper flushing can contaminate local water supplies and harm aquatic life.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[32px]" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm mb-2">Public Safety</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Prevent accidental ingestion by children or pets by securing expired drugs.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[32px]" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm mb-2">Efficacy</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Expired medications may lose potency, failing to treat the condition effectively.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-2 pb-safe bg-surface-container-lowest shadow-lg rounded-t-xl z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="warning" data-weight="fill" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-sm text-label-sm">Urgent</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="delete_sweep">delete_sweep</span>
+<span class="font-label-sm text-label-sm">Archive</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Reminders</span>
+</a>
+</nav>
+<script>
+        // Simple interaction for disposal buttons
+        document.querySelectorAll('button').forEach(btn => {
+            if(btn.innerText.includes('Disposal Instructions')) {
+                btn.addEventListener('click', () => {
+                    alert('Safe Disposal Protocol:\n1. Mix medicines (do not crush tablets) with an unappealing substance like dirt or kitty litter.\n2. Place the mixture in a sealed container.\n3. Throw the container in your household trash.\n4. Scratch out all personal information on the prescription label.');
+                });
+            }
+        });
+    </script>
+</body></html>

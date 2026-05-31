@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trusted Pharmacies | PharmaTrust</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#4d5d73",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#d3e4fe",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#93ccff",
+                      "secondary": "#006a61",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-secondary-container": "#006f66",
+                      "on-primary": "#ffffff",
+                      "surface-bright": "#f7f9fb",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#93ccff",
+                      "primary-container": "#007bb9",
+                      "on-background": "#191c1e",
+                      "surface-container-low": "#f2f4f6",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "secondary-container": "#86f2e4",
+                      "on-surface-variant": "#3f4850",
+                      "on-surface": "#191c1e",
+                      "surface": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#005049",
+                      "on-tertiary-container": "#fdfcff",
+                      "surface-container-high": "#e6e8ea",
+                      "outline-variant": "#bfc7d2",
+                      "tertiary-container": "#66768d",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "inverse-surface": "#2d3133",
+                      "surface-variant": "#e0e3e5",
+                      "surface-tint": "#006398",
+                      "secondary-fixed": "#89f5e7",
+                      "on-primary-fixed-variant": "#004b73",
+                      "outline": "#707881",
+                      "background": "#f7f9fb",
+                      "surface-container": "#eceef0",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "surface-dim": "#d8dadc",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#cce5ff",
+                      "primary": "#006194",
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "on-primary-container": "#fdfcff",
+                      "on-primary-fixed": "#001d31",
+                      "on-secondary-fixed": "#00201d",
+                      "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "unit": "8px",
+                      "margin-desktop": "40px",
+                      "stack-md": "16px",
+                      "stack-lg": "32px",
+                      "margin-mobile": "16px",
+                      "stack-xs": "4px",
+                      "gutter": "24px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .trust-score-ring {
+            background: conic-gradient(var(--tw-color-secondary) var(--percentage), transparent 0);
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(247, 249, 251, 0.8);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline z-50 transition-colors">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm w-full">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim cursor-pointer active:scale-95 transition-transform" data-icon="search">search</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">PharmaTrust</h1>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-on-surface-variant cursor-pointer active:scale-95 transition-transform" data-icon="location_on">location_on</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[64px] pb-[100px] md:pb-stack-lg max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<!-- Hero / Section Title -->
+<section class="py-stack-lg">
+<div class="flex flex-col gap-stack-xs mb-stack-lg">
+<div class="inline-flex items-center gap-stack-xs text-secondary font-label-md text-label-md uppercase tracking-wider">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    Elite Network
+                </div>
+<h2 class="font-headline-lg text-headline-lg md:text-headline-lg text-on-surface">Trusted Pharmacies</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                    Discover healthcare providers with exceptional reliability scores, verified licensing, and consistent community excellence.
+                </p>
+</div>
+<!-- Bento Grid Featured -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Featured Card -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-lg relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-secondary/10 transition-colors"></div>
+<div class="relative z-10 flex flex-col md:flex-row gap-stack-lg h-full">
+<div class="flex-1">
+<div class="flex items-center gap-stack-sm mb-stack-md">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                    TOP RATED
+                                </span>
+<span class="text-on-surface-variant font-label-md text-label-md">EST. 1994</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-stack-xs">Central Health Apothecary</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-lg">452 Medical Center Plaza, New York, NY</p>
+<div class="grid grid-cols-2 gap-stack-lg mb-stack-lg">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Trust Score</p>
+<p class="font-headline-md text-headline-md text-secondary">99.8%</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Years Verified</p>
+<p class="font-headline-md text-headline-md text-on-surface">28 Years</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-stack-lg py-stack-md rounded-lg font-label-md text-label-md flex items-center gap-stack-sm hover:bg-primary-container transition-colors active:scale-95">
+                                View Full Credentials
+                                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="w-full md:w-1/3 min-h-[200px] bg-surface-container rounded-lg overflow-hidden relative border border-outline-variant">
+<img alt="Central Health Apothecary" class="w-full h-full object-cover" data-alt="A clean, professional pharmacy interior with pristine white shelves filled with medication containers. Soft, warm lighting illuminates a modern consultation desk in the background. The atmosphere is clinical, reassuring, and highly organized, reflecting a premium medical standard with an emphasis on emerald green brand highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR3I1i15idmvr3iFRMOMKhSZaTWeQOm1b74BknOGd9-85Lyc4n5-D3kc8kKoZiQ6tCnsNxnDNJneUr1qBoH2sfKqeYQALweN-c_GHfzHejBPeMyUl76Af8sjlGr8yZrUheJZ1hYxI-fwe20uFZxrtLxNucP-4e5Cgy5yK1n55ZZvGHvFkG3Y8BulnEsCwjQR4NEDvv5eRSH7qUz1JtCEvskqetp1oyj9i1sEvtY8UjvJhU2iFJ6SM0XcNRopUYpVOSChQATkDPJh4"/>
+</div>
+</div>
+</div>
+<!-- Secondary Metric Card -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<div class="bg-secondary text-on-secondary p-stack-lg rounded-xl flex-1 flex flex-col justify-between hover:scale-[1.02] transition-transform cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-4xl" data-icon="shield_with_heart">shield_with_heart</span>
+<span class="font-label-md text-label-md bg-white/20 px-2 py-1 rounded">2024 CERTIFIED</span>
+</div>
+<div>
+<p class="font-display-lg text-[40px] leading-tight mb-2">Zero Alerts</p>
+<p class="font-body-md text-body-md opacity-90">100% regulatory compliance achieved across our entire trusted network this quarter.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- List Section -->
+<section class="py-stack-lg">
+<div class="flex justify-between items-end mb-stack-lg">
+<h3 class="font-title-lg text-title-lg">Curated Directory</h3>
+<div class="flex gap-stack-sm">
+<div class="flex items-center gap-stack-xs font-label-md text-label-md text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+                        Sort by: Trust Score
+                        <span class="material-symbols-outlined text-[18px]" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Pharmacy Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md flex flex-col gap-stack-md hover:shadow-md transition-shadow group">
+<div class="relative h-48 rounded-lg overflow-hidden border border-outline-variant">
+<img alt="Harbor View Meds" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close-up shot of a professional pharmacist in a crisp white lab coat, carefully reviewing a digital tablet with medical data. The background features blurred apothecary jars on high-end glass shelving. The lighting is bright and clinical, emphasizing reliability and technological precision with a subtle emerald green color scheme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnWXAGgStAuTtwPr_VLcu-SjaA2FfNGKBQhSLbTF9bOdmoI14jQiIAXWhGuIPKUmNDMb6anGgu47obzuwE-2Qx9feT-TF2oqXalnb-G8qCZii61CjNVNhT1iMwm4HzAfFYx4ULMx6CJUwePgKTvXvWiaLPOmjFKnR2_b_q8NGd8Q9djTqNgxpVzJo56_16qBZGGE7RfSCxghACc1D8E7UrHQG-u13sBjALWJSCFBuqcSa4j2eYeG-Lv6yoQ_Aaax6Y0bzKcD_tJ18"/>
+<div class="absolute top-stack-sm right-stack-sm bg-white/90 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.9</span>
+</div>
+</div>
+<div class="px-stack-xs flex-1">
+<div class="flex items-center gap-stack-sm mb-stack-xs">
+<h4 class="font-title-lg text-title-lg flex-1">Harbor View Meds</h4>
+<span class="material-symbols-outlined text-secondary" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">88 Bayside Dr, San Francisco, CA</p>
+<div class="flex items-center justify-between py-stack-sm border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">TRUST SCORE</span>
+<span class="font-title-lg text-title-lg text-secondary">98.2</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant">VETTING</span>
+<span class="font-label-md text-label-md text-on-surface bg-surface-container-high px-2 py-0.5 rounded">Tier 1</span>
+</div>
+</div>
+</div>
+<button class="w-full py-stack-sm border border-outline rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors active:scale-95">View Profile</button>
+</div>
+<!-- Pharmacy Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md flex flex-col gap-stack-md hover:shadow-md transition-shadow group">
+<div class="relative h-48 rounded-lg overflow-hidden border border-outline-variant">
+<img alt="St. Jude Heritage" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro shot of a pharmaceutical verification stamp on a high-quality certificate. The paper has a subtle linen texture, and the stamp is embossed with a professional medical seal. The scene is lit by soft, directional light creating high-end shadows, reinforcing institutional authority and a clean healthcare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnkUVxaOe19fZoq5Ul4dN0ihn95KupCaD21713oky_OEKSlhBnLbEgQGvsEajq2pspRnY6TnI_J73sNekXgTrEVj2gnkD8d-FtRTeI7UYlQjMApUWtJu3kW6zvTGc66jBtus0zzuF1Ts-lnandDh-JEnm0DXlXa-Gd1tw7W4C4Ki_6ZSFq79VDgrZ-NAF2wUi5E0Z7-sMByO_tqfMrtwxiPp3bA3KEDGVRCApgaUeyXiNQ8eKRTUrr0PeQCPCKrJ87eX2TU0xEujg"/>
+<div class="absolute top-stack-sm right-stack-sm bg-white/90 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md text-on-surface">5.0</span>
+</div>
+</div>
+<div class="px-stack-xs flex-1">
+<div class="flex items-center gap-stack-sm mb-stack-xs">
+<h4 class="font-title-lg text-title-lg flex-1">St. Jude Heritage</h4>
+<span class="material-symbols-outlined text-secondary" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">101 Cathedral Way, Boston, MA</p>
+<div class="flex items-center justify-between py-stack-sm border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">TRUST SCORE</span>
+<span class="font-title-lg text-title-lg text-secondary">99.9</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant">SERVICE</span>
+<span class="font-label-md text-label-md text-on-surface bg-surface-container-high px-2 py-0.5 rounded">15+ Years</span>
+</div>
+</div>
+</div>
+<button class="w-full py-stack-sm border border-outline rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors active:scale-95">View Profile</button>
+</div>
+<!-- Pharmacy Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-stack-md flex flex-col gap-stack-md hover:shadow-md transition-shadow group">
+<div class="relative h-48 rounded-lg overflow-hidden border border-outline-variant">
+<img alt="Summit Apex Care" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A modern pharmaceutical laboratory setting with stainless steel surfaces and high-tech digital readouts showing chemical composition. The lighting is cool-toned with bright white highlights, creating a minimalist and extremely clean atmosphere. A single green LED indicator light signifies success and verification." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_6DlFdhJAsizy7PUYmFGvNXyAH8YspzVl5v9HgbuitFNEC4wLvOhaBodTJtKJXkPRM7gWvx649LqwkN8km6Vxs54M6tuv8lcBpsDV7ZRuqIgmppbbXL3lZE3Trsk1ofUabOA9sn-Z6h6AMKdoSBY1GwkrGhPvPNo1eUNJA4QZoXdfkw2gfZk-_AjF6UkMUSUlgYdCenutZ6vmdNsP7667WS2D3KowAiTCHtkQlR5kkPaFVV3mYNIMozIyv9hax85v70zHUdIZW74"/>
+<div class="absolute top-stack-sm right-stack-sm bg-white/90 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.8</span>
+</div>
+</div>
+<div class="px-stack-xs flex-1">
+<div class="flex items-center gap-stack-sm mb-stack-xs">
+<h4 class="font-title-lg text-title-lg flex-1">Summit Apex Care</h4>
+<span class="material-symbols-outlined text-secondary" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">12 Peak View Dr, Denver, CO</p>
+<div class="flex items-center justify-between py-stack-sm border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">TRUST SCORE</span>
+<span class="font-title-lg text-title-lg text-secondary">96.5</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant">LICENSING</span>
+<span class="font-label-md text-label-md text-on-surface bg-surface-container-high px-2 py-0.5 rounded">Verified</span>
+</div>
+</div>
+</div>
+<button class="w-full py-stack-sm border border-outline rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors active:scale-95">View Profile</button>
+</div>
+</div>
+</section>
+<!-- Newsletter / Trust Pledge -->
+<section class="mt-stack-lg bg-surface-container rounded-2xl p-stack-lg md:p-margin-desktop flex flex-col md:flex-row items-center gap-stack-lg">
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md mb-stack-xs text-on-surface">Our Commitment to Integrity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-md">Every pharmacy in our 'Trusted' category undergoes a monthly 12-point audit. Join our alert list for monthly safety reports and newly verified providers.</p>
+<div class="flex flex-col sm:flex-row gap-stack-sm">
+<input class="bg-surface-container-lowest border-outline rounded-lg px-stack-md py-stack-sm flex-1 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Enter email address" type="email"/>
+<button class="bg-secondary text-on-secondary px-stack-lg py-stack-sm rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity">Subscribe</button>
+</div>
+</div>
+<div class="hidden md:block w-1/3">
+<div class="relative w-48 h-48 mx-auto">
+<div class="absolute inset-0 border-4 border-secondary/20 rounded-full"></div>
+<div class="absolute inset-0 border-t-4 border-secondary rounded-full animate-spin" style="animation-duration: 3s"></div>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+<span class="material-symbols-outlined text-secondary text-4xl mb-1" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">ACTIVE<br/>MONITORING</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-surface dark:bg-surface-dim pb-safe pt-2 border-t border-outline-variant dark:border-outline shadow-lg">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 cursor-pointer active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-sm text-label-sm">Nearby</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container dark:bg-primary-fixed dark:text-on-primary-fixed rounded-full px-4 py-1 cursor-pointer active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm">Trusted</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 cursor-pointer active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-label-sm text-label-sm">Observation</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1 cursor-pointer active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span class="font-label-sm text-label-sm">High-Risk</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions and simple effects
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const rect = btn.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.style.left = `${e.clientX - rect.left}px`;
+                ripple.style.top = `${e.clientY - rect.top}px`;
+                ripple.style.position = 'absolute';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.pointerEvents = 'none';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.style.transform = 'scale(20)';
+                    ripple.style.opacity = '0';
+                }, 10);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 650);
+            });
+        });
+    </script>
+</body></html>

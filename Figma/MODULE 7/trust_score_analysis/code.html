@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PharmaVerify - Trust Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#00531a",
+                        "inverse-primary": "#a9c7ff",
+                        "surface-container-high": "#e0e9f2",
+                        "on-surface-variant": "#424752",
+                        "surface-container": "#e6eff8",
+                        "surface-container-low": "#ecf5fe",
+                        "on-primary-fixed-variant": "#00468c",
+                        "on-primary-container": "#c8daff",
+                        "background": "#f6faff",
+                        "outline-variant": "#c2c6d4",
+                        "primary-fixed": "#d6e3ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#005db6",
+                        "tertiary": "#94001f",
+                        "surface-dim": "#d2dbe4",
+                        "surface-container-highest": "#dbe4ed",
+                        "tertiary-fixed": "#ffdad9",
+                        "on-surface": "#141d23",
+                        "secondary-fixed": "#83fc8e",
+                        "on-primary-fixed": "#001b3d",
+                        "on-secondary-container": "#007327",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#293138",
+                        "surface-variant": "#dbe4ed",
+                        "secondary": "#006e25",
+                        "tertiary-container": "#bb1931",
+                        "primary-fixed-dim": "#a9c7ff",
+                        "on-tertiary-fixed": "#410008",
+                        "on-tertiary-container": "#ffcecd",
+                        "tertiary-fixed-dim": "#ffb3b2",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#66df75",
+                        "on-secondary-fixed": "#002106",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#92001f",
+                        "outline": "#727783",
+                        "secondary-container": "#80f98b",
+                        "primary-container": "#005eb8",
+                        "surface": "#f6faff",
+                        "error": "#ba1a1a",
+                        "on-background": "#141d23",
+                        "primary": "#00478d",
+                        "surface-bright": "#f6faff",
+                        "inverse-on-surface": "#e9f2fb",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "score-display": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "score-display": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["26px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .trust-score-radial {
+            background: conic-gradient(from 0deg, #006e25 88%, #e6eff8 0%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="bg-surface sticky top-0 z-40 border-b border-outline-variant flex justify-between items-center w-full px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="font-headline-md text-headline-md font-bold text-primary">PharmaVerify</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-24">
+<!-- Header Section -->
+<div class="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+<div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+<div>
+<span class="font-label-md text-label-md text-primary uppercase tracking-widest mb-2 block">AI Trust Report</span>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">
+                        Trust Analysis: CarePoint Global Pharmacy
+                    </h1>
+</div>
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-md text-label-md">VERIFIED PARTNER</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Primary Trust Score Card (Large) -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<div class="flex flex-col lg:flex-row items-center gap-8">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<div class="trust-score-radial absolute inset-0 rounded-full opacity-10"></div>
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-secondary transition-all duration-1000 ease-out" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="66.35" stroke-width="12"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-score-display text-score-display text-on-surface">88</span>
+<span class="font-label-md text-label-md text-outline">OUT OF 100</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container border border-secondary mb-4">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="shield">shield</span>
+<span class="font-label-md text-label-md">EXCELLENT TRUST RATING</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm mb-3">AI Integrity Summary</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            This pharmacy consistently receives high marks for authenticity and speed. CarePoint Global has demonstrated a remarkable commitment to regulatory compliance and patient safety standards. Our AI analysis identifies a stable supply chain and exceptionally low rates of shipping delays. Minimal friction reported in the insurance reconciliation process makes this a high-confidence choice for long-term chronic care prescriptions.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Sentiment & Feedback Card (Asymmetric) -->
+<div class="md:col-span-4 bg-surface-container-low border border-outline-variant rounded-xl p-6 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="forum">forum</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm mb-1">User Sentiment</h3>
+<p class="font-label-md text-label-md text-outline mb-6">Aggregate analysis of 4,200+ reviews</p>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="sentiment_very_satisfied" style="font-variation-settings: 'FILL' 1;">sentiment_very_satisfied</span>
+<span class="font-body-md text-body-md">Positive</span>
+</div>
+<span class="font-body-md font-bold text-on-surface">85%</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full">
+<div class="bg-secondary h-full rounded-full w-[85%]"></div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline" data-icon="sentiment_neutral">sentiment_neutral</span>
+<span class="font-body-md text-body-md">Neutral</span>
+</div>
+<span class="font-body-md font-bold text-on-surface">12%</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full">
+<div class="bg-outline h-full rounded-full w-[12%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<button class="w-full bg-surface-container-high hover:bg-surface-dim text-primary py-3 rounded-lg font-label-md text-label-md transition-all">
+                        EXPLORE REVIEWS
+                    </button>
+</div>
+</div>
+<!-- Complaint Frequency Card -->
+<div class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between mb-4">
+<div class="p-3 bg-primary-fixed rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+</div>
+<span class="font-label-md text-label-md text-secondary bg-secondary-container px-2 py-0.5 rounded border border-secondary">LOW RISK</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-1">Complaint Frequency</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Only 2 validated complaints in the last 6 months.</p>
+<div class="flex items-end h-24 gap-1">
+<div class="flex-1 bg-surface-variant h-[10%] rounded-t-sm"></div>
+<div class="flex-1 bg-surface-variant h-[15%] rounded-t-sm"></div>
+<div class="flex-1 bg-secondary h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-surface-variant h-[12%] rounded-t-sm"></div>
+<div class="flex-1 bg-surface-variant h-[8%] rounded-t-sm"></div>
+<div class="flex-1 bg-secondary h-[25%] rounded-t-sm"></div>
+</div>
+<div class="flex justify-between mt-2 font-label-md text-label-md text-outline">
+<span>Jan</span>
+<span>Jun</span>
+</div>
+</div>
+<!-- Report Severity Card -->
+<div class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between mb-4">
+<div class="p-3 bg-tertiary-fixed rounded-xl text-tertiary">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-1">Report Severity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">No critical safety or authenticity violations recorded.</p>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface">Minor Issues (Packaging)</span>
+<span class="font-label-md text-label-md">2</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-3 h-3 rounded-full bg-surface-variant"></div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface">Moderate Issues</span>
+<span class="font-label-md text-label-md">0</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 opacity-30">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface">Critical Failures</span>
+<span class="font-label-md text-label-md">0</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- History Link Section -->
+<div class="md:col-span-12">
+<a class="group block bg-primary text-on-primary p-6 rounded-xl hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-between" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-3xl" data-icon="assignment_late">assignment_late</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm">View Full Complaint History</h4>
+<p class="font-body-sm text-body-sm opacity-80">Access detailed records and regulatory filings for CarePoint Global Pharmacy.</p>
+</div>
+</div>
+<span class="material-symbols-outlined transform group-hover:translate-x-2 transition-transform" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+<!-- Additional Contextual Card -->
+<div class="md:col-span-12 bg-white rounded-xl border border-outline-variant p-6 flex flex-col md:flex-row items-center gap-6">
+<div class="w-full md:w-48 h-32 rounded-lg overflow-hidden shrink-0">
+<img alt="Laboratory" class="w-full h-full object-cover" data-alt="A clean, sterile pharmacy laboratory environment with white shelving units, organized medical supplies, and soft, natural morning light coming through large windows. The overall aesthetic is professional, modern, and clinical, reflecting trust and pharmaceutical precision with a focus on high-quality medical standards." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPhnG2CRp-nUqHCqW9zDK_KE9JeDGBk3NQtOaJJ5b6BcuRcITrEAryd2PFRLvhbuOg2IPUMwUJrejT5XYeXOGQWnMNX1Ru79TkkYI1kWIIGfZkS6v5CKoG_IPgJGoggaXK3xNwMrHkaBD5aWs5cnzPi81MpXe9p8MsW1YF5RvaiLP3ivGRM73t0-3rAM8kiIz4n6jWANNb_IUrkCMWf0OO-IwIxoUtF9WXn8YbCxtYWAVo3Jqs53IHfQt0XMnDmtDBKU1lPd1WCCM"/>
+</div>
+<div class="flex-1 text-center md:text-left">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Regional Compliance Check</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Last inspected on October 12, 2023. Passed all 15 safety benchmarks with no recommendations for improvement.</p>
+</div>
+<div class="shrink-0">
+<button class="bg-surface-container-high text-primary px-6 py-2 rounded-full font-label-md text-label-md hover:bg-surface-dim transition-colors">
+                        DOWNLOAD CERTIFICATE
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant flex justify-around items-center px-4 py-3 shadow-sm rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-md text-label-md mt-1">Search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-label-md text-label-md mt-1">Favorites</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-95">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+<span class="font-label-md text-label-md">Reports</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</button>
+</nav>
+<!-- Desktop Nav Anchor -->
+<div class="hidden md:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-20 flex-col items-center py-8 gap-10 bg-surface border-r border-outline-variant">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="search">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="favorite">favorite</span>
+</button>
+<button class="text-primary font-bold">
+<span class="material-symbols-outlined text-3xl" data-icon="assignment_late" style="font-variation-settings: 'FILL' 1;">assignment_late</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="person">person</span>
+</button>
+</div>
+<script>
+        // Simple entrance animations for cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.grid > div');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body></html>

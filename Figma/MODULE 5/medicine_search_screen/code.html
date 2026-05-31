@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedInfo - Medicine Search</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#191c1d",
+                    "surface-bright": "#f8fafb",
+                    "surface-container-highest": "#e1e3e4",
+                    "background": "#f8fafb",
+                    "secondary-fixed-dim": "#91cdff",
+                    "inverse-on-surface": "#eff1f2",
+                    "on-surface": "#191c1d",
+                    "surface-container-low": "#f2f4f5",
+                    "secondary-fixed": "#cce5ff",
+                    "on-secondary-fixed-variant": "#004b72",
+                    "on-tertiary-fixed-variant": "#254b5f",
+                    "surface-container": "#eceeef",
+                    "outline-variant": "#c1c7cf",
+                    "on-secondary-fixed": "#001e31",
+                    "primary-container": "#0f4c75",
+                    "primary": "#003555",
+                    "on-tertiary-fixed": "#001e2c",
+                    "inverse-surface": "#2d3132",
+                    "on-primary-fixed-variant": "#0b4a73",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#cee5ff",
+                    "surface-dim": "#d8dadb",
+                    "inverse-primary": "#9acbfb",
+                    "secondary": "#006496",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#a6cce4",
+                    "on-surface-variant": "#41474e",
+                    "surface-tint": "#2e628c",
+                    "tertiary-fixed": "#c4e7ff",
+                    "primary-fixed-dim": "#9acbfb",
+                    "on-primary": "#ffffff",
+                    "surface": "#f8fafb",
+                    "tertiary-container": "#274d61",
+                    "surface-container-high": "#e6e8e9",
+                    "surface-variant": "#e1e3e4",
+                    "secondary-container": "#7dc5ff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#001d32",
+                    "tertiary": "#0b364a",
+                    "on-tertiary-container": "#98bdd5",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#00517b",
+                    "outline": "#72787f",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#8bbceb",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-margin": "20px",
+                    "stack-md": "16px",
+                    "base": "8px",
+                    "stack-lg": "24px",
+                    "gutter": "12px",
+                    "stack-sm": "4px",
+                    "section-gap": "32px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Smooth transitions for interactions */
+        .tap-active:active { transform: scale(0.96); opacity: 0.9; }
+        
+        /* Glassmorphism subtle effect for light mode clinical feel */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(225, 232, 237, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-bright shadow-sm h-16 flex items-center justify-between px-container-margin max-w-7xl mx-auto">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+<h1 class="text-headline-md font-headline-md text-primary tracking-tight">MedInfo</h1>
+</div>
+<div class="tap-active cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<main class="pt-20 px-container-margin">
+<!-- Prominent Search Bar -->
+<div class="mt-base">
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant h-14 pl-12 pr-4 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-body-md" placeholder="Search for medicine, brand, or condition" type="text"/>
+</div>
+</div>
+<!-- Categories: Horizontal Scrollable Chips -->
+<section class="mt-stack-lg">
+<h2 class="text-label-bold text-outline uppercase mb-stack-md">Categories</h2>
+<div class="flex gap-gutter overflow-x-auto hide-scrollbar -mx-container-margin px-container-margin">
+<button class="flex-shrink-0 px-5 py-2 rounded-full bg-primary text-on-primary text-label-md font-label-md tap-active">All</button>
+<button class="flex-shrink-0 px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant text-label-md font-label-md tap-active hover:bg-surface-container-low transition-colors">Pain Relief</button>
+<button class="flex-shrink-0 px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant text-label-md font-label-md tap-active hover:bg-surface-container-low transition-colors">Antibiotics</button>
+<button class="flex-shrink-0 px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant text-label-md font-label-md tap-active hover:bg-surface-container-low transition-colors">Vitamins</button>
+<button class="flex-shrink-0 px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant text-label-md font-label-md tap-active hover:bg-surface-container-low transition-colors">Allergy</button>
+<button class="flex-shrink-0 px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant text-label-md font-label-md tap-active hover:bg-surface-container-low transition-colors">Digestion</button>
+</div>
+</section>
+<!-- Recent Searches Section -->
+<section class="mt-section-gap">
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="text-headline-md font-headline-md text-on-surface">Recent Searches</h2>
+<button class="text-primary text-label-md font-label-md tap-active">Clear All</button>
+</div>
+<div class="space-y-base">
+<div class="flex items-center justify-between py-stack-md border-b border-outline-variant/30 tap-active cursor-pointer">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+<span class="text-body-md text-on-surface">Paracetamol 500mg</span>
+</div>
+<span class="material-symbols-outlined text-outline text-body-sm" data-icon="close">close</span>
+</div>
+<div class="flex items-center justify-between py-stack-md border-b border-outline-variant/30 tap-active cursor-pointer">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+<span class="text-body-md text-on-surface">Amoxicillin Capsules</span>
+</div>
+<span class="material-symbols-outlined text-outline text-body-sm" data-icon="close">close</span>
+</div>
+<div class="flex items-center justify-between py-stack-md border-b border-outline-variant/30 tap-active cursor-pointer">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+<span class="text-body-md text-on-surface">Allergy Relief Syrup</span>
+</div>
+<span class="material-symbols-outlined text-outline text-body-sm" data-icon="close">close</span>
+</div>
+</div>
+</section>
+<!-- Trending Medicines: Asymmetric Bento Grid Pattern -->
+<section class="mt-section-gap pb-20">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-stack-md">Trending Medicines</h2>
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Large Feature Card -->
+<div class="col-span-2 bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,76,117,0.04)] overflow-hidden border border-outline-variant/20 tap-active group">
+<div class="flex h-40">
+<div class="w-1/2 p-stack-lg flex flex-col justify-center">
+<span class="text-label-bold text-secondary mb-1">MOST VIEWED</span>
+<h3 class="text-body-lg font-bold text-on-surface leading-tight">Ibuprofen Complex</h3>
+<p class="text-body-sm text-on-surface-variant mt-base">Fast acting relief for intense pain.</p>
+</div>
+<div class="w-1/2 h-full overflow-hidden">
+<img alt="Ibuprofen capsules" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A clean and professional product photograph of modern ibuprofen capsules on a clinical white surface. The lighting is bright and high-key, emphasizing pharmaceutical purity and trust. Soft blue ambient tones reflect the healthcare aesthetic, creating a serene and medical-grade atmosphere. The composition is focused and sharp, showcasing the precision of the medical product." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3pC0fKopLrSH4oHYKcDv6dxiJEDG1OKKy9octvd4VvsIOmjk03XUD1bkEaBbZMgsFjZg48O7lxGCLIyF4nsuxzhJT-GFHMpMmIaVvGQ3QnJfHKf8Taf-vJR9cugvtP1GdqFsX3SiHUGz8h6f68ockg1uyLL1fqTU_5YVwAbwW89qKY6h95EP2xyqIVo78hd0i94gNwivuM7YCZwg1yho01xn_Epwm-9SZmEPyMPvLZEkXf2PYlIwV76K1LjyctX2xJsx8UGhl80Y"/>
+</div>
+</div>
+</div>
+<!-- Smaller Trending Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,76,117,0.04)] overflow-hidden border border-outline-variant/20 tap-active flex flex-col group">
+<div class="h-32">
+<img alt="Vitamin C complex" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close-up photograph of bright orange Vitamin C tablets arranged artfully on a white medical background. The lighting is crisp and natural, highlighting the texture and professional finish of the vitamins. The overall mood is healthy and vibrant, using high-quality healthcare photography standards to convey nutritional reliability and wellness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiRrEdP4f-iR11_-4fUxl-ZVeMNt8RKPjNusvWNc-7EuHsbbADShmZBzZymtzRBWXPq5pW9M3tev51Iw_XBKtHIo61MwmLP6kdIivSUNji895gwBQR6fClw3Z_MURCVP_eiWfWI75V9yy_GfDxfEI46D-_uyhMOqBfkiMPKUdYK-6c5mWhsW0AyIyQqbSmn1IUbhXjc9m9mQIfyB1xVF7yfsehIiSRCyWe0J5PV9I6YzbtU_K3ns4hKTAuP4sJ1-6vEpzmteKMg-8"/>
+</div>
+<div class="p-stack-md">
+<h3 class="text-body-md font-bold text-on-surface">Vitamin C Plus</h3>
+<p class="text-label-md text-on-surface-variant">Immunity Support</p>
+</div>
+</div>
+<!-- Smaller Trending Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,76,117,0.04)] overflow-hidden border border-outline-variant/20 tap-active flex flex-col group">
+<div class="h-32">
+<img alt="Antacid tablets" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An elegant pharmaceutical shot of mint-green antacid tablets in a modern glass container. The lighting is diffused and soft, using a cool clinical color palette of whites and light blues. The image evokes a sense of soothing relief and medical professionalism, with a shallow depth of field focusing on the quality and form of the medicine." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBs-v6RItF9zzDrCGLQgkF8XhvdTAPgy2pYCQr1CMJeTwVakKnPYTSOaQkLjMoS94-4QinJa37zaE-nh77jaHtSodgZMlqI2a3aFutPuxyxjC8SrQV5jGSigzRQmGqzV3OUAp33OWREreIOxF1-nvwYoU9kjCQiG8BDyfEozRvyCWu-WAE9JxnnI0RQDvV9lVdBeFDypwAyotDr6AutjivWT0jlypdnJsy9bqd4D6kvKsOPocynwDRtmPOQlVpHPwv_tFOoBfxI3I"/>
+</div>
+<div class="p-stack-md">
+<h3 class="text-body-md font-bold text-on-surface">Acid Relief</h3>
+<p class="text-label-md text-on-surface-variant">Digestive Health</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest shadow-[0_-4px_12px_rgba(15,76,117,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 transition-all duration-150 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="text-label-md font-label-md">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="text-label-md font-label-md">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+<span class="text-label-md font-label-md">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-label-md font-label-md">History</span>
+</a>
+</nav>
+<script>
+        // Simple interactive handling for search focus
+        const searchInput = document.querySelector('input');
+        const searchContainer = searchInput.parentElement;
+        
+        searchInput.addEventListener('focus', () => {
+            searchContainer.classList.add('scale-[1.02]');
+        });
+        
+        searchInput.addEventListener('blur', () => {
+            searchContainer.classList.remove('scale-[1.02]');
+        });
+    </script>
+</body></html>

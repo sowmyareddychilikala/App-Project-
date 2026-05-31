@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedVigilance - Home Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c3c6d6;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed-dim": "#b2c5ff",
+                      "secondary-fixed": "#ffdad6",
+                      "background": "#f9f9fc",
+                      "tertiary-fixed": "#ffdcc2",
+                      "on-tertiary-fixed": "#2e1500",
+                      "tertiary-container": "#8a4b00",
+                      "surface-tint": "#0c56d0",
+                      "surface": "#f9f9fc",
+                      "on-background": "#1a1c1e",
+                      "primary-container": "#0052cc",
+                      "surface-container": "#eeeef0",
+                      "outline-variant": "#c3c6d6",
+                      "on-tertiary": "#ffffff",
+                      "inverse-on-surface": "#f0f0f3",
+                      "on-surface-variant": "#434654",
+                      "surface-container-highest": "#e2e2e5",
+                      "surface-container-low": "#f3f3f6",
+                      "tertiary": "#683700",
+                      "on-tertiary-container": "#ffc99d",
+                      "inverse-surface": "#2f3133",
+                      "on-surface": "#1a1c1e",
+                      "tertiary-fixed-dim": "#ffb77a",
+                      "primary-fixed": "#dae2ff",
+                      "on-primary-fixed": "#001848",
+                      "on-primary-fixed-variant": "#0040a2",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed-variant": "#930010",
+                      "surface-variant": "#e2e2e5",
+                      "primary": "#003d9b",
+                      "on-primary-container": "#c4d2ff",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-dim": "#dadadc",
+                      "error": "#ba1a1a",
+                      "secondary": "#b6171e",
+                      "surface-bright": "#f9f9fc",
+                      "on-secondary-fixed": "#410003",
+                      "surface-container-high": "#e8e8ea",
+                      "on-secondary-container": "#fffbff",
+                      "outline": "#737685",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed-dim": "#ffb3ac",
+                      "on-tertiary-fixed-variant": "#6d3a00",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#da3433",
+                      "inverse-primary": "#b2c5ff",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "gutter-mobile": "12px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "display": ["Atkinson Hyperlegible Next"],
+                      "headline-lg": ["Atkinson Hyperlegible Next"],
+                      "label-bold": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Atkinson Hyperlegible Next"],
+                      "headline-lg-mobile": ["Atkinson Hyperlegible Next"]
+              },
+              "fontSize": {
+                      "display": ["34px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="health_and_safety">health_and_safety</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">MedVigilance</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant bg-surface-container">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A clean, professional close-up portrait of a healthcare user, possibly a doctor or patient, in a bright and clinical setting. The lighting is soft and neutral, reflecting a trustworthy and empathetic personality. The visual style is modern, with a high-contrast corporate aesthetic that aligns with a premium medical application's identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmD5EpGmy5ad4KGQapaeSkfHKSg35OSjNZ8puvSLe0sDTaQUAeeTN-Zrzjm6nGGedepVyhV9basaAbUxsxRb9PdvSNtXYXhGK7wk8sONJjfvsXAwESdc1yy6SezAndqX5YgRrlfi8MID8LBmAzlFukE4D5vSkY1xcIfINpqfCZ3SGqYmpsUl0tvDiAaZCzUjtiNgw9X5AfawvnsMCWLudtcrjdr2BszNTpaFzd6YqnFD5WlHfYgwg5Y-B1sYrCRvj9eYt347mFMQeg"/>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile space-y-md">
+<!-- Welcome Message -->
+<section class="py-sm">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Hello, Sarah</h2>
+<p class="font-body-md text-on-surface-variant">You have 3 doses remaining for today.</p>
+</section>
+<!-- Urgent Alerts Section (Bento Style) -->
+<section class="space-y-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface">Urgent Alerts</h3>
+<span class="font-label-bold text-label-bold text-secondary px-2 py-0.5 bg-secondary-fixed rounded-full">2 ACTION ITEMS</span>
+</div>
+<div class="grid grid-cols-1 gap-sm">
+<!-- Alert Card 1: Expiring -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-start gap-md hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 flex-shrink-0 bg-error-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-md text-headline-md text-on-surface">Expiring Soon</h4>
+<p class="font-body-md text-on-surface-variant">Atorvastatin 20mg expires in 2 days. Consider a refill soon.</p>
+<div class="mt-xs flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-bold text-label-bold text-error">CRITICAL</span>
+</div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</button>
+</div>
+<!-- Alert Card 2: Interaction -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-start gap-md hover:bg-surface-container-low transition-colors">
+<div class="w-12 h-12 flex-shrink-0 bg-tertiary-fixed rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="sync_problem">sync_problem</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-md text-headline-md text-on-surface">Safety Warning</h4>
+<p class="font-body-md text-on-surface-variant">New medication interaction detected with your recent Grapefruit juice consumption.</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</button>
+</div>
+</div>
+</section>
+<!-- Quick Actions Grid -->
+<section class="grid grid-cols-3 gap-sm py-xs">
+<button class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl p-sm gap-xs hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[24px]" data-icon="add_circle">add_circle</span>
+<span class="font-label-bold text-label-bold text-center">Add Med</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-surface-container-high text-primary rounded-xl p-sm gap-xs hover:bg-surface-container-highest active:scale-95 transition-all border border-outline-variant">
+<span class="material-symbols-outlined text-[24px]" data-icon="document_scanner">document_scanner</span>
+<span class="font-label-bold text-label-bold text-center">Scan Pill</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-surface-container-high text-primary rounded-xl p-sm gap-xs hover:bg-surface-container-highest active:scale-95 transition-all border border-outline-variant">
+<span class="material-symbols-outlined text-[24px]" data-icon="history">history</span>
+<span class="font-label-bold text-label-bold text-center">History</span>
+</button>
+</section>
+<!-- Medicine Reminders -->
+<section class="space-y-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface">Upcoming Doses</h3>
+<div class="space-y-xs">
+<!-- Dose Card 1 -->
+<div class="relative overflow-hidden bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<div class="text-center min-w-[50px]">
+<p class="font-label-bold text-label-bold text-on-surface-variant">09:00</p>
+<p class="font-label-sm text-label-sm text-outline">AM</p>
+</div>
+<div class="h-10 w-[2px] bg-primary-fixed-dim"></div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Lisinopril</h4>
+<p class="font-body-md text-on-surface-variant">10mg • Take with food</p>
+</div>
+</div>
+<button class="flex items-center justify-center w-12 h-12 bg-primary-container text-on-primary-container rounded-full shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined" data-icon="check">check</span>
+</button>
+</div>
+<!-- Dose Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between opacity-70">
+<div class="flex items-center gap-md">
+<div class="text-center min-w-[50px]">
+<p class="font-label-bold text-label-bold text-outline">08:00</p>
+<p class="font-label-sm text-label-sm text-outline">AM</p>
+</div>
+<div class="h-10 w-[2px] bg-outline-variant"></div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface line-through">Metformin</h4>
+<p class="font-body-md text-on-surface-variant">500mg • Taken 8:05 AM</p>
+</div>
+</div>
+<div class="flex items-center justify-center w-12 h-12 bg-surface-container-high text-outline rounded-full">
+<span class="material-symbols-outlined" data-icon="done_all">done_all</span>
+</div>
+</div>
+<!-- Dose Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<div class="text-center min-w-[50px]">
+<p class="font-label-bold text-label-bold text-on-surface-variant">02:00</p>
+<p class="font-label-sm text-label-sm text-outline">PM</p>
+</div>
+<div class="h-10 w-[2px] bg-primary-fixed-dim"></div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Vitamin D3</h4>
+<p class="font-body-md text-on-surface-variant">2000 IU • 1 Capsule</p>
+</div>
+</div>
+<button class="flex items-center justify-center w-12 h-12 bg-surface-container-high text-primary rounded-full hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Community Safety Alerts (Glass-like Card) -->
+<section class="space-y-sm pb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface">Community Safety</h3>
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="relative h-24 w-full">
+<img alt="Medicine Safety" class="w-full h-full object-cover" data-alt="A clean, top-down photograph of a laboratory setting with medical safety equipment, a magnifying glass, and clinical containers. The lighting is bright and hospital-grade, emphasizing transparency and vigilance. The color palette features whites, clinical blues, and sharp grays to convey a sense of security and professional oversight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFKsu46DWbYtts1fuUmo810PE4jvYg2Iak0yyMkHgjZxWNSaK1tVTilKZOjZhpBjYDlfKzAZYkHPZxabCn0jxkv-n7t02jyTuifeihUbcgmnZMG9KUa1MYoD2B9RfjVGykr4IdBg9AZ7M79lfB8PWHr_IQsjrrUpAZ_gqP-Ea4iHfh7m0a-m2kDsI_7LUMKiHLysxJXDkRMi05OWangtieuphTP4PxBaoYuoV9B3xveXXCYFzEW2WsB3_nRA8cG9rswtSwK58tnKlr"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-md">
+<span class="font-label-bold text-label-bold text-white uppercase tracking-wider">Local Health Alert</span>
+</div>
+</div>
+<div class="p-md">
+<p class="font-body-md text-on-surface-variant">FDA recall issued for Batch #4092 of generic Aspirin in the Greater Seattle area. Check your cabinet immediately.</p>
+<button class="mt-md w-full py-2 bg-surface-container-high text-primary font-label-bold text-label-bold rounded-lg border border-outline-variant hover:bg-surface-container-highest transition-colors">
+                        READ MORE DETAILS
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-surface border-t border-outline-variant h-[72px] px-4 py-2">
+<!-- Dashboard (Active) -->
+<div class="flex flex-col items-center justify-center text-primary font-bold scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined text-[24px]" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</div>
+<!-- Alerts -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg px-2">
+<span class="material-symbols-outlined text-[24px]" data-icon="notifications_active">notifications_active</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<!-- Profile -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg px-2">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+<!-- Settings -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg px-2">
+<span class="material-symbols-outlined text-[24px]" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</div>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button, div[role="button"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Subtle haptic feedback emulation or ripple could go here
+                btn.style.opacity = '0.8';
+                setTimeout(() => btn.style.opacity = '1', 150);
+            });
+        });
+
+        // Simple visibility observer for scroll-in effects
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-700', 'ease-out', 'opacity-0', 'translate-y-4');
+            observer.observe(section);
+        });
+    </script>
+</body></html>

@@ -1,0 +1,82 @@
+10. Scan Options Screen
+Camera
+Gallery
+11. Camera Scanner Screen
+12. Gallery Upload Screen
+13. OCR Processing Screen
+AI analyzing
+14. Extracted Medicine Details Screen
+Name
+Batch
+Expiry
+15. AI Verification Result Screen
+Trust Score
+Risk Level
+16. Packaging Comparison Screen
+Uploaded vs Reference
+17. Scan History Screen
+
+App Description:
+MODULE 3: Medicine Scanner & AI Verification
+Purpose
+
+This is the heart of the application.
+
+What This Module Does
+
+Users can:
+
+Scan medicine packaging.
+Upload medicine photos.
+Extract medicine information using OCR.
+Detect:
+Medicine Name
+Expiry Date
+Batch Number
+Manufacturer
+Verify medicine authenticity.
+Compare packaging with reference patterns.
+Generate risk scores.
+AI Functions
+
+AI:
+
+Reads package text.
+Detects expiry dates.
+Identifies suspicious patterns.
+Calculates confidence scores.
+Generates risk assessment.
+Why It Exists
+
+Many citizens cannot determine whether a medicine is:
+
+Genuine
+Suspicious
+Expired
+Potentially counterfeit
+
+This module provides an initial verification layer.
+
+User Workflow
+
+Scan Medicine
+
+↓
+
+AI Reads Package
+
+↓
+
+Extract Information
+
+↓
+
+Analyze Risk
+
+↓
+
+Show Verification Result
+
+↓
+
+Store in Medicine Inventory

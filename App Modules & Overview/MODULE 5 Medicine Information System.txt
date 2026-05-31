@@ -1,0 +1,44 @@
+23. Medicine Search Screen
+24. Search Results Screen
+25. Medicine Overview Screen
+26. Usage & Dosage Screen
+27. Precautions & Warnings Screen
+
+App Description:
+MODULE 5: Medicine Information System
+Purpose
+
+Provide educational information about medicines.
+
+What This Module Does
+
+Users can search medicines and view:
+
+Purpose
+Uses
+Dosage Information
+Warnings
+Precautions
+Side Effects
+Manufacturer Information
+Why It Exists
+
+Most users do not fully understand the medicines they consume.
+
+This module increases awareness.
+
+User Workflow
+
+Search Medicine
+
+↓
+
+View Information
+
+↓
+
+Understand Usage
+
+↓
+
+Make Safer Decisions
