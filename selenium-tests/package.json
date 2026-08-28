@@ -1,0 +1,15 @@
+{
+  "name": "meditrust-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium functionality and E2E testing suite for MediTrust Web Frontend",
+  "main": "tests/login-tests.js",
+  "scripts": {
+    "test": "node tests/login-tests.js",
+    "generate:report": "node generate-test-cases-excel.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.22.0",
+    "chromedriver": "^126.0.0",
+    "xlsx": "^0.18.5"
+  }
+}
