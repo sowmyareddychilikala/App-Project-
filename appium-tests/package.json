@@ -1,0 +1,15 @@
+{
+  "name": "meditrust-appium-tests",
+  "version": "1.0.0",
+  "description": "Appium E2E Automation Testing Suite for MediTrust Mobile App (Android & iOS)",
+  "main": "tests/mobile-e2e-tests.js",
+  "scripts": {
+    "test": "node tests/mobile-e2e-tests.js",
+    "generate:report": "node generate-appium-excel.js"
+  },
+  "dependencies": {
+    "webdriverio": "^8.38.0",
+    "appium": "^2.11.0",
+    "xlsx": "^0.18.5"
+  }
+}
