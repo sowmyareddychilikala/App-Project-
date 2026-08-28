@@ -1,0 +1,14 @@
+{
+  "name": "meditrust-load-tests",
+  "version": "1.0.0",
+  "description": "Baseline & High-Concurrency Performance Load Testing Suite for MediTrust API and Web Frontend",
+  "main": "baseline-load-test.js",
+  "scripts": {
+    "test:load": "node baseline-load-test.js",
+    "generate:report": "node generate-load-report-excel.js"
+  },
+  "dependencies": {
+    "autocannon": "^7.15.0",
+    "xlsx": "^0.18.5"
+  }
+}
