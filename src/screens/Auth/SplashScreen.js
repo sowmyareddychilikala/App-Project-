@@ -12,29 +12,55 @@ export const SplashScreen = ({ navigation }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    // 1. Subscribe to Firebase Auth state to check active session persistence
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    let unsubscribe = () => {};
+    try {
+      // 1. Subscribe to Firebase Auth state to check active session persistence
+      unsubscribe = onAuthStateChanged(auth, (user) => {
+        setCurrentUser(user);
+        setAuthResolved(true);
+      }, (error) => {
+        console.error("Auth listener error:", error);
+        setAuthResolved(true);
+      });
+    } catch (e) {
+      console.error("Firebase Auth subscription failed:", e);
       setAuthResolved(true);
-    });
+    }
 
-    return () => unsubscribe();
+    return () => unsubscribe && unsubscribe();
   }, []);
 
-  // Handle routing once auth is resolved and minimum display timer (2000ms) completes
+  // Handle routing once auth is resolved
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (authResolved) {
+    if (authResolved) {
+      const timer = setTimeout(() => {
         if (currentUser) {
           navigation.replace('Dashboard', { uid: currentUser.uid });
         } else {
           navigation.replace('Welcome');
         }
-      }
-    }, 2000); // 2.0 seconds minimum display for premium branding visual duration
+      }, 600);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, [authResolved, currentUser, navigation]);
+
+  // Bulletproof fallback: If Auth is not resolved within 3 seconds, check currentUser directly
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      if (!authResolved) {
+        const fallbackUser = auth.currentUser;
+        if (fallbackUser) {
+          console.warn("Auth listener slow — using auth.currentUser fallback for routing.");
+          navigation.replace('Dashboard', { uid: fallbackUser.uid });
+        } else {
+          navigation.replace('Welcome');
+        }
+      }
+    }, 3000);
+
+    return () => fallbackTimer && clearTimeout(fallbackTimer);
+  }, [authResolved, navigation]);
 
   return (
     <View style={styles.container}>

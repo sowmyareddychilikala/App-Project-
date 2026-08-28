@@ -1,18 +1,17 @@
 import React from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   Dimensions, 
   Image, 
   Platform, 
   StatusBar, 
   Alert,
-  Linking
-} from 'react-native';
+  Linking } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -66,12 +65,6 @@ export const UpcomingExpiriesScreen = ({ route, navigation }) => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Urgent Expirations</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.scannerShortcutBtn}
-          onPress={() => navigation.navigate('MedicineScanner', { uid, mockUser })}
-        >
-          <MaterialIcons name="qr-code-scanner" size={22} color={colors.primary} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
@@ -224,6 +217,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

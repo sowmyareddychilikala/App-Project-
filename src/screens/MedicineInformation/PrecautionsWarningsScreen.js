@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   Platform, 
   StatusBar,
   Dimensions,
   Linking,
-  Alert
-} from 'react-native';
+  Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
@@ -99,24 +98,31 @@ export const PrecautionsWarningsScreen = ({ route, navigation }) => {
                 <Text style={[styles.sectionTitle, { color: colors.error }]}>Critical Warnings</Text>
               </View>
 
-              <View style={styles.warningsGrid}>
-                <View style={styles.warningCard}>
+              {med.contraindications && (
+                <View style={[styles.warningCard, { width: '100%', marginBottom: 12 }]}>
                   <View style={styles.warningCardHeader}>
-                    <MaterialIcons name="pregnant-woman" size={18} color={colors.error} />
-                    <Text style={styles.warningCardTitle}>CONTRAINDICATION</Text>
+                    <MaterialIcons name="info-outline" size={18} color={colors.error} />
+                    <Text style={styles.warningCardTitle}>CONTRAINDICATIONS</Text>
                   </View>
-                  <Text style={styles.warningItemTitle}>Do not use if pregnant</Text>
-                  <Text style={styles.warningItemDesc}>May cause serious fetal injury or clinical complications if administered during pregnancy.</Text>
+                  <Text style={styles.warningItemTitle}>Who should NOT use this medication</Text>
+                  <Text style={styles.warningItemDesc}>{med.contraindications}</Text>
                 </View>
+              )}
 
-                <View style={styles.warningCard}>
-                  <View style={styles.warningCardHeader}>
-                    <MaterialIcons name="emergency" size={18} color={colors.error} />
-                    <Text style={styles.warningCardTitle}>ANGIOEDEMA</Text>
+              <View style={styles.warningsGrid}>
+                {(med.criticalWarnings || [
+                  { title: 'CONTRAINDICATION', item: 'Do not use if pregnant', desc: 'May cause serious fetal injury or clinical complications if administered during pregnancy.', iconName: 'pregnant-woman' },
+                  { title: 'ANGIOEDEMA', item: 'Severe swelling history', desc: 'Contraindicated if patient has history of drug-induced facial swelling or respiratory distress.', iconName: 'emergency' }
+                ]).map((warn, idx) => (
+                  <View key={idx} style={styles.warningCard}>
+                    <View style={styles.warningCardHeader}>
+                      <MaterialIcons name={warn.iconName || 'emergency'} size={18} color={colors.error} />
+                      <Text style={styles.warningCardTitle}>{warn.title}</Text>
+                    </View>
+                    <Text style={styles.warningItemTitle}>{warn.item}</Text>
+                    <Text style={styles.warningItemDesc}>{warn.desc}</Text>
                   </View>
-                  <Text style={styles.warningItemTitle}>Severe swelling history</Text>
-                  <Text style={styles.warningItemDesc}>Contraindicated if patient has history of drug-induced facial swelling or respiratory distress.</Text>
-                </View>
+                ))}
               </View>
             </View>
 
@@ -125,41 +131,20 @@ export const PrecautionsWarningsScreen = ({ route, navigation }) => {
               <Text style={styles.sectionHeading}>Daily Lifestyle Precautions</Text>
               
               <View style={styles.lifestyleGrid}>
-                {/* 1 */}
-                <View style={styles.lifestyleCard}>
-                  <View style={styles.lifestyleIconCircle}>
-                    <MaterialIcons name="no-drinks" size={22} color={colors.primary} />
+                {(med.lifestylePrecautions || [
+                  { title: 'Avoid Alcohol', desc: 'May lowering blood pressure levels excessively.', iconName: 'no-drinks' },
+                  { title: 'Specific Foods', desc: 'Avoid grapefruit or acidic supplements during administration.', iconName: 'no-meals' },
+                  { title: 'Stay Hydrated', desc: 'Dehydration significantly amplifies clinical warnings.', iconName: 'opacity' },
+                  { title: 'Salt Warning', desc: 'Avoid mineral supplements containing high potassium levels.', iconName: 'medical-information' }
+                ]).map((item, idx) => (
+                  <View key={idx} style={styles.lifestyleCard}>
+                    <View style={styles.lifestyleIconCircle}>
+                      <MaterialIcons name={item.iconName || 'medical-information'} size={22} color={colors.primary} />
+                    </View>
+                    <Text style={styles.lifestyleCardTitle}>{item.title}</Text>
+                    <Text style={styles.lifestyleCardDesc}>{item.desc}</Text>
                   </View>
-                  <Text style={styles.lifestyleCardTitle}>Avoid Alcohol</Text>
-                  <Text style={styles.lifestyleCardDesc}>May lowering blood pressure levels excessively.</Text>
-                </View>
-
-                {/* 2 */}
-                <View style={styles.lifestyleCard}>
-                  <View style={styles.lifestyleIconCircle}>
-                    <MaterialIcons name="no-meals" size={22} color={colors.primary} />
-                  </View>
-                  <Text style={styles.lifestyleCardTitle}>Specific Foods</Text>
-                  <Text style={styles.lifestyleCardDesc}>Avoid grapefruit or acidic supplements during administration.</Text>
-                </View>
-
-                {/* 3 */}
-                <View style={styles.lifestyleCard}>
-                  <View style={styles.lifestyleIconCircle}>
-                    <MaterialIcons name="opacity" size={22} color={colors.primary} />
-                  </View>
-                  <Text style={styles.lifestyleCardTitle}>Stay Hydrated</Text>
-                  <Text style={styles.lifestyleCardDesc}>Dehydration significantly amplifies clinical warnings.</Text>
-                </View>
-
-                {/* 4 */}
-                <View style={styles.lifestyleCard}>
-                  <View style={styles.lifestyleIconCircle}>
-                    <MaterialIcons name="medical-information" size={22} color={colors.primary} />
-                  </View>
-                  <Text style={styles.lifestyleCardTitle}>Salt Warning</Text>
-                  <Text style={styles.lifestyleCardDesc}>Avoid mineral supplements containing high potassium levels.</Text>
-                </View>
+                ))}
               </View>
             </View>
           </View>
@@ -180,18 +165,16 @@ export const PrecautionsWarningsScreen = ({ route, navigation }) => {
                     <View style={styles.frequencyBadge}><Text style={styles.freqBadgeText}>1 in 10</Text></View>
                   </View>
                   
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="check-circle" size={16} color={colors.primary} style={{ marginTop: 2 }} />
-                    <Text style={styles.bulletText}>Dry, persistent, irritating cough</Text>
-                  </View>
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="check-circle" size={16} color={colors.primary} style={{ marginTop: 2 }} />
-                    <Text style={styles.bulletText}>Dizziness, vertigo, or lightheadedness</Text>
-                  </View>
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="check-circle" size={16} color={colors.primary} style={{ marginTop: 2 }} />
-                    <Text style={styles.bulletText}>Moderate headache or localized fatigue</Text>
-                  </View>
+                  {(med.sideEffectsCommon || [
+                    'Dry, persistent, irritating cough',
+                    'Dizziness, vertigo, or lightheadedness',
+                    'Moderate headache or localized fatigue'
+                  ]).map((item, idx) => (
+                    <View key={idx} style={styles.bulletItem}>
+                      <MaterialIcons name="check-circle" size={16} color={colors.primary} style={{ marginTop: 2 }} />
+                      <Text style={styles.bulletText}>{item}</Text>
+                    </View>
+                  ))}
                 </View>
 
                 {/* Rare */}
@@ -201,18 +184,16 @@ export const PrecautionsWarningsScreen = ({ route, navigation }) => {
                     <View style={styles.frequencyBadge}><Text style={styles.freqBadgeText}>1 in 1000</Text></View>
                   </View>
                   
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="info" size={16} color={colors.secondary} style={{ marginTop: 2 }} />
-                    <Text style={styles.bulletText}>Mild skin rashes or localized itching</Text>
-                  </View>
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="info" size={16} color={colors.secondary} style={{ marginTop: 2 }} />
-                    <Text style={styles.bulletText}>Taste disturbances (metallic taste)</Text>
-                  </View>
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="info" size={16} color={colors.secondary} style={{ marginTop: 2 }} />
-                    <Text style={styles.bulletText}>Reversible alopecia (hair thinning)</Text>
-                  </View>
+                  {(med.sideEffectsRare || [
+                    'Mild skin rashes or localized itching',
+                    'Taste disturbances (metallic taste)',
+                    'Reversible alopecia (hair thinning)'
+                  ]).map((item, idx) => (
+                    <View key={idx} style={styles.bulletItem}>
+                      <MaterialIcons name="info" size={16} color={colors.secondary} style={{ marginTop: 2 }} />
+                      <Text style={styles.bulletText}>{item}</Text>
+                    </View>
+                  ))}
                 </View>
 
                 {/* Serious */}
@@ -222,18 +203,16 @@ export const PrecautionsWarningsScreen = ({ route, navigation }) => {
                     <View style={[styles.frequencyBadge, { backgroundColor: colors.error }]}><Text style={[styles.freqBadgeText, { color: colors.white }]}>IMMEDIATE ACTION</Text></View>
                   </View>
                   
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="warning" size={16} color={colors.error} style={{ marginTop: 2 }} />
-                    <Text style={[styles.bulletText, { color: colors.error }]}>Yellowing of skin or eyes (Jaundice / hepatic issues)</Text>
-                  </View>
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="warning" size={16} color={colors.error} style={{ marginTop: 2 }} />
-                    <Text style={[styles.bulletText, { color: colors.error }]}>Acute difficulty in breathing, swallowing or severe swelling</Text>
-                  </View>
-                  <View style={styles.bulletItem}>
-                    <MaterialIcons name="warning" size={16} color={colors.error} style={{ marginTop: 2 }} />
-                    <Text style={[styles.bulletText, { color: colors.error }]}>High fever accompanied by unexplained persistent sore throat</Text>
-                  </View>
+                  {(med.sideEffectsSerious || [
+                    'Yellowing of skin or eyes (Jaundice / hepatic issues)',
+                    'Acute difficulty in breathing, swallowing or severe swelling',
+                    'High fever accompanied by unexplained persistent sore throat'
+                  ]).map((item, idx) => (
+                    <View key={idx} style={styles.bulletItem}>
+                      <MaterialIcons name="warning" size={16} color={colors.error} style={{ marginTop: 2 }} />
+                      <Text style={[styles.bulletText, { color: colors.error }]}>{item}</Text>
+                    </View>
+                  ))}
                 </View>
               </View>
             </View>
@@ -261,6 +240,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
   ScrollView, 
   TextInput, 
   ActivityIndicator, 
@@ -13,11 +11,12 @@ import {
   Image, 
   Platform, 
   StatusBar,
-  Modal
-} from 'react-native';
+  Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons, Ionicons, FontAwesome } from '@expo/vector-icons';
-import { listenUserMedications, saveUserMedication } from '../../services/dbService';
+import { listenUserMedications, saveUserMedication, deleteUserMedication, syncExpiryAlerts } from '../../services/dbService';
+import { auth } from '../../../firebaseConfig';
 
 const { width } = Dimensions.get('window');
 const STATUSBAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
@@ -30,97 +29,44 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Modal state for manual medicine addition
+  // Modal state for manual medicine addition & editing
+  const [editingMedId, setEditingMedId] = useState(null);
   const [isAddingManually, setIsAddingManually] = useState(false);
   const [newMedName, setNewMedName] = useState('');
   const [newMedDosage, setNewMedDosage] = useState('');
   const [newMedTime, setNewMedTime] = useState('09:00 AM');
   const [newMedInstructions, setNewMedInstructions] = useState('');
-  const [newMedMfgDate, setNewMedMfgDate] = useState('2024-01-01');
-  const [newMedExpDate, setNewMedExpDate] = useState('2025-12-31');
-  const [newMedBatch, setNewMedBatch] = useState('BT-99218-GP');
-  const [newMedMfg, setNewMedMfg] = useState('BioPharma Labs');
+  const [newMedMfgDate, setNewMedMfgDate] = useState('');
+  const [newMedExpDate, setNewMedExpDate] = useState('');
+  const [newMedBatch, setNewMedBatch] = useState('');
+  const [newMedMfg, setNewMedMfg] = useState('');
 
   // Load medications
   useEffect(() => {
-    if (mockUser) {
-      // Mock data matching Figma design
-      const mockMeds = {
-        'med_1': {
-          id: 'med_1',
-          name: 'Lipitor',
-          dosage: '20mg',
-          time: '09:00 AM',
-          instructions: 'Take in the morning',
-          taken: false,
-          takenTime: '',
-          mfgDate: '2023-10-01',
-          expDate: '2024-10-28',
-          batch: 'LP-1029-A',
-          manufacturer: 'Pfizer Inc.',
-          reminders: {
-            'rem_1': { id: 'rem_1', time: '09:00 AM', label: 'Breakfast', active: true }
-          }
-        },
-        'med_2': {
-          id: 'med_2',
-          name: 'Ibuprofen Softgels',
-          dosage: '400mg',
-          time: '02:00 PM',
-          instructions: 'Take with food for joint pain',
-          taken: true,
-          takenTime: '02:15 PM',
-          mfgDate: '2023-01-01',
-          expDate: '2025-01-15',
-          batch: 'IB-990-23',
-          manufacturer: 'Johnson & Johnson'
-        },
-        'med_3': {
-          id: 'med_3',
-          name: 'Amoxicillin',
-          dosage: '500mg',
-          time: '08:00 AM',
-          instructions: 'Finish full cycle',
-          taken: false,
-          takenTime: '',
-          mfgDate: '2023-06-01',
-          expDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expired yesterday
-          batch: 'AX-2023-019',
-          manufacturer: 'BioPharma Core'
-        },
-        'med_4': {
-          id: 'med_4',
-          name: 'Vicks DayQuil',
-          dosage: '15ml',
-          time: '10:00 AM',
-          instructions: 'Every 4 hours as needed',
-          taken: false,
-          takenTime: '',
-          mfgDate: '2023-07-01',
-          expDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expiring in 12 days
-          batch: 'VQ-992-B',
-          manufacturer: 'Procter & Gamble'
-        }
-      };
-      setMedications(mockMeds);
-      setLoading(false);
-      return;
-    }
+    const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
 
-    if (uid) {
-      const unsubscribe = listenUserMedications(uid, (data) => {
-        setMedications(data || {});
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    }
-  }, [uid, mockUser]);
+    const unsubscribe = listenUserMedications(activeUid, (data) => {
+      setMedications(data || {});
+      setLoading(false);
+    });
+
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [uid]);
 
   // Expiry calculation helpers
   const getExpiryDetails = (expDateStr) => {
     if (!expDateStr) return { status: 'Active', label: 'No date', color: colors.secondary, daysLeft: 999 };
     
-    const exp = new Date(expDateStr);
+    const parts = String(expDateStr).split('-');
+    let exp;
+    if (parts.length === 3) {
+      exp = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    } else {
+      exp = new Date(expDateStr);
+    }
+    
     const today = new Date();
     today.setHours(0,0,0,0);
     exp.setHours(0,0,0,0);
@@ -133,8 +79,11 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
       let label = `Expired ${absoluteDays} day${absoluteDays > 1 ? 's' : ''} ago`;
       if (absoluteDays === 1) label = 'Expired yesterday';
       return { status: 'Expired', label, color: colors.error, daysLeft: diffDays };
+    } else if (diffDays <= 7) {
+      const dayText = diffDays === 0 ? 'today' : `in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+      return { status: 'Expiring Soon', label: `Expires ${dayText}`, color: '#e67e22', daysLeft: diffDays };
     } else if (diffDays <= 30) {
-      return { status: 'Expiring', label: `${diffDays} day${diffDays > 1 ? 's' : ''} left`, color: '#e67e22', daysLeft: diffDays };
+      return { status: 'Expiring', label: `${diffDays} days left`, color: '#e67e22', daysLeft: diffDays };
     } else {
       const months = Math.round(diffDays / 30);
       let label = `${months} month${months > 1 ? 's' : ''} left`;
@@ -143,73 +92,118 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
     }
   };
 
-  // Add custom manual medicine record to cabinet
+  // Open edit modal pre-populated
+  const handleEditMedication = (med) => {
+    if (!med) return;
+    setEditingMedId(med.id);
+    setNewMedName(med.medicineName || med.name || '');
+    setNewMedExpDate(med.expDate || '');
+    setNewMedInstructions(med.notes || med.instructions || '');
+    setNewMedDosage(med.dosage || '');
+    setNewMedMfg(med.manufacturer || '');
+    setIsAddingManually(true);
+  };
+
+  // Add or update custom manual medicine record to cabinet & Firebase
   const handleAddManualMed = async () => {
-    if (!newMedName.trim() || !newMedDosage.trim()) {
-      Alert.alert("Input Needed", "Please enter the medication name and dosage.");
+    if (!newMedName.trim()) {
+      Alert.alert("Input Needed", "Please enter the Medication Name.");
+      return;
+    }
+    if (!newMedExpDate.trim()) {
+      Alert.alert("Input Needed", "Please enter the Expiration Date (YYYY-MM-DD).");
       return;
     }
 
+    const currentUserId = auth?.currentUser?.uid || uid || 'guest_user';
     const medData = {
+      ...(editingMedId ? { id: editingMedId } : {}),
       name: newMedName.trim(),
-      dosage: newMedDosage.trim(),
-      time: newMedTime,
-      instructions: newMedInstructions.trim() || 'Take as directed',
-      mfgDate: newMedMfgDate,
-      expDate: newMedExpDate,
-      batch: newMedBatch.trim() || 'BT-MOCK-2026',
-      manufacturer: newMedMfg.trim() || 'Generic Labs',
+      medicineName: newMedName.trim(),
+      dosage: newMedDosage.trim() || 'Standard',
+      time: newMedTime || '09:00 AM',
+      instructions: newMedInstructions.trim() || '',
+      notes: newMedInstructions.trim() || '',
+      mfgDate: newMedMfgDate.trim() || '',
+      expDate: newMedExpDate.trim(),
+      batch: newMedBatch.trim() || '',
+      manufacturer: newMedMfg.trim() || '',
       taken: false,
-      takenTime: ''
+      takenStatus: false,
+      takenTime: '',
+      userId: currentUserId,
+      createdAt: new Date().toISOString()
     };
 
-    if (mockUser) {
-      const newId = `med_${Date.now()}`;
-      setMedications(prev => ({
-        ...prev,
-        [newId]: { ...medData, id: newId }
-      }));
+    try {
       setIsAddingManually(false);
       resetForm();
-      Alert.alert("Success", "Manual medicine added into your Cabinet mockup.");
-    } else {
-      try {
-        setLoading(true);
-        await saveUserMedication(uid, medData);
-        setLoading(false);
-        setIsAddingManually(false);
-        resetForm();
-        Alert.alert("Success", "Medication successfully added directly into your upcoming cabinet.");
-      } catch (err) {
-        setLoading(false);
-        Alert.alert("Failed", "Could not register medication. Try again.");
-      }
+      const savedMed = await saveUserMedication(currentUserId, medData);
+      setMedications(prev => ({
+        ...prev,
+        [savedMed.id]: savedMed
+      }));
+      Alert.alert(
+        "Success",
+        `✓ "${savedMed.medicineName || savedMed.name}" record ${editingMedId ? 'updated' : 'created'} successfully and saved to Firebase!`
+      );
+    } catch (err) {
+      Alert.alert("Save Failed", err.message || "Could not save medicine record. Please try again.");
     }
   };
 
+  // Delete medicine record
+  const handleDeleteMedication = (medId, medName) => {
+    Alert.alert(
+      "Delete Record",
+      `Are you sure you want to delete "${medName || 'this record'}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
+            setMedications(prev => {
+              const nextMeds = { ...prev };
+              delete nextMeds[medId];
+              return nextMeds;
+            });
+
+            try {
+              await deleteUserMedication(activeUid, medId);
+            } catch (err) {
+              console.error("Failed to delete medication from Firebase:", err);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const resetForm = () => {
+    setEditingMedId(null);
     setNewMedName('');
     setNewMedDosage('');
     setNewMedTime('09:00 AM');
     setNewMedInstructions('');
-    setNewMedMfgDate('2024-01-01');
-    setNewMedExpDate('2025-12-31');
-    setNewMedBatch('BT-99218-GP');
-    setNewMedMfg('BioPharma Labs');
+    setNewMedMfgDate('');
+    setNewMedExpDate('');
+    setNewMedBatch('');
+    setNewMedMfg('');
   };
 
-  const medicationsList = Object.values(medications);
-  
-  // Categorize
+  const medicationsList = Object.values(medications || {});
   const expiredMeds = medicationsList.filter(m => getExpiryDetails(m.expDate).status === 'Expired');
-  const expiringMeds = medicationsList.filter(m => getExpiryDetails(m.expDate).status === 'Expiring');
-  const activeMeds = medicationsList.filter(m => getExpiryDetails(m.expDate).status === 'Active');
 
   // Filter list by search query
-  const filteredMeds = medicationsList.filter(med => 
-    med.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (med.manufacturer && med.manufacturer.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredMeds = medicationsList.filter(med => {
+    const nameStr = (med.medicineName || med.name || '').toLowerCase();
+    const manufStr = (med.manufacturer || '').toLowerCase();
+    const notesStr = (med.notes || med.instructions || '').toLowerCase();
+    const q = searchQuery.toLowerCase().trim();
+    return nameStr.includes(q) || manufStr.includes(q) || notesStr.includes(q);
+  });
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -218,18 +212,12 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
         <View style={styles.headerLeftRow}>
           <TouchableOpacity 
             style={styles.headerBackBtn}
-            onPress={() => navigation.replace('Dashboard')}
+            onPress={() => navigation.navigate('Dashboard')}
           >
             <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>MedClarity Cabinet</Text>
+          <Text style={styles.headerTitle}>Expiry Management</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.scannerShortcutBtn}
-          onPress={() => navigation.navigate('MedicineScanner', { uid, mockUser })}
-        >
-          <MaterialIcons name="qr-code-scanner" size={22} color={colors.primary} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
@@ -245,7 +233,7 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
             <View style={{ flex: 1 }}>
               <Text style={styles.urgentBannerTitle}>Requires Attention</Text>
               <Text style={styles.urgentBannerDesc}>
-                {expiredMeds.length} expired medicine{expiredMeds.length > 1 ? 's' : ''} in cabinet. Tap to resolve safely.
+                {expiredMeds.length} expired medicine{expiredMeds.length > 1 ? 's' : ''} in records. Tap to view details.
               </Text>
             </View>
             <MaterialIcons name="chevron-right" size={20} color={colors.error} />
@@ -254,25 +242,17 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
 
         {/* Introduction Panel */}
         <View style={styles.introBlock}>
-          <Text style={styles.introHeading}>Your Medicine Cabinet</Text>
-          <Text style={styles.introSub}>Track shelf lives, view interactions, and configure dose alarms with clinical precision.</Text>
+          <Text style={styles.introHeading}>Expiry Management</Text>
+          <Text style={styles.introSub}>Add and manage medicine expiry dates to receive automated expiration alerts.</Text>
         </View>
 
         {/* Custom Actions */}
         <View style={styles.actionRow}>
           <TouchableOpacity 
-            style={styles.actionBtnScan}
-            onPress={() => navigation.navigate('MedicineScanner', { uid, mockUser })}
-          >
-            <MaterialIcons name="add-a-photo" size={18} color={colors.white} />
-            <Text style={styles.actionBtnScanText}>Scan Blister Pack</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
             style={styles.actionBtnManual}
-            onPress={() => setIsAddingManually(true)}
+            onPress={() => { resetForm(); setIsAddingManually(true); }}
           >
-            <MaterialIcons name="add" size={20} color={colors.primary} />
+            <MaterialIcons name="add" size={20} color={colors.white} />
             <Text style={styles.actionBtnManualText}>Add Manually</Text>
           </TouchableOpacity>
         </View>
@@ -282,106 +262,77 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
           <MaterialIcons name="search" size={20} color={colors.outline} style={styles.searchIcon} />
           <TextInput 
             style={styles.searchInput}
-            placeholder="Search by name or category..."
+            placeholder="Search medicine records..."
             placeholderTextColor={colors.outline}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
         </View>
 
-        {/* Main Bento Grid layout */}
-        <View style={styles.bentoSection}>
-          {/* Weekly usage chart component */}
-          <View style={styles.chartBentoCard}>
-            <View style={styles.chartHeader}>
-              <MaterialIcons name="event" size={16} color="#653e00" />
-              <Text style={styles.chartTitle}>Weekly Adherence Stats</Text>
-            </View>
-            <View style={styles.barsContainer}>
-              <View style={[styles.bar, { height: '40%' }]} />
-              <View style={[styles.bar, { height: '65%' }]} />
-              <View style={[styles.bar, { height: '90%' }]} />
-              <View style={[styles.bar, { height: '30%', backgroundColor: colors.primary }]} />
-              <View style={[styles.bar, { height: '55%' }]} />
-              <View style={[styles.bar, { height: '45%' }]} />
-              <View style={[styles.bar, { height: '70%' }]} />
-            </View>
-            <Text style={styles.chartSubtitle}>Clinical consistency: 94% Adherence active.</Text>
-          </View>
-          
-          {/* Upcoming Expiries Bento Card */}
-          {expiringMeds.length > 0 && (
-            <TouchableOpacity 
-              style={styles.upcomingBentoCard}
-              onPress={() => navigation.navigate('UpcomingExpiries', { uid, mockUser, medications })}
-            >
-              <View style={styles.upcomingHeader}>
-                <MaterialIcons name="running-with-errors" size={16} color={colors.primary} />
-                <Text style={styles.upcomingTitle}>Upcoming Expiries</Text>
-              </View>
-              <Text style={styles.upcomingCountText}>{expiringMeds.length} Items Expiring Soon</Text>
-              <Text style={styles.upcomingDescText}>Action advised within 30 days to maintain dose coverage.</Text>
-              <View style={styles.upcomingCardFooter}>
-                <Text style={styles.upcomingLinkText}>View Refill Plans</Text>
-                <MaterialIcons name="arrow-forward" size={12} color={colors.primary} />
-              </View>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Cabinet Inventory List */}
-        <Text style={styles.sectionHeading}>Medicine Cabinet Stock</Text>
+        {/* Expiry Records List */}
+        <Text style={styles.sectionHeading}>Medicine Expiry Records ({filteredMeds.length})</Text>
         <View style={styles.cabinetStack}>
           {filteredMeds.length === 0 ? (
             <View style={styles.emptyCabinet}>
               <Ionicons name="medical-outline" size={40} color={colors.outlineVariant} />
-              <Text style={styles.emptyCabinetText}>No medicines found matching query.</Text>
+              <Text style={styles.emptyCabinetText}>No medicine records found.</Text>
             </View>
           ) : (
             filteredMeds.map((med) => {
               const expiry = getExpiryDetails(med.expDate);
+              const medName = med.medicineName || med.name || 'Unnamed Medicine';
+              const medNotes = med.notes || med.instructions;
+
               return (
-                <TouchableOpacity 
-                  key={med.id}
+                <View 
+                  key={med.id || Math.random().toString()}
                   style={styles.medCard}
-                  onPress={() => navigation.navigate('MedicineDetails', { uid, mockUser, medId: med.id, medications })}
                 >
-                  {/* Blister Card Image / Placeholders */}
-                  <Image 
-                    source={{ 
-                      uri: med.name.toLowerCase().includes('lipi') 
-                        ? 'https://lh3.googleusercontent.com/aida-public/AB6AXuDv4ogaZFEMwi9bLPMueKru6Krq2sN43jbEDZvePYUaAADvo3YeyWU5qPDE21GmsIEftaB9kJShkduMpOOKKet1PlIeeM9jCQG9Xn14p6nJXXRlQ3qh2EvimRq7O2wjDw79ltjiycBgDStixOBkC0m4w_5jeVrc34dPvu17DKzVOBiiXdTPSMQch1JuomxyoDkJjpoih-dK6p60ZNQvlQ0PW6Bw5vOmvlRnebAg4FhUSUxbjd8iZ290scyvtrRkSGjjhCS9oCNy5q2P'
-                        : med.name.toLowerCase().includes('ibup')
-                        ? 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-6AATtS9j6G_zwAlNuHW6N2nRRJuPglxPxaK9aR8DHqp7pihch4ch95dgJBpIKNC8QZsLs_YT0RrxMxqiNKTmoLoLiyl5KiZR09UKY5LcenOwrdnQ5KyMbqUB12xxYLlz-_Skpy1J6x9DYYjhL5DpxMOj-rgzxRj6PfA7dPnY_3xXFjhoFJjz7nPcKxtZUIo6k8l1XLyJeH69vFVgFQR0ImoXeprTSZjXDa6cACtwFGrXEI1_Wtuon2SWHOjcdxuNa12KPU7vzC49'
-                        : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjKs93OpOLNhJHW0NHwLDHDOIKZnhqQKKsLjw-sAr75h-ysMPzfcd-diq-0yQGc15qTJXzQnhEwRooxCcXP9n6dfKqtBQWYuIusiVUwF7qwTqm2EaGuYTp8Kdh4lftBbqQA6BDrZ5td1Lx7P9gsaHdmCWgF-Cf-sDu6cqOX31ihTt3-EAYBcygBaq8vi5EnThmWrXT1o4HDnErf4gLXyzOoFFW8_4FA2fK0hBQB-iEzp5hZ5y-c5AmyIiW4JALNep0xgApwqqscx3I'
-                    }}
-                    style={styles.medCardImg}
-                  />
+                  <View style={styles.medCardMainRow}>
+                    <View style={styles.medCardContent}>
+                      <View style={styles.medCardMetaHeader}>
+                        <View style={[styles.expiryBadge, { backgroundColor: expiry.color + '1F' }]}>
+                          <Text style={[styles.expiryBadgeText, { color: expiry.color }]}>{expiry.label}</Text>
+                        </View>
+                        <Text style={[
+                          styles.statusBadgeText, 
+                          { color: expiry.status === 'Expired' ? colors.error : expiry.status.includes('Expiring') ? '#e67e22' : colors.secondary }
+                        ]}>
+                          {expiry.status.toUpperCase()}
+                        </Text>
+                      </View>
 
-                  {/* High level Expiry Tag badge overlays */}
-                  <View style={styles.medCardMetaHeader}>
-                    <View style={[styles.expiryBadge, { backgroundColor: expiry.color + '1A' }]}>
-                      <Text style={[styles.expiryBadgeText, { color: expiry.color }]}>{expiry.label}</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.medCardContent}>
-                    <Text style={styles.medNameText}>{med.name}</Text>
-                    <Text style={styles.medDosageText}>{med.dosage} • {med.instructions || 'Daily dose'}</Text>
-                    
-                    <View style={styles.medDivider} />
-                    
-                    <View style={styles.medFooterRow}>
-                      <Text style={[
-                        styles.statusBadgeText, 
-                        { color: expiry.status === 'Expired' ? colors.error : colors.secondary }
-                      ]}>
-                        {expiry.status.toUpperCase()}
+                      <Text style={styles.medNameText}>{medName}</Text>
+                      <Text style={styles.medDosageText}>
+                        Expiry Date: <Text style={{ fontWeight: '700', color: colors.primary }}>{med.expDate || 'Not specified'}</Text>
                       </Text>
-                      <MaterialIcons name="more-vert" size={20} color={colors.outline} />
+                      
+                      {med.dosage && med.dosage !== 'Standard' && (
+                        <Text style={styles.medSubDetailText}>Dosage: {med.dosage}</Text>
+                      )}
+
+                      {medNotes ? (
+                        <Text style={styles.medNotesText} numberOfLines={2}>Notes: {medNotes}</Text>
+                      ) : null}
+                    </View>
+
+                    <View style={styles.cardActionsRow}>
+                      <TouchableOpacity 
+                        style={styles.editRecordBtn}
+                        onPress={() => handleEditMedication(med)}
+                      >
+                        <MaterialIcons name="edit" size={18} color={colors.primary} />
+                      </TouchableOpacity>
+
+                      <TouchableOpacity 
+                        style={styles.deleteRecordBtn}
+                        onPress={() => handleDeleteMedication(med.id, medName)}
+                      >
+                        <MaterialIcons name="delete-outline" size={18} color={colors.error} />
+                      </TouchableOpacity>
                     </View>
                   </View>
-                </TouchableOpacity>
+                </View>
               );
             })
           )}
@@ -393,80 +344,60 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
         visible={isAddingManually}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setIsAddingManually(false)}
+        onRequestClose={() => { setIsAddingManually(false); resetForm(); }}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Manual Entry Form</Text>
-              <TouchableOpacity onPress={() => setIsAddingManually(false)}>
+              <Text style={styles.modalTitle}>{editingMedId ? "Edit Expiry Record" : "Add Expiry Record"}</Text>
+              <TouchableOpacity onPress={() => { setIsAddingManually(false); resetForm(); }}>
                 <MaterialIcons name="close" size={24} color={colors.primary} />
               </TouchableOpacity>
             </View>
 
             <ScrollView contentContainerStyle={styles.modalFormScroll} showsVerticalScrollIndicator={false}>
               <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Medication Name</Text>
+                <Text style={styles.formLabel}>Medicine Name *</Text>
                 <TextInput 
                   style={styles.formInput} 
-                  placeholder="e.g. Lipitor"
+                  placeholder="e.g. Lipitor, Paracetamol"
                   value={newMedName}
                   onChangeText={setNewMedName}
                 />
               </View>
 
               <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Dosage Strength</Text>
+                <Text style={styles.formLabel}>Expiration Date (YYYY-MM-DD) *</Text>
                 <TextInput 
                   style={styles.formInput} 
-                  placeholder="e.g. 20mg"
-                  value={newMedDosage}
-                  onChangeText={setNewMedDosage}
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Instructions</Text>
-                <TextInput 
-                  style={styles.formInput} 
-                  placeholder="e.g. Take 1 tablet in morning"
-                  value={newMedInstructions}
-                  onChangeText={setNewMedInstructions}
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Manufacture Date (YYYY-MM-DD)</Text>
-                <TextInput 
-                  style={styles.formInput} 
-                  placeholder="e.g. 2024-01-01"
-                  value={newMedMfgDate}
-                  onChangeText={setNewMedMfgDate}
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Expiration Date (YYYY-MM-DD)</Text>
-                <TextInput 
-                  style={styles.formInput} 
-                  placeholder="e.g. 2025-12-31"
+                  placeholder="e.g. 2026-08-15"
                   value={newMedExpDate}
                   onChangeText={setNewMedExpDate}
                 />
               </View>
 
               <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Batch Serial Code</Text>
+                <Text style={styles.formLabel}>Optional Notes</Text>
                 <TextInput 
                   style={styles.formInput} 
-                  placeholder="e.g. BT-99218-GP"
-                  value={newMedBatch}
-                  onChangeText={setNewMedBatch}
+                  placeholder="e.g. Take with food, store below 25°C"
+                  value={newMedInstructions}
+                  onChangeText={setNewMedInstructions}
                 />
               </View>
 
               <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Manufacturer</Text>
+                <Text style={styles.formLabel}>Dosage Strength (Optional)</Text>
+                <TextInput 
+                  style={styles.formInput} 
+                  placeholder="e.g. 500mg"
+                  value={newMedDosage}
+                  onChangeText={setNewMedDosage}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.formLabel}>Manufacturer (Optional)</Text>
                 <TextInput 
                   style={styles.formInput} 
                   placeholder="e.g. Pfizer Labs"
@@ -477,36 +408,12 @@ export const MyMedicinesScreen = ({ route, navigation }) => {
 
               <TouchableOpacity style={styles.modalSubmitBtn} onPress={handleAddManualMed}>
                 <MaterialIcons name="done" size={20} color={colors.white} />
-                <Text style={styles.modalSubmitBtnText}>Create Record</Text>
+                <Text style={styles.modalSubmitBtnText}>{editingMedId ? "Save Changes" : "Create Record"}</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
         </View>
       </Modal>
-
-      {/* Tabs Footer Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItemActive}>
-          <MaterialIcons name="inventory" size={22} color={colors.primary} />
-          <Text style={styles.navTextActive}>Inventory</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.navItem}
-          onPress={() => navigation.navigate('UpcomingExpiries', { uid, mockUser, medications })}
-        >
-          <MaterialIcons name="warning" size={22} color={colors.outline} />
-          <Text style={styles.navText}>Urgent</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.navItem}
-          onPress={() => navigation.navigate('ExpiredMedicines', { uid, mockUser, medications })}
-        >
-          <MaterialIcons name="delete-sweep" size={22} color={colors.outline} />
-          <Text style={styles.navText}>Archive</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
@@ -516,6 +423,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',
@@ -781,37 +695,40 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.outlineVariant,
     borderRadius: 16,
-    overflow: 'hidden',
+    padding: 16,
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.02,
     shadowRadius: 6,
     elevation: 2,
   },
-  medCardImg: {
-    width: '100%',
-    height: 140,
-    resizeMode: 'cover',
+  medCardMainRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  medCardContent: {
+    flex: 1,
+    gap: 4,
   },
   medCardMetaHeader: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
   },
   expiryBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   expiryBadgeText: {
     fontSize: 10,
     fontWeight: '800',
   },
-  medCardContent: {
-    padding: 16,
-  },
   medNameText: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '900',
     color: colors.primary,
     letterSpacing: -0.3,
@@ -819,17 +736,46 @@ const styles = StyleSheet.create({
   medDosageText: {
     fontSize: 12,
     color: colors.textSecondary,
-    fontWeight: '600',
+    fontWeight: '500',
     marginTop: 2,
   },
-  medDivider: {
-    height: 0.5,
-    backgroundColor: colors.outlineVariant + '66',
-    marginVertical: 12,
+  medSubDetailText: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    fontWeight: '500',
   },
-  medFooterRow: {
+  medNotesText: {
+    fontSize: 11.5,
+    color: colors.primary,
+    fontWeight: '600',
+    fontStyle: 'italic',
+    marginTop: 4,
+    backgroundColor: colors.surfaceContainerLow,
+    padding: 8,
+    borderRadius: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.primary,
+  },
+  cardActionsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
+    alignSelf: 'flex-start',
+  },
+  editRecordBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primaryFixed + '60',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteRecordBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.errorContainer + '40',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   statusBadgeText: {

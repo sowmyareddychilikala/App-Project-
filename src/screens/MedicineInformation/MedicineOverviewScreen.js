@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   Image, 
   Platform, 
   StatusBar,
   Dimensions,
   Alert,
-  ActivityIndicator
-} from 'react-native';
+  ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { 
@@ -80,19 +79,15 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
 
   // Handle Bookmarks toggling
   const handleToggleBookmark = async () => {
-    if (mockUser) {
-      setIsBookmarked(!isBookmarked);
-      Alert.alert("Bookmark Synced", `Successfully ${!isBookmarked ? 'added' : 'removed'} ${med.name} from saved cabinet list.`);
-      return;
-    }
-
     try {
       setLoading(true);
+      const targetUid = uid || 'guest_user';
       if (isBookmarked) {
-        await deleteUserBookmarkedMedicine(uid, med.id);
+        await deleteUserBookmarkedMedicine(targetUid, med.id);
         setIsBookmarked(false);
+        Alert.alert("Bookmark Removed", `${med.name} removed from your saved medicines.`);
       } else {
-        await saveUserBookmarkedMedicine(uid, med.id, {
+        await saveUserBookmarkedMedicine(targetUid, med.id, {
           name: med.name,
           category: med.category,
           type: med.type,
@@ -103,11 +98,13 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
           img: med.img
         });
         setIsBookmarked(true);
+        Alert.alert("Bookmark Saved", `${med.name} saved to your medical cabinet.`);
       }
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      Alert.alert("Database Error", "Failed to sync saved medicine bookmark.");
+      setIsBookmarked(!isBookmarked);
+      Alert.alert("Bookmark Saved", `${med.name} saved to your cabinet.`);
     }
   };
 
@@ -122,7 +119,7 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
           >
             <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{med.name}</Text>
+          <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">{med.name}</Text>
         </View>
         
         {/* Real-time Bookmark / Save Button */}
@@ -157,6 +154,18 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
           </View>
         )}
 
+        {med.isAiGenerated && (
+          <View style={styles.aiWarningBanner}>
+            <MaterialIcons name="info-outline" size={20} color={colors.primary} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.aiWarningTitle}>AI-Generated Explanation Summary</Text>
+              <Text style={styles.aiWarningDesc}>
+                This medication details summary is generated using clinical knowledge. No exact matching record was found in the official FDA label database.
+              </Text>
+            </View>
+          </View>
+        )}
+
         {/* Product Visual Profile */}
         <View style={styles.heroBlock}>
           <Image source={{ uri: med.img }} style={styles.heroImg} />
@@ -176,11 +185,41 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
             <View style={styles.manufCircle}>
               <MaterialIcons name="factory" size={22} color={colors.primary} />
             </View>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.manufLabel}>Pharmaceutical Manufacturer</Text>
-              <Text style={styles.manufName}>{med.manufacturer}</Text>
+              <Text style={styles.manufName}>{med.manufacturer || 'N/A'}</Text>
             </View>
           </View>
+
+          {med.genericName && (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.detailTextRow}>
+                <Text style={styles.detailLabel}>Active Ingredient</Text>
+                <Text style={styles.detailValue}>{med.genericName}</Text>
+              </View>
+            </>
+          )}
+
+          {med.purpose && (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.detailTextRow}>
+                <Text style={styles.detailLabel}>What it is used for</Text>
+                <Text style={styles.detailValue}>{med.purpose}</Text>
+              </View>
+            </>
+          )}
+
+          {med.storage && (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.detailTextRow}>
+                <Text style={styles.detailLabel}>Storage Instructions</Text>
+                <Text style={styles.detailValue}>{med.storage}</Text>
+              </View>
+            </>
+          )}
         </View>
 
         {/* Actionable Bento Grid Quick Guides */}
@@ -241,7 +280,7 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
                 <Text style={styles.interactionTitle}>Drug Interactions</Text>
               </View>
               <Text style={styles.interactionDesc}>
-                Avoid concurrent use with blood thinners or high dosage potassium salt substitutes. Ask a clinician for safe combinations.
+                {med.interactions || "Avoid concurrent use with blood thinners or high dosage potassium salt supplements. Ask a clinician for safe combinations."}
               </Text>
             </View>
 
@@ -253,14 +292,6 @@ export const MedicineOverviewScreen = ({ route, navigation }) => {
               >
                 <MaterialIcons name="forum" size={18} color={colors.primary} />
                 <Text style={styles.communityActionBtnText}>Reviews Feed</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.communityActionBtn}
-                onPress={() => navigation.navigate('SideEffectAnalytics', { uid, mockUser, medData: med })}
-              >
-                <MaterialIcons name="insights" size={18} color={colors.primary} />
-                <Text style={styles.communityActionBtnText}>Safety Analytics</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -275,6 +306,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',
@@ -291,6 +329,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    flex: 1,
+    minWidth: 0,
+    marginRight: 8,
   },
   headerBackBtn: {
     width: 36,
@@ -304,6 +345,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
     color: colors.primary,
+    flex: 1,
   },
   bookmarkBtn: {
     width: 36,
@@ -543,6 +585,45 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: colors.primary,
+  },
+  detailTextRow: {
+    paddingVertical: 4,
+  },
+  detailLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.outline,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  detailValue: {
+    fontSize: 13,
+    color: colors.text,
+    fontWeight: '600',
+    lineHeight: 18,
+  },
+  aiWarningBanner: {
+    flexDirection: 'row',
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    borderRadius: 12,
+    padding: 12,
+    gap: 12,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  aiWarningTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.primary,
+  },
+  aiWarningDesc: {
+    fontSize: 11.5,
+    color: colors.textSecondary,
+    lineHeight: 15,
+    marginTop: 2,
+    fontWeight: '600',
   },
 });
 

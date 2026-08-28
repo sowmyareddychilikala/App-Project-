@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TextInput, 
   TouchableOpacity, 
   ScrollView, 
-  SafeAreaView, 
+  KeyboardAvoidingView,
   ActivityIndicator,
   Alert,
   Platform,
-  StatusBar
-} from 'react-native';
+  StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { signUpUser } from '../../services/authService';
@@ -52,15 +51,26 @@ export const RegistrationScreen = ({ navigation }) => {
     try {
       const user = await signUpUser(email.trim(), password, fullName.trim());
       setLoading(false);
-      Alert.alert(
-        'Registration Success', 
-        'Your Practitioner Account has been secured successfully.',
-        [
-          { text: 'Access Dashboard', onPress: () => navigation.replace('Dashboard', { uid: user.uid }) }
-        ]
-      );
+      navigation.replace('Dashboard', { uid: user.uid });
     } catch (error) {
       setLoading(false);
+
+      // Catch network failure and offer Offline Demo Mode
+      if (error.message && error.message.includes('Network request failed')) {
+        Alert.alert(
+          'Network Offline',
+          'Unable to reach MediTrust secure registration servers. Would you like to run in Offline Demo Mode?',
+          [
+            { text: 'Retry', style: 'cancel' },
+            { 
+              text: 'Launch Offline Mode', 
+              onPress: () => navigation.replace('Dashboard', { mockUser: true }) 
+            }
+          ]
+        );
+        return;
+      }
+
       let errorMessage = 'An error occurred during account creation. Please try again.';
       if (error.code === 'auth/email-already-in-use') {
         errorMessage = 'This email address is already registered.';
@@ -70,12 +80,22 @@ export const RegistrationScreen = ({ navigation }) => {
         errorMessage = 'The password is too weak. Please add special characters or numbers.';
       }
       Alert.alert('Registration Failed', errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoidingContainer}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         
         {/* Brand Header */}
         <View style={styles.header}>
@@ -216,7 +236,8 @@ export const RegistrationScreen = ({ navigation }) => {
 
         </View>
 
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -227,9 +248,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
   },
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
   scrollContainer: {
     paddingHorizontal: 24,
     paddingBottom: 40,
+    ...Platform.select({
+      web: {
+        maxWidth: 500,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

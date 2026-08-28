@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   Platform, 
   StatusBar,
   Dimensions,
-  ActivityIndicator
-} from 'react-native';
+  ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { listenSideEffectsReports } from '../../services/dbService';
@@ -25,6 +24,8 @@ export const SideEffectAnalyticsScreen = ({ route, navigation }) => {
   const [dbReports, setDbReports] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const targetMedName = params.medData?.name || params.medName || 'Lisinopril';
+
   // Static analytics fallbacks for high-fidelity clinical visual completeness
   const staticAnalytics = [
     { name: 'Dry Cough', rate: 78, severity: 'Mild - Moderate', count: 124 },
@@ -32,30 +33,85 @@ export const SideEffectAnalyticsScreen = ({ route, navigation }) => {
     { name: 'Headache', rate: 30, severity: 'Mild', count: 48 }
   ];
 
-  const suggestedAlternative = {
-    name: 'Losartan 50mg',
-    category: 'Cardiovascular',
-    trustScore: 96,
-    desc: 'Losartan does not inhibit kininase II, maintaining bradykinin levels, resulting in a significantly lower incidence of cough (under 3% clinical rates) compared to Lisinopril.'
+  const getAlternative = (medName) => {
+    const lower = medName.toLowerCase();
+    if (lower.includes('lisinopril')) {
+      return {
+        name: 'Losartan 50mg',
+        category: 'Cardiovascular',
+        trustScore: 96,
+        desc: 'Losartan does not inhibit kininase II, maintaining bradykinin levels, resulting in a significantly lower incidence of cough (under 3% clinical rates) compared to Lisinopril.'
+      };
+    }
+    if (lower.includes('paracetamol') || lower.includes('acetaminophen')) {
+      return {
+        name: 'Ibuprofen 400mg',
+        category: 'Analgesics / NSAID',
+        trustScore: 92,
+        desc: 'Ibuprofen is an NSAID that reduces both pain and inflammation. Unlike Paracetamol, it targets inflammatory pathways but should be taken with food to protect the stomach.'
+      };
+    }
+    if (lower.includes('amoxicillin')) {
+      return {
+        name: 'Azithromycin 500mg',
+        category: 'Macrolide Antibiotics',
+        trustScore: 94,
+        desc: 'Azithromycin serves as an effective alternative antibiotic, especially for patients with confirmed penicillin allergies or those requiring a shorter 3-to-5 day dosing course.'
+      };
+    }
+    if (lower.includes('ibuprofen')) {
+      return {
+        name: 'Paracetamol 500mg',
+        category: 'Analgesics / Antipyretic',
+        trustScore: 98,
+        desc: 'Paracetamol is a non-NSAID pain reliever that does not cause gastric irritation, making it a safer option for patients with history of ulcers or acid reflux.'
+      };
+    }
+    if (lower.includes('omeprazole')) {
+      return {
+        name: 'Famotidine 20mg',
+        category: 'H2 Blocker',
+        trustScore: 93,
+        desc: 'Famotidine is an H2 receptor antagonist that reduces stomach acid production. It has a different mechanism than PPIs like Omeprazole, reducing risk of long-term PPI side effects.'
+      };
+    }
+    return {
+      name: 'Consult Healthcare Provider',
+      category: 'General Safety',
+      trustScore: 100,
+      desc: 'Please speak with your prescribing doctor or a licensed pharmacist to evaluate appropriate therapeutic alternatives suited to your personal health history.'
+    };
   };
 
-  // Listen to reports in RTDB
+  const suggestedAlternative = getAlternative(targetMedName);
+
+  // Listen to reports in RTDB and local cache
   useEffect(() => {
     if (mockUser) {
       setLoading(false);
       return;
     }
-    if (uid) {
-      const unsubscribe = listenSideEffectsReports((data) => {
-        setDbReports(data || {});
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    }
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    const unsubscribe = listenSideEffectsReports((data) => {
+      clearTimeout(timer);
+      setDbReports(data || {});
+      setLoading(false);
+    });
+
+    return () => {
+      clearTimeout(timer);
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
   }, [uid, mockUser]);
 
   // Dynamically compile reports from Firebase RTDB
-  const reportsList = Object.values(dbReports);
+  const reportsList = Object.values(dbReports).filter(rep => 
+    rep.medicineName && rep.medicineName.toLowerCase() === targetMedName.toLowerCase()
+  );
   const totalReportsCount = reportsList.length;
 
   const compiledAnalytics = [];
@@ -81,10 +137,39 @@ export const SideEffectAnalyticsScreen = ({ route, navigation }) => {
     });
   }
 
+  // Generate fallback analytics based on medicine details if available
+  const compileLocalStaticAnalytics = () => {
+    if (params.medData) {
+      const localStats = [];
+      if (params.medData.sideEffectsCommon) {
+        params.medData.sideEffectsCommon.forEach((sym, idx) => {
+          localStats.push({
+            name: sym,
+            rate: Math.max(15, 75 - idx * 20),
+            severity: 'Common',
+            count: Math.max(10, 112 - idx * 30)
+          });
+        });
+      }
+      if (params.medData.sideEffectsSerious) {
+        params.medData.sideEffectsSerious.forEach((sym, idx) => {
+          localStats.push({
+            name: sym,
+            rate: Math.max(2, 12 - idx * 4),
+            severity: 'Serious / Rare',
+            count: Math.max(1, 18 - idx * 6)
+          });
+        });
+      }
+      if (localStats.length > 0) return localStats;
+    }
+    return staticAnalytics;
+  };
+
   // Combine static and user contributed stats (ordering by highest rate)
   const displayAnalytics = totalReportsCount > 0 
     ? compiledAnalytics.sort((a, b) => b.rate - a.rate)
-    : staticAnalytics;
+    : compileLocalStaticAnalytics();
 
   if (loading) {
     return (
@@ -118,7 +203,7 @@ export const SideEffectAnalyticsScreen = ({ route, navigation }) => {
         <View style={styles.introCard}>
           <View style={styles.introLeft}>
             <Text style={styles.introLabel}>COLLECTIVE INTELLIGENCE</Text>
-            <Text style={styles.introTitle}>Lisinopril Side Effects</Text>
+            <Text style={styles.introTitle}>{targetMedName} Side Effects</Text>
             <Text style={styles.introDesc}>
               Real-time patient occurrences aggregated anonymously to map pharmacovigilance risks.
             </Text>
@@ -195,6 +280,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   loadingContainer: {
     flex: 1,

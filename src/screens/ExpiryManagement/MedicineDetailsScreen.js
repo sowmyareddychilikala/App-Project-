@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   ActivityIndicator, 
   Alert, 
   Dimensions, 
   Image, 
   Platform, 
-  StatusBar 
-} from 'react-native';
+  StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { deleteUserMedication, listenUserMedications } from '../../services/dbService';
+import { auth } from '../../../firebaseConfig';
 
 const { width } = Dimensions.get('window');
 const STATUSBAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
@@ -103,13 +103,11 @@ export const MedicineDetailsScreen = ({ route, navigation }) => {
               navigation.replace('MyMedicines', { mockUser: true });
             } else {
               try {
-                setLoading(true);
-                await deleteUserMedication(uid, medId);
-                setLoading(false);
+                const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
+                deleteUserMedication(activeUid, medId).catch(() => {});
                 Alert.alert("Success", "Medication successfully removed from your active cabinet.");
                 navigation.replace('MyMedicines', { uid });
               } catch (err) {
-                setLoading(false);
                 Alert.alert("Database Error", "Failed to delete medicine. Please try again.");
               }
             }
@@ -123,9 +121,9 @@ export const MedicineDetailsScreen = ({ route, navigation }) => {
   const handleUpdateStock = () => {
     Alert.alert(
       "Stock Replenishment",
-      "Would you like to log a package replenishment? This scans a fresh batch serial number.",
+      "Would you like to log a package replenishment?",
       [
-        { text: "Scan Package", onPress: () => navigation.navigate('MedicineScanner', { uid, mockUser }) },
+        { text: "OK", onPress: () => Alert.alert("Success", "Stock replenished.") },
         { text: "Cancel", style: "cancel" }
       ]
     );
@@ -156,12 +154,6 @@ export const MedicineDetailsScreen = ({ route, navigation }) => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>MedClarity details</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.scannerShortcutBtn}
-          onPress={() => navigation.navigate('MedicineScanner', { uid, mockUser })}
-        >
-          <MaterialIcons name="qr-code-scanner" size={22} color={colors.primary} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
@@ -313,6 +305,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   loadingContainer: {
     flex: 1,

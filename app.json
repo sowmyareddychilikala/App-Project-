@@ -21,7 +21,8 @@
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.sowmyareddy.meditrust"
     },
     "web": {
       "favicon": "./Figma/mediguard_ai_logo/screen.png"

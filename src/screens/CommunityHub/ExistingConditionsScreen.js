@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   TextInput, 
   Platform, 
@@ -12,8 +11,8 @@ import {
   Dimensions,
   Switch,
   Alert,
-  ActivityIndicator
-} from 'react-native';
+  ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { 
@@ -43,18 +42,16 @@ export const ExistingConditionsScreen = ({ route, navigation }) => {
 
   // Load user profile conditions
   useEffect(() => {
-    if (mockUser) {
+    if (mockUser || !uid) {
       setSelectedConditions(['asthma']);
       setLoading(false);
       return;
     }
-    if (uid) {
-      const unsubscribe = listenUserConditions(uid, (data) => {
-        setSelectedConditions(data || []);
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    }
+    const unsubscribe = listenUserConditions(uid, (data) => {
+      setSelectedConditions(data || []);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, [uid, mockUser]);
 
   // Toggle checklist selection
@@ -216,6 +213,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   loadingContainer: {
     flex: 1,

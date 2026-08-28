@@ -9,7 +9,6 @@ import LoginScreen from './src/screens/Auth/LoginScreen';
 import RegistrationScreen from './src/screens/Auth/RegistrationScreen';
 import ForgotPasswordScreen from './src/screens/Auth/ForgotPasswordScreen';
 import DashboardScreen from './src/screens/Dashboard/DashboardScreen';
-import MedicineScannerScreen from './src/screens/Dashboard/MedicineScannerScreen';
 
 // Module 4: Medicine Expiry Management Screens
 import MyMedicinesScreen from './src/screens/ExpiryManagement/MyMedicinesScreen';
@@ -32,12 +31,67 @@ import ReportSideEffectScreen from './src/screens/CommunityHub/ReportSideEffectS
 import SideEffectAnalyticsScreen from './src/screens/CommunityHub/SideEffectAnalyticsScreen';
 import WriteReviewScreen from './src/screens/CommunityHub/WriteReviewScreen';
 
+// Module 7: Clinical Trust System Screens
+import PharmacySearchScreen from './src/screens/ClinicalTrust/PharmacySearchScreen';
+import SelectPharmacyScreen from './src/screens/ClinicalTrust/SelectPharmacyScreen';
+import PharmacyDetailsScreen from './src/screens/ClinicalTrust/PharmacyDetailsScreen';
+import SubmitReportScreen from './src/screens/ClinicalTrust/SubmitReportScreen';
+import ComplaintHistoryScreen from './src/screens/ClinicalTrust/ComplaintHistoryScreen';
+import TrustScoreAnalysisScreen from './src/screens/ClinicalTrust/TrustScoreAnalysisScreen';
+import ClinicalTrustFrameworkScreen from './src/screens/ClinicalTrust/ClinicalTrustFrameworkScreen';
+
+// Module 9: Community Safety Network Screens
+import SafetyMapScreen from './src/screens/CommunitySafety/SafetyMapScreen';
+import CommunityAlertsScreen from './src/screens/CommunitySafety/CommunityAlertsScreen';
+import RecentSuspiciousMedicinesScreen from './src/screens/CommunitySafety/RecentSuspiciousMedicinesScreen';
+import MedicineRecallAlertsScreen from './src/screens/CommunitySafety/MedicineRecallAlertsScreen';
+
 const Stack = createStackNavigator();
+
+const linking = {
+  prefixes: ['http://localhost:8081', 'http://localhost:8082', 'meditrust://'],
+  config: {
+    screens: {
+      Splash: '',
+      Welcome: 'welcome',
+      Login: 'login',
+      Registration: 'register',
+      ForgotPassword: 'forgot-password',
+      Dashboard: 'dashboard',
+      MyMedicines: 'my-medicines',
+      MedicineDetails: 'medicine-details',
+      AddReminder: 'add-reminder',
+      UpcomingExpiries: 'upcoming-expiries',
+      ExpiredMedicines: 'expired-medicines',
+      MedicineSearch: 'search',
+      SearchResults: 'search-results',
+      MedicineOverview: 'medicine-overview',
+      UsageDosage: 'usage-dosage',
+      PrecautionsWarnings: 'precautions-warnings',
+      ExistingConditions: 'existing-conditions',
+      CommunityFeed: 'community-feed',
+      ReportSideEffect: 'report-side-effect',
+      SideEffectAnalytics: 'side-effect-analytics',
+      WriteReview: 'write-review',
+      PharmacySearch: 'pharmacy-search',
+      SelectPharmacy: 'select-pharmacy',
+      PharmacyDetails: 'pharmacy-details',
+      SubmitReport: 'submit-report',
+      ComplaintHistory: 'complaint-history',
+      TrustScoreAnalysis: 'trust-score-analysis',
+      ClinicalTrustFramework: 'clinical-trust-framework',
+      SafetyMap: 'safety-map',
+      CommunityAlerts: 'community-alerts',
+      RecentSuspiciousMedicines: 'suspicious-medicines',
+      MedicineRecallAlerts: 'recall-alerts',
+    },
+  },
+};
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <Stack.Navigator 
           initialRouteName="Splash"
           screenOptions={{
@@ -51,7 +105,6 @@ export default function App() {
           <Stack.Screen name="Registration" component={RegistrationScreen} />
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
-          <Stack.Screen name="MedicineScanner" component={MedicineScannerScreen} />
           
           {/* Module 4 Stack Screens */}
           <Stack.Screen name="MyMedicines" component={MyMedicinesScreen} />
@@ -73,6 +126,21 @@ export default function App() {
           <Stack.Screen name="ReportSideEffect" component={ReportSideEffectScreen} />
           <Stack.Screen name="SideEffectAnalytics" component={SideEffectAnalyticsScreen} />
           <Stack.Screen name="WriteReview" component={WriteReviewScreen} />
+
+          {/* Module 7 Stack Screens */}
+          <Stack.Screen name="PharmacySearch" component={PharmacySearchScreen} />
+          <Stack.Screen name="SelectPharmacy" component={SelectPharmacyScreen} />
+          <Stack.Screen name="PharmacyDetails" component={PharmacyDetailsScreen} />
+          <Stack.Screen name="SubmitReport" component={SubmitReportScreen} />
+          <Stack.Screen name="ComplaintHistory" component={ComplaintHistoryScreen} />
+          <Stack.Screen name="TrustScoreAnalysis" component={TrustScoreAnalysisScreen} />
+          <Stack.Screen name="ClinicalTrustFramework" component={ClinicalTrustFrameworkScreen} />
+
+          {/* Module 9 Stack Screens */}
+          <Stack.Screen name="SafetyMap" component={SafetyMapScreen} />
+          <Stack.Screen name="CommunityAlerts" component={CommunityAlertsScreen} />
+          <Stack.Screen name="RecentSuspiciousMedicines" component={RecentSuspiciousMedicinesScreen} />
+          <Stack.Screen name="MedicineRecallAlerts" component={MedicineRecallAlertsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -1,16 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TextInput, 
   TouchableOpacity, 
-  SafeAreaView, 
+  ScrollView,
+  KeyboardAvoidingView,
   ActivityIndicator,
   Alert,
   Platform,
-  StatusBar
-} from 'react-native';
+  StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { resetUserPassword } from '../../services/authService';
@@ -69,6 +69,23 @@ export const ForgotPasswordScreen = ({ navigation }) => {
       );
     } catch (error) {
       setLoading(false);
+
+      // Catch network failure and offer Offline Demo Mode
+      if (error.message && error.message.includes('Network request failed')) {
+        Alert.alert(
+          'Network Offline',
+          'Unable to reach MediTrust secure recovery servers. Would you like to launch the app in Offline Demo Mode?',
+          [
+            { text: 'Retry', style: 'cancel' },
+            { 
+              text: 'Launch Offline Mode', 
+              onPress: () => navigation.replace('Dashboard', { mockUser: true }) 
+            }
+          ]
+        );
+        return;
+      }
+
       let errorMessage = 'Failed to send recovery email. Please check your address and connection.';
       if (error.code === 'auth/invalid-email') {
         errorMessage = 'The email address format is invalid.';
@@ -130,18 +147,26 @@ export const ForgotPasswordScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      {/* Header AppBar */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backBtn}
-          onPress={() => step === 2 ? setStep(1) : navigation.navigate('Login')}
-        >
-          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>MediGuard AI</Text>
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoidingContainer}
+      >
+        {/* Header AppBar */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backBtn}
+            onPress={() => step === 2 ? setStep(1) : navigation.navigate('Login')}
+          >
+            <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>MediGuard AI</Text>
+        </View>
 
-      <View style={styles.content}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         
         {/* Verification Card */}
         <View style={styles.card}>
@@ -285,7 +310,8 @@ export const ForgotPasswordScreen = ({ navigation }) => {
           </View>
         </View>
 
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -295,6 +321,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -321,11 +350,18 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: colors.primary,
   },
-  content: {
-    flex: 1,
+  scrollContainer: {
     paddingHorizontal: 24,
-    justifyContent: 'center',
     paddingBottom: 40,
+    flexGrow: 1,
+    justifyContent: 'center',
+    ...Platform.select({
+      web: {
+        maxWidth: 500,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   card: {
     backgroundColor: colors.surface,

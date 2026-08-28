@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TextInput, 
   TouchableOpacity, 
   ScrollView, 
-  SafeAreaView, 
+  KeyboardAvoidingView,
   Modal, 
   ActivityIndicator,
   Alert,
   Platform,
-  StatusBar
-} from 'react-native';
+  StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { signInUser } from '../../services/authService';
@@ -46,6 +45,23 @@ export const LoginScreen = ({ navigation }) => {
       navigation.replace('Dashboard', { uid: user.uid });
     } catch (error) {
       setLoading(false);
+      
+      // Catch network failure and offer Offline Demo Mode
+      if (error.message && error.message.includes('Network request failed')) {
+        Alert.alert(
+          'Network Offline',
+          'Unable to reach MediTrust secure servers. Would you like to launch the app in Offline Demo Mode?',
+          [
+            { text: 'Retry Network Connection', style: 'cancel' },
+            { 
+              text: 'Launch Offline Mode', 
+              onPress: () => navigation.replace('Dashboard', { mockUser: true }) 
+            }
+          ]
+        );
+        return;
+      }
+
       let errorMessage = 'An error occurred during sign in. Please try again.';
       if (error.code === 'auth/invalid-email') {
         errorMessage = 'The email address is invalid.';
@@ -53,6 +69,8 @@ export const LoginScreen = ({ navigation }) => {
         errorMessage = 'Incorrect credentials. Please verify your email and password.';
       }
       Alert.alert('Authentication Failed', errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,7 +95,15 @@ export const LoginScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoidingContainer}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         
         {/* App Bar Header */}
         <View style={styles.header}>
@@ -196,6 +222,7 @@ export const LoginScreen = ({ navigation }) => {
         </View>
 
       </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Biometric Scanning Overlay Modal */}
       <Modal
@@ -251,11 +278,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
   },
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
   scrollContainer: {
     paddingHorizontal: 24,
     paddingBottom: 40,
     justifyContent: 'center',
     minHeight: '90%',
+    ...Platform.select({
+      web: {
+        maxWidth: 500,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

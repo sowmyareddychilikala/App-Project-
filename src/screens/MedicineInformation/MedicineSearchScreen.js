@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
-import { 
-  View, 
+import React, { useState, useEffect } from 'react';
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
   ScrollView, 
   TextInput, 
   Image, 
   Platform, 
   StatusBar,
-  Dimensions
-} from 'react-native';
+  Alert,
+  Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
+import { 
+  getRecentSearches, 
+  saveRecentSearch, 
+  removeRecentSearch, 
+  clearRecentSearches, 
+  getLiveSuggestions 
+} from '../../services/medicineService';
 
 const { width } = Dimensions.get('window');
 const STATUSBAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
@@ -23,12 +29,35 @@ export const MedicineSearchScreen = ({ route, navigation }) => {
   const { uid, mockUser } = params;
 
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const recentSearches = [
-    'Paracetamol 500mg',
-    'Amoxicillin Capsules',
-    'Allergy Relief Syrup'
-  ];
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    getRecentSearches().then(list => setRecentSearches(list || []));
+  }, []);
+
+  const handleQueryChange = (text) => {
+    setSearchQuery(text);
+    setSuggestions(getLiveSuggestions(text));
+  };
+
+  const handleSearchSubmit = async (queryToRun) => {
+    const q = (queryToRun || searchQuery).trim();
+    if (!q) return;
+    const updatedRecent = await saveRecentSearch(q);
+    if (updatedRecent) setRecentSearches(updatedRecent);
+    navigation.navigate('SearchResults', { uid, mockUser, query: q });
+  };
+
+  const handleRemoveRecent = async (item) => {
+    const updated = await removeRecentSearch(item);
+    setRecentSearches(updated);
+  };
+
+  const handleClearAll = async () => {
+    await clearRecentSearches();
+    setRecentSearches([]);
+  };
 
   const trendingMeds = [
     {
@@ -66,11 +95,6 @@ export const MedicineSearchScreen = ({ route, navigation }) => {
     }
   ];
 
-  const handleSearchSubmit = () => {
-    if (!searchQuery.trim()) return;
-    navigation.navigate('SearchResults', { uid, mockUser, query: searchQuery.trim() });
-  };
-
   return (
     <SafeAreaView style={styles.safeContainer}>
       {/* Top Header App Bar */}
@@ -78,7 +102,7 @@ export const MedicineSearchScreen = ({ route, navigation }) => {
         <View style={styles.headerLeftRow}>
           <TouchableOpacity 
             style={styles.headerBackBtn}
-            onPress={() => navigation.replace('Dashboard')}
+            onPress={() => navigation.navigate('Dashboard')}
           >
             <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
           </TouchableOpacity>
@@ -98,47 +122,74 @@ export const MedicineSearchScreen = ({ route, navigation }) => {
             placeholder="Search medicine, brand, or condition..."
             placeholderTextColor={colors.outline}
             value={searchQuery}
-            onChangeText={setSearchQuery}
-            onSubmitEditing={handleSearchSubmit}
+            onChangeText={handleQueryChange}
+            onSubmitEditing={() => handleSearchSubmit()}
             returnKeyType="search"
+            numberOfLines={1}
           />
+          {searchQuery.trim().length > 0 && (
+            <TouchableOpacity onPress={() => handleQueryChange('')}>
+              <MaterialIcons name="close" size={18} color={colors.outline} />
+            </TouchableOpacity>
+          )}
         </View>
+
+        {/* Live Search Auto-Suggestions as User Types */}
+        {suggestions.length > 0 && (
+          <View style={styles.suggestionsCard}>
+            <Text style={styles.suggestionsHeader}>Suggestions</Text>
+            {suggestions.map((sug, idx) => (
+              <TouchableOpacity 
+                key={idx} 
+                style={styles.suggestionRowItem}
+                onPress={() => handleSearchSubmit(sug)}
+              >
+                <MaterialIcons name="search" size={18} color={colors.primary} />
+                <Text style={styles.suggestionRowText}>{sug}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
         {/* Categories Chips Row */}
         <View style={styles.sectionBlock}>
           <Text style={styles.sectionHeader}>Categories</Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsScroll}>
             <TouchableOpacity style={styles.chipActive}><Text style={styles.chipTextActive}>All</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.chip} onPress={() => navigation.navigate('SearchResults', { uid, mockUser, query: 'Pain Relief' })}><Text style={styles.chipText}>Pain Relief</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.chip} onPress={() => navigation.navigate('SearchResults', { uid, mockUser, query: 'Antibiotics' })}><Text style={styles.chipText}>Antibiotics</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.chip} onPress={() => navigation.navigate('SearchResults', { uid, mockUser, query: 'Vitamins' })}><Text style={styles.chipText}>Vitamins</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.chip} onPress={() => navigation.navigate('SearchResults', { uid, mockUser, query: 'Allergy' })}><Text style={styles.chipText}>Allergy</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.chip} onPress={() => navigation.navigate('SearchResults', { uid, mockUser, query: 'Digestion' })}><Text style={styles.chipText}>Digestion</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.chip} onPress={() => handleSearchSubmit('Pain Relief')}><Text style={styles.chipText}>Pain Relief</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.chip} onPress={() => handleSearchSubmit('Antibiotics')}><Text style={styles.chipText}>Antibiotics</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.chip} onPress={() => handleSearchSubmit('Vitamins')}><Text style={styles.chipText}>Vitamins</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.chip} onPress={() => handleSearchSubmit('Allergy')}><Text style={styles.chipText}>Allergy</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.chip} onPress={() => handleSearchSubmit('Digestion')}><Text style={styles.chipText}>Digestion</Text></TouchableOpacity>
           </ScrollView>
         </View>
 
         {/* Recent Searches feeds */}
-        <View style={styles.sectionBlock}>
-          <View style={styles.sectionHeadingRow}>
-            <Text style={styles.sectionTitle}>Recent Searches</Text>
-            <TouchableOpacity><Text style={styles.clearAllText}>Clear All</Text></TouchableOpacity>
+        {recentSearches.length > 0 && (
+          <View style={styles.sectionBlock}>
+            <View style={styles.sectionHeadingRow}>
+              <Text style={styles.sectionTitle}>Recent Searches</Text>
+              <TouchableOpacity onPress={handleClearAll}><Text style={styles.clearAllText}>Clear All</Text></TouchableOpacity>
+            </View>
+            <View style={styles.searchesStack}>
+              {recentSearches.map((search, idx) => (
+                <TouchableOpacity 
+                  key={idx} 
+                  style={styles.searchRow}
+                  onPress={() => handleSearchSubmit(search)}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                    <MaterialIcons name="history" size={20} color={colors.outline} />
+                    <Text style={styles.searchRowText}>{search}</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => handleRemoveRecent(search)}>
+                    <MaterialIcons name="close" size={16} color={colors.outline} />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-          <View style={styles.searchesStack}>
-            {recentSearches.map((search, idx) => (
-              <TouchableOpacity 
-                key={idx} 
-                style={styles.searchRow}
-                onPress={() => navigation.navigate('SearchResults', { uid, mockUser, query: search })}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <MaterialIcons name="history" size={20} color={colors.outline} />
-                  <Text style={styles.searchRowText}>{search}</Text>
-                </View>
-                <MaterialIcons name="close" size={16} color={colors.outline} />
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        )}
 
         {/* Trending Bento Grid cards */}
         <View style={[styles.sectionBlock, { marginBottom: 32 }]}>
@@ -202,13 +253,7 @@ export const MedicineSearchScreen = ({ route, navigation }) => {
           <Text style={styles.navText}>Saved</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={styles.navItem}
-          onPress={() => navigation.replace('UpcomingExpiries', { uid, mockUser })}
-        >
-          <MaterialIcons name="warning" size={22} color={colors.outline} />
-          <Text style={styles.navText}>Alerts</Text>
-        </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
@@ -219,6 +264,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',
@@ -277,6 +329,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingLeft: 48,
     paddingRight: 16,
+    paddingVertical: 0,
+    textAlignVertical: 'center',
+    includeFontPadding: false,
     fontSize: 13,
     fontWeight: '600',
     color: colors.text,
@@ -465,6 +520,40 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: '800',
     marginTop: 2,
+  },
+  suggestionsCard: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.primary + '4D',
+    borderRadius: 14,
+    padding: 12,
+    marginBottom: 16,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  suggestionsHeader: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: colors.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  suggestionRowItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 8,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.outlineVariant + '4D',
+  },
+  suggestionRowText: {
+    fontSize: 13.5,
+    fontWeight: '600',
+    color: colors.text,
   }
 });
 

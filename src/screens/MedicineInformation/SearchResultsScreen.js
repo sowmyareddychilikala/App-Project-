@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { 
-   View, 
+import React, { useState, useEffect } from 'react';
+import { View, 
    Text, 
    StyleSheet, 
    TouchableOpacity, 
-   SafeAreaView, 
    ScrollView, 
    Image, 
    Platform, 
@@ -12,10 +10,13 @@ import {
    Dimensions,
    Modal,
    TextInput,
-   Alert
-} from 'react-native';
+   ActivityIndicator,
+   Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { medicineService } from '../../services/medicineService';
 
 const { width, height } = Dimensions.get('window');
 const STATUSBAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
@@ -31,51 +32,60 @@ export const SearchResultsScreen = ({ route, navigation }) => {
     { sender: 'pharmacist', text: 'Hello! I am MedVigilance’s on-duty clinical pharmacist. How can I assist you with your prescriptions or alternatives today?' }
   ]);
 
-  const databaseMedicines = [
-    {
-      id: 'med_c1',
-      name: 'Paracetamol',
-      category: 'Pain Relief',
-      type: 'Tablet',
-      strength: '500mg',
-      price: '$4.50',
-      manufacturer: 'GSK Pharma',
-      tag: 'IN STOCK',
-      desc: 'Used for relieving mild to moderate pain including headache, migraine, muscle ache.',
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9sRImLSNHu1l3G9vE9HfRV8snZ4v1V6iPu-xt47H7JhCYR4FB6Xpbd2qA6GfUQwofY0g1xUm38_5igW_uSkXuflU_ADiXlcWbPlE8fDMx78TgUF6-ExWcUxRC5PrVVPn1v1l4s-tvGrn0Y4kYSu-p_kRSdv7mx1N9GtulyO4i9_-h_yq8U20cE7M_0ImF409cz-rGIJK6Zl_XTQ5PvKmmURQiNJV9IhMzJGNjbVHHM6lLl_WYWt7py5778ys9kQakqS1YhSfgI78'
-    },
-    {
-      id: 'med_c2',
-      name: 'Amoxicillin',
-      category: 'Antibiotics',
-      type: 'Capsule',
-      strength: '500mg',
-      price: '$12.00',
-      manufacturer: 'Pfizer Inc.',
-      tag: 'PRESCRIPTION',
-      desc: 'A penicillin-type antibiotic used to treat various bacterial infections like pneumonia and bronchitis.',
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuALIFMubUPOsQt6v13kAoukPZgY26--GFjW48n8xQ2uBxT3kEw2heftKxVqEAr4A67VGN6yldPVrubLXDqS1eVt032IKVFCxyaGC3pYWV7fB-f8H1gQpom0rf02Yw4cforBuVXHxpyYY80NB2sdxh3wp3Qb_J2pELMcgyjiB2Ec5UFQ0KO0eIXPgvmk8071jMNM46_DlK083dcPDJS5VMQKx_i6lBCW4AmnDOa3SOpCzzIq4ARBJoCAoE6QTZcVKlPN4DUQCBXBshs'
-    },
-    {
-      id: 'med_c3',
-      name: 'Cetirizine Syrup',
-      category: 'Allergy',
-      type: 'Syrup',
-      strength: '150ml',
-      price: '$8.25',
-      manufacturer: 'Bayer',
-      tag: 'IN STOCK',
-      desc: 'An antihistamine used to relieve allergy symptoms such as watery eyes, runny nose, and sneezing.',
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDcIK_CNAytWJxRMwMuYZXOgMQzXlec_0fXvysllBMdwKdBNsMk_temaX2_r24-WtGjsljQplnfFh3Ap46180riMwTLwDog_AUomgy7N6ltLgySPIPjlFLZU_l9AnrMUWkMpOOfo1wRT2HdiQ6uFNS507Jn40-HN4AfuNOa6e9qBprg1GaluUDE5r2Eu4GdR-HtT0XvMvbMjpt6BIxdi3Peg3b62RxvcexlQpxTArjsmmrAyW4hMedxlAqwFW8HnRBfnZ1lY1GZr-k'
-    }
-  ];
+  const [currentQuery, setCurrentQuery] = useState(query);
+  const [searchResults, setSearchResults] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [keyError, setKeyError] = useState(false);
+  const [networkOffline, setNetworkOffline] = useState(false);
+  const fetchMeds = async (q, keyToUse) => {
+    setLoading(true);
+    setKeyError(false);
+    setNetworkOffline(false);
 
-  // Perform a case-insensitive query match
-  const filteredMeds = databaseMedicines.filter(med => 
-    med.name.toLowerCase().includes(query.toLowerCase()) ||
-    med.category.toLowerCase().includes(query.toLowerCase()) ||
-    med.desc.toLowerCase().includes(query.toLowerCase())
-  );
+    try {
+      const results = await medicineService.searchMedicine(q, keyToUse);
+      setSearchResults(results);
+      setSuggestions([]);
+    } catch (err) {
+      console.warn("Search failed: ", err.message);
+      if (err.message && err.message.includes('Network request failed')) {
+        setNetworkOffline(true);
+      }
+      const fallback = medicineService.runLocalSearch(q);
+      setSearchResults(fallback);
+      setSuggestions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load API Key and trigger fetch
+  useEffect(() => {
+    const loadApiKey = async () => {
+      const envKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+      if (envKey && envKey.length > 10 && !envKey.includes('YOUR_GEMINI')) {
+        setGeminiApiKey(envKey);
+        fetchMeds(currentQuery, envKey);
+        return;
+      }
+      try {
+        const storedKey = await AsyncStorage.getItem('@meditrust_gemini_api_key');
+        if (storedKey && storedKey.length > 10) {
+          setGeminiApiKey(storedKey);
+          fetchMeds(currentQuery, storedKey);
+        } else {
+          // If no key is set or key is placeholder, proceed to search with empty key
+          fetchMeds(currentQuery, '');
+        }
+      } catch (err) {
+        console.error('Failed to load Gemini API key:', err);
+        fetchMeds(currentQuery, '');
+      }
+    };
+    loadApiKey();
+  }, [currentQuery]);
 
   const handleSendMessage = () => {
     if (!chatMessage.trim()) return;
@@ -115,20 +125,68 @@ export const SearchResultsScreen = ({ route, navigation }) => {
         <View style={styles.queryBlock}>
           <View style={styles.queryBar}>
             <MaterialIcons name="search" size={20} color={colors.outline} />
-            <Text style={styles.queryText}>Query: "{query}"</Text>
+            <Text style={styles.queryText}>Query: "{currentQuery}"</Text>
           </View>
-          <Text style={styles.resultsCount}>{filteredMeds.length} Clinical Matches Found</Text>
+          <Text style={styles.resultsCount}>{searchResults.length} Clinical Matches Found</Text>
         </View>
+
+        {keyError && (
+          <View style={styles.keyErrorBanner}>
+            <MaterialIcons name="error-outline" size={20} color="#b71c1c" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.keyErrorTitle}>Gemini API Key Error</Text>
+              <Text style={styles.keyErrorDesc}>
+                The configured API key is invalid or blocked. Showing fallback search results from local clinical database.
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {networkOffline && (
+          <View style={styles.offlineBanner}>
+            <MaterialIcons name="cloud-off" size={20} color="#616161" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.offlineTitle}>Working Offline</Text>
+              <Text style={styles.offlineDesc}>
+                Secure clinical servers are currently unreachable. Showing local fallback database search results instead.
+              </Text>
+            </View>
+          </View>
+        )}
 
         {/* Results List */}
         <View style={styles.resultsStack}>
-          {filteredMeds.length === 0 ? (
+          {loading ? (
+            <View style={styles.emptyContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+              <Text style={styles.emptyText}>Consulting clinical databases...</Text>
+            </View>
+          ) : searchResults.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Ionicons name="search-outline" size={48} color={colors.outlineVariant} />
               <Text style={styles.emptyText}>No matches found in clinical database.</Text>
+
+              {suggestions.length > 0 && (
+                <View style={styles.suggestionBlock}>
+                  <Text style={styles.suggestionTitle}>Did you mean:</Text>
+                  <View style={styles.suggestionRow}>
+                    {suggestions.map((sug, idx) => (
+                      <TouchableOpacity 
+                        key={idx} 
+                        style={styles.suggestionChip}
+                        onPress={() => {
+                          setCurrentQuery(sug);
+                        }}
+                      >
+                        <Text style={styles.suggestionChipText}>{sug}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              )}
             </View>
           ) : (
-            filteredMeds.map((med) => (
+            searchResults.map((med) => (
               <TouchableOpacity 
                 key={med.id}
                 style={styles.medCard}
@@ -138,10 +196,12 @@ export const SearchResultsScreen = ({ route, navigation }) => {
                 <Image source={{ uri: med.img }} style={styles.medImg} />
                 <View style={styles.medDetails}>
                   <View style={styles.medTitleRow}>
-                    <Text style={styles.medName}>{med.name} {med.strength}</Text>
+                    <Text style={styles.medName} numberOfLines={1} ellipsizeMode="tail">
+                      {med.name} {med.strength && !med.name.includes(med.strength) ? `(${med.strength})` : ''}
+                    </Text>
                     <Text style={styles.medPrice}>{med.price}</Text>
                   </View>
-                  <Text style={styles.medManuf}>{med.manufacturer.toUpperCase()}</Text>
+                  <Text style={styles.medManuf} numberOfLines={1}>{(med.manufacturer || 'PHARMA CORE').toUpperCase()}</Text>
                   <Text style={styles.medDesc} numberOfLines={2}>{med.desc}</Text>
                   
                   <View style={styles.badgeRow}>
@@ -247,6 +307,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',
@@ -331,43 +398,54 @@ const styles = StyleSheet.create({
   },
   medCard: {
     backgroundColor: colors.surface,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: colors.outlineVariant,
-    borderRadius: 16,
+    borderRadius: 14,
     flexDirection: 'row',
+    alignItems: 'center',
     padding: 12,
-    gap: 14,
+    gap: 12,
+    marginBottom: 12,
+    overflow: 'hidden',
     shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    elevation: 1,
   },
   medImg: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
+    width: 72,
+    height: 72,
+    borderRadius: 10,
     resizeMode: 'cover',
     backgroundColor: colors.surfaceContainerHigh,
+    flexShrink: 0,
   },
   medDetails: {
     flex: 1,
+    minWidth: 0,
     justifyContent: 'center',
   },
   medTitleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
+    width: '100%',
   },
   medName: {
-    fontSize: 15,
-    fontWeight: '850',
+    flex: 1,
+    flexShrink: 1,
+    fontSize: 14.5,
+    fontWeight: '800',
     color: colors.primary,
   },
   medPrice: {
-    fontSize: 14,
-    fontWeight: '800',
+    fontSize: 13,
+    fontWeight: '700',
     color: colors.text,
+    marginLeft: 6,
+    flexShrink: 0,
   },
   medManuf: {
     fontSize: 9,
@@ -543,7 +621,83 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  suggestionBlock: {
+    marginTop: 20,
+    alignItems: 'center',
+    width: '100%',
+  },
+  suggestionTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    marginBottom: 10,
+  },
+  suggestionRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  suggestionChip: {
+    backgroundColor: colors.primaryFixed,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  suggestionChipText: {
+    fontSize: 13,
+    color: colors.primary,
+    fontWeight: '800',
+  },
+  keyErrorBanner: {
+    flexDirection: 'row',
+    backgroundColor: '#ffebee',
+    borderWidth: 1,
+    borderColor: '#e57373',
+    borderRadius: 12,
+    padding: 12,
+    gap: 12,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  keyErrorTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#b71c1c',
+  },
+  keyErrorDesc: {
+    fontSize: 11,
+    color: '#c62828',
+    lineHeight: 15,
+    marginTop: 2,
+    fontWeight: '500',
+  },
+  offlineBanner: {
+    flexDirection: 'row',
+    backgroundColor: '#f5f5f5',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    padding: 12,
+    gap: 12,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  offlineTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#424242',
+  },
+  offlineDesc: {
+    fontSize: 11,
+    color: '#616161',
+    lineHeight: 15,
+    marginTop: 2,
+    fontWeight: '500',
+  },
 });
 
 export default SearchResultsScreen;

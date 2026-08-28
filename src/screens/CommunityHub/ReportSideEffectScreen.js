@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   TextInput, 
   Platform, 
   StatusBar,
   Dimensions,
   ActivityIndicator,
-  Alert
-} from 'react-native';
+  Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { saveUserSideEffectReport } from '../../services/dbService';
@@ -25,7 +24,7 @@ export const ReportSideEffectScreen = ({ route, navigation }) => {
   const { uid, mockUser } = params;
 
   // Form states
-  const [medName, setMedName] = useState('');
+  const [medName, setMedName] = useState(params.medName || '');
   const [symptom, setSymptom] = useState('');
   const [severity, setSeverity] = useState('Moderate'); // 'Mild' | 'Moderate' | 'Severe'
   const [category, setCategory] = useState('General'); // 'Cardiological' | 'Respiratory' | 'Neurological' | 'General'
@@ -43,34 +42,24 @@ export const ReportSideEffectScreen = ({ route, navigation }) => {
       symptom: symptom.trim(),
       severity,
       category,
-      duration: duration.trim()
+      duration: duration.trim(),
+      userName: 'Verified Patient',
+      location: 'Local Community',
+      createdAt: new Date().toISOString()
     };
-
-    if (mockUser) {
-      setSaving(true);
-      setTimeout(() => {
-        setSaving(false);
-        Alert.alert(
-          "Report Submitted", 
-          "Adverse safety report registered successfully! It is now factored into global analytics aggregates.",
-          [{ text: "Confirm", onPress: () => navigation.replace('CommunityFeed', { uid, mockUser }) }]
-        );
-      }, 1200);
-      return;
-    }
 
     try {
       setSaving(true);
       await saveUserSideEffectReport(uid, payload);
       setSaving(false);
       Alert.alert(
-        "Report Sync Active", 
-        "Thank you. Your side effect report is logged securely and factored anonymously in community analytics.",
-        [{ text: "OK", onPress: () => navigation.replace('CommunityFeed', { uid }) }]
+        "Report Submitted", 
+        "Thank you! Your side effect report is logged securely and live on the Community Safety Feed.",
+        [{ text: "View Feed", onPress: () => navigation.replace('CommunityFeed', { uid, mockUser }) }]
       );
     } catch (err) {
       setSaving(false);
-      Alert.alert("Database Error", "Failed to upload side effect report.");
+      Alert.alert("Database Error", "Failed to upload side effect report. Please try again.");
     }
   };
 
@@ -227,6 +216,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

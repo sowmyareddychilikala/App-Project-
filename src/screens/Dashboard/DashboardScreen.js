@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   ActivityIndicator,
   Alert,
@@ -15,11 +15,11 @@ import {
   Linking,
   Dimensions,
   Platform,
-  StatusBar
-} from 'react-native';
+  StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons, Ionicons, FontAwesome } from '@expo/vector-icons';
-import { signOutUser } from '../../services/authService';
+import { signOutUser, resetUserPassword } from '../../services/authService';
 import { 
   listenUserProfile, 
   listenUserMedications, 
@@ -32,10 +32,93 @@ import {
   deleteUserNotification,
   updateUserPreferences, 
   updateUserProfileFields, 
-  seedDefaultClinicalData 
+  seedDefaultClinicalData,
+  getLocalMedications,
+  getLocalUserProfile 
 } from '../../services/dbService';
+import { seedMedicinesCollection, getLiveSuggestions, saveRecentSearch } from '../../services/medicineService';
+import { sessionManager } from '../../services/sessionManager';
+import { auth } from '../../../firebaseConfig';
 
 const { width } = Dimensions.get('window');
+
+const convertTimeToMinutes = (timeStr) => {
+  if (!timeStr) return 0;
+  const str = timeStr.trim().toUpperCase();
+  const isPM = str.includes('PM');
+  const isAM = str.includes('AM');
+
+  const match = str.match(/(\d+):(\d+)/);
+  if (!match) return 0;
+
+  let hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+
+  if (isPM && hours < 12) {
+    hours += 12;
+  } else if (isAM && hours === 12) {
+    hours = 0;
+  }
+  return hours * 60 + minutes;
+};
+
+const getTodayIso = () => new Date().toISOString().split('T')[0];
+
+const getFutureIso = (daysAhead = 30) => {
+  const d = new Date();
+  d.setDate(d.getDate() + daysAhead);
+  return d.toISOString().split('T')[0];
+};
+
+const normalizeDateStr = (input) => {
+  if (!input) return '';
+  if (input instanceof Date) {
+    return input.toISOString().split('T')[0];
+  }
+  const str = String(input).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  const parsed = new Date(str);
+  if (!isNaN(parsed.getTime())) {
+    const yyyy = parsed.getFullYear();
+    const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+    const dd = String(parsed.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  return str;
+};
+
+const isMedActiveToday = (med, targetDateIso = getTodayIso()) => {
+  if (!med) return false;
+  const start = normalizeDateStr(med.startDate || med.createdAt) || '1970-01-01';
+  const end = normalizeDateStr(med.endDate) || '2099-12-31';
+  return targetDateIso >= start && targetDateIso <= end;
+};
+
+const isMedTakenOnDate = (med, targetDateIso = getTodayIso(), timeKey) => {
+  if (!med) return false;
+  const key = timeKey || med.time || '09:00 AM';
+  const dayLog = med.takenLogs?.[targetDateIso]?.[key];
+  if (dayLog && typeof dayLog.taken === 'boolean') {
+    return dayLog.taken;
+  }
+  if (targetDateIso === getTodayIso()) {
+    return med.takenStatus ?? (med.taken ?? false);
+  }
+  return false;
+};
+
+const getMedTakenTimeOnDate = (med, targetDateIso = getTodayIso(), timeKey) => {
+  if (!med) return '';
+  const key = timeKey || med.time || '09:00 AM';
+  const dayLog = med.takenLogs?.[targetDateIso]?.[key];
+  if (dayLog && dayLog.takenTime) {
+    return dayLog.takenTime;
+  }
+  if (targetDateIso === getTodayIso()) {
+    return med.takenTime || '';
+  }
+  return '';
+};
 
 export const DashboardScreen = ({ route, navigation }) => {
   const params = route.params || {};
@@ -44,18 +127,45 @@ export const DashboardScreen = ({ route, navigation }) => {
   // Navigation active tab: 'dashboard', 'alerts', 'profile', 'settings'
   const [activeTab, setActiveTab] = useState('dashboard');
   
+  // Check if active session already exists in memory
+  const userSessionId = uid || (mockUser ? 'mock_user' : null);
+  const hasSession = sessionManager.hasValidSession(userSessionId);
+  const activeSessionObj = sessionManager.getActiveSession();
+
   // Shared Real-time Database state
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(activeSessionObj?.profile || null);
   const [medications, setMedications] = useState({});
   const [notifications, setNotifications] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!hasSession && !activeSessionObj?.profile && !uid);
 
   // Tab 1: Dashboard states
+  const [dashSearchQuery, setDashSearchQuery] = useState('');
+  const [dashSuggestions, setDashSuggestions] = useState([]);
+
+  const handleDashQueryChange = (text) => {
+    setDashSearchQuery(text);
+    setDashSuggestions(getLiveSuggestions(text));
+  };
+
+  const handleDashSearchSubmit = (queryToRun) => {
+    const q = (queryToRun || dashSearchQuery).trim();
+    if (q) {
+      saveRecentSearch(q);
+      navigation.navigate('SearchResults', { uid, mockUser, query: q });
+    } else {
+      navigation.navigate('MedicineSearch', { uid, mockUser });
+    }
+  };
+  const [editingMedId, setEditingMedId] = useState(null);
   const [isAddingMed, setIsAddingMed] = useState(false);
   const [newMedName, setNewMedName] = useState('');
   const [newMedDosage, setNewMedDosage] = useState('');
+  const [newMedType, setNewMedType] = useState('Tablet');
   const [newMedTime, setNewMedTime] = useState('09:00 AM');
+  const [newMedFrequency, setNewMedFrequency] = useState('Once daily');
   const [newMedInstructions, setNewMedInstructions] = useState('');
+  const [newMedStartDate, setNewMedStartDate] = useState(getTodayIso());
+  const [newMedEndDate, setNewMedEndDate] = useState(getFutureIso(30));
 
   // Tab 2: Alerts states
   const [alertFilter, setAlertFilter] = useState('all');
@@ -67,6 +177,12 @@ export const DashboardScreen = ({ route, navigation }) => {
   const [editDob, setEditDob] = useState('');
   const [editBloodType, setEditBloodType] = useState('');
   const [editAllergies, setEditAllergies] = useState('');
+
+  // Tab 4: Simplified Settings states
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   // Local state for mock FaceID flow
   const [mockState, setMockState] = useState({
@@ -82,88 +198,155 @@ export const DashboardScreen = ({ route, navigation }) => {
         { id: '2', name: 'Dr. Aris', relation: 'Cardiologist', type: 'Specialist', phone: '555-0987' }
       ],
       preferences: {
-        pushEnabled: true,
-        emailEnabled: false,
-        smsEnabled: true
+        notificationsEnabled: true,
+        darkMode: false
       }
     },
-    medications: {
-      'med_1': { id: 'med_1', name: 'Lisinopril', dosage: '10mg', time: '09:00 AM', instructions: 'Take with food', taken: false, takenTime: '' },
-      'med_2': { id: 'med_2', name: 'Metformin', dosage: '500mg', time: '08:00 AM', instructions: 'Taken 8:05 AM', taken: true, takenTime: '08:05 AM' },
-      'med_3': { id: 'med_3', name: 'Vitamin D3', dosage: '2000 IU', time: '02:00 PM', instructions: '1 Capsule', taken: false, takenTime: '' }
-    },
-    notifications: {
-      'notif_1': { id: 'notif_1', type: 'critical', category: 'Safety Alert', timestamp: '2m ago', title: 'Drug Interaction Warning', description: 'System detected a potential moderate interaction between Lisinopril and your new supplement. Please consult your physician before the next dose.', unread: true, actionLabel: 'Consult AI Assistant' },
-      'notif_2': { id: 'notif_2', type: 'expiry', category: 'Expiry Warning', timestamp: '1h ago', title: 'Medication Expiring Soon', description: 'Your prescription for Amoxicillin (500mg) expires in 3 days (Oct 24, 2023). Disposal is recommended after this date.', unread: true, actionLabel: 'Find Disposal Location' },
-      'notif_3': { id: 'notif_3', type: 'system', category: 'System', timestamp: '5h ago', title: 'Privacy Policy Update', description: 'We\'ve updated our data encryption protocols to enhance your patient record security. Review the changes in your settings.', unread: false },
-      'notif_4': { id: 'notif_4', type: 'critical', category: 'FDA Recall Notice', timestamp: 'Yesterday', title: 'Batch Recall: Valsartan', description: 'Specific batches of Valsartan (Lot #44921) have been voluntarily recalled. Check your bottle immediately.', unread: false, actionLabel: 'Report Batch Match' },
-      'notif_5': { id: 'notif_5', type: 'system', category: 'Account', timestamp: '2 days ago', title: 'Biometric Login Enabled', description: 'FaceID has been successfully linked to your MedVigilance profile for faster access.', unread: false }
-    }
+    medications: {},
+    notifications: {}
   });
 
   // Seed default data & setup real-time DB listeners
   useEffect(() => {
-    if (mockUser) {
-      // Offline/Mock mode
+    // Log & check session status
+    sessionManager.fetchSecureClinicalSession(
+      userSessionId || 'guest_user',
+      'DashboardScreen',
+      hasSession ? 'Existing Active Session Reused' : 'Initial App Session Initialization'
+    );
+
+    AsyncStorage.getItem('@meditrust_dark_mode').then(val => {
+      if (val !== null) setIsDarkMode(JSON.parse(val));
+    }).catch(() => {});
+
+    const loadFallbackMockData = async () => {
       setProfile(mockState.profile);
-      setMedications(mockState.medications);
+      sessionManager.updateSessionProfile(mockState.profile);
+      const localMeds = await getLocalMedications(uid);
+      if (localMeds && Object.keys(localMeds).length > 0) {
+        setMedications(localMeds);
+      }
       setNotifications(mockState.notifications);
       
-      // Seed prefilled edit states
       setEditName(mockState.profile.fullName);
       setEditDob(mockState.profile.dob);
       setEditBloodType(mockState.profile.bloodType);
       setEditAllergies(mockState.profile.allergies.join(', '));
       
       setLoading(false);
+    };
+
+    // Immediately load local profile/meds from cache so screen opens in 0ms
+    const activeUid = auth?.currentUser?.uid || uid;
+
+    // Reset local state per active UID to prevent state leakage between user sessions
+    setProfile(null);
+    setMedications({});
+    setNotifications({});
+
+    if (activeUid) {
+      getLocalUserProfile(activeUid).then(cachedProf => {
+        if (cachedProf && Object.keys(cachedProf).length > 0 && cachedProf.uid === activeUid) {
+          setProfile(cachedProf);
+          setEditName(cachedProf.fullName || '');
+          setEditDob(cachedProf.dob || '');
+          setEditBloodType(cachedProf.bloodType || '');
+          setEditAllergies(Array.isArray(cachedProf.allergies) ? cachedProf.allergies.join(', ') : (cachedProf.allergies || ''));
+          if (cachedProf.preferences) {
+            if (typeof cachedProf.preferences.notificationsEnabled === 'boolean') {
+              setNotificationsEnabled(cachedProf.preferences.notificationsEnabled);
+            }
+            if (typeof cachedProf.preferences.darkMode === 'boolean') {
+              setIsDarkMode(cachedProf.preferences.darkMode);
+            }
+          }
+          setLoading(false);
+        }
+      });
+
+      getLocalMedications(activeUid).then(cachedMeds => {
+        if (cachedMeds && Object.keys(cachedMeds).length > 0) {
+          setMedications(cachedMeds);
+        }
+      });
+    } else {
+      setLoading(false);
+    }
+
+    if (mockUser && !activeUid) {
+      loadFallbackMockData();
       return;
     }
 
-    if (uid) {
-      const initializeData = async () => {
-        try {
-          // Pre-seed default Figma clinical records if first time loading
-          await seedDefaultClinicalData(uid);
-        } catch (err) {
-          console.error("Failed to seed default clinical database records: ", err);
+    if (activeUid) {
+      // Non-blocking background seed
+      seedDefaultClinicalData(activeUid).catch(() => {});
+      seedMedicinesCollection().catch(() => {});
+
+      // Set up real-time Firebase listeners (update UI seamlessly in background)
+      const unsubProfile = listenUserProfile(
+        activeUid, 
+        (data) => {
+          if (data && Object.keys(data).length > 0) {
+            setProfile(data);
+            sessionManager.updateSessionProfile(data);
+            setEditName(data.fullName || '');
+            setEditDob(data.dob || '');
+            setEditBloodType(data.bloodType || '');
+            setEditAllergies(Array.isArray(data.allergies) ? data.allergies.join(', ') : (data.allergies || ''));
+            if (data.preferences) {
+              if (typeof data.preferences.notificationsEnabled === 'boolean') {
+                setNotificationsEnabled(data.preferences.notificationsEnabled);
+              }
+              if (typeof data.preferences.darkMode === 'boolean') {
+                setIsDarkMode(data.preferences.darkMode);
+              }
+            }
+          } else {
+            const rawDefaultName = auth?.currentUser?.displayName || (auth?.currentUser?.email ? auth.currentUser.email.split('@')[0] : '');
+            const formattedDefaultName = rawDefaultName ? (rawDefaultName.charAt(0).toUpperCase() + rawDefaultName.slice(1)) : 'User';
+            const cleanProf = {
+              uid: activeUid,
+              fullName: formattedDefaultName,
+              email: auth?.currentUser?.email || '',
+              dob: '',
+              bloodType: '',
+              allergies: [],
+              contacts: []
+            };
+            setProfile(prev => prev || cleanProf);
+            sessionManager.updateSessionProfile(cleanProf);
+          }
+          setLoading(false);
+        },
+        (err) => {
+          setLoading(false);
         }
-      };
-      initializeData();
+      );
 
-      // Set up real-time Firebase listeners
-      const unsubProfile = listenUserProfile(uid, (data) => {
-        if (data) {
-          setProfile(data);
-          setEditName(data.fullName || '');
-          setEditDob(data.dob || '');
-          setEditBloodType(data.bloodType || '');
-          setEditAllergies((data.allergies || []).join(', '));
-        } else {
-          setProfile({
-            fullName: "Practitioner Patient",
-            email: "secure@mediguard.ai",
-            dob: 'May 14, 1978',
-            bloodType: 'O Positive (O+)',
-            allergies: ['Penicillin'],
-            contacts: [{ id: '1', name: 'Emergency Support', phone: '911' }]
-          });
-        }
-        setLoading(false);
-      });
+      const unsubMeds = listenUserMedications(
+        activeUid, 
+        (data) => {
+          setMedications(data || {});
+        },
+        (err) => {}
+      );
 
-      const unsubMeds = listenUserMedications(uid, (data) => {
-        setMedications(data || {});
-      });
-
-      const unsubNotifs = listenUserNotifications(uid, (data) => {
-        setNotifications(data || {});
-      });
+      const unsubNotifs = listenUserNotifications(
+        activeUid, 
+        (data) => {
+          setNotifications(data || {});
+        },
+        (err) => {}
+      );
 
       return () => {
         if (typeof unsubProfile === 'function') unsubProfile();
         if (typeof unsubMeds === 'function') unsubMeds();
         if (typeof unsubNotifs === 'function') unsubNotifs();
       };
+    } else {
+      setLoading(false);
     }
   }, [uid, mockUser]);
 
@@ -179,6 +362,10 @@ export const DashboardScreen = ({ route, navigation }) => {
           onPress: async () => {
             setLoading(true);
             try {
+              sessionManager.clearSession();
+              setProfile(null);
+              setMedications({});
+              setNotifications({});
               await signOutUser();
               navigation.replace('Login');
             } catch (error) {
@@ -192,76 +379,246 @@ export const DashboardScreen = ({ route, navigation }) => {
   };
 
   // Helper: toggle dose taken status
-  const handleToggleTaken = async (medId, currentState) => {
+  const handleToggleTaken = async (medId, currentState, scheduledTime) => {
+    const medItem = medications[medId] || {};
+    const medName = medItem.name || medItem.medicineName || 'Medication';
+    const nextTakenState = !currentState;
+    const now = new Date();
+    const todayIso = getTodayIso();
+    const timeKey = scheduledTime || medItem.time || '09:00 AM';
+    const formattedTime = nextTakenState 
+      ? now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+      : '';
+
+    // 1. Immediate optimistic React state update for instant UI feedback
+    setMedications(prev => {
+      const item = prev[medId] || {};
+      const existingLogs = item.takenLogs || {};
+      const dayLog = existingLogs[todayIso] || {};
+      const updatedDayLog = {
+        ...dayLog,
+        [timeKey]: { taken: nextTakenState, takenTime: formattedTime }
+      };
+      return {
+        ...prev,
+        [medId]: {
+          ...item,
+          taken: nextTakenState,
+          takenStatus: nextTakenState,
+          takenTime: formattedTime,
+          takenLogs: {
+            ...existingLogs,
+            [todayIso]: updatedDayLog
+          }
+        }
+      };
+    });
+
     if (mockUser) {
-      const now = new Date();
-      const updatedTime = !currentState 
-        ? now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-        : '';
       setMockState(prev => {
         const nextMeds = { ...prev.medications };
-        nextMeds[medId] = {
-          ...nextMeds[medId],
-          taken: !currentState,
-          takenTime: updatedTime
-        };
-        const nextState = { ...prev, medications: nextMeds };
-        setMedications(nextMeds);
-        return nextState;
+        if (nextMeds[medId]) {
+          const existingLogs = nextMeds[medId].takenLogs || {};
+          const dayLog = existingLogs[todayIso] || {};
+          nextMeds[medId] = {
+            ...nextMeds[medId],
+            taken: nextTakenState,
+            takenStatus: nextTakenState,
+            takenTime: formattedTime,
+            takenLogs: {
+              ...existingLogs,
+              [todayIso]: {
+                ...dayLog,
+                [timeKey]: { taken: nextTakenState, takenTime: formattedTime }
+              }
+            }
+          };
+        }
+        return { ...prev, medications: nextMeds };
       });
-    } else {
-      try {
-        await toggleMedicationTakenState(uid, medId, !currentState);
-      } catch (err) {
-        Alert.alert("Database Error", "Failed to update medication taken state.");
+      Alert.alert(
+        "Medication Tracker",
+        nextTakenState 
+          ? `✓ Marked ${medName} as taken at ${formattedTime}.` 
+          : `Marked ${medName} as pending.`
+      );
+      return;
+    }
+
+    try {
+      // 2. Write update to Firebase database with dateStr and timeKey
+      const res = await toggleMedicationTakenState(uid, medId, nextTakenState, todayIso, timeKey);
+      const actualTime = res?.takenTime || formattedTime;
+
+      setMedications(prev => {
+        const item = prev[medId] || {};
+        const existingLogs = item.takenLogs || {};
+        const dayLog = existingLogs[todayIso] || {};
+        return {
+          ...prev,
+          [medId]: {
+            ...item,
+            taken: nextTakenState,
+            takenStatus: nextTakenState,
+            takenTime: actualTime,
+            takenLogs: {
+              ...existingLogs,
+              [todayIso]: {
+                ...dayLog,
+                [timeKey]: { taken: nextTakenState, takenTime: actualTime }
+              }
+            }
+          }
+        };
+      });
+
+      // 3. Show clear success confirmation
+      Alert.alert(
+        "Dose Recorded",
+        nextTakenState 
+          ? `✓ Marked ${medName} as taken at ${actualTime}. Recorded successfully.` 
+          : `Marked ${medName} as pending.`
+      );
+    } catch (err) {
+      console.error("Failed to update medication taken state:", err);
+
+      let errorMessage = "Unable to connect to database. Please check your internet connection.";
+      if (err?.code === 'PERMISSION_DENIED' || err?.message?.includes('permission_denied')) {
+        errorMessage = "Permission denied: Firebase database write was refused. Please sign out and sign in again to refresh your session.";
+      } else if (err?.message) {
+        errorMessage = `Database update failed: ${err.message}`;
       }
+
+      Alert.alert("Medication Tracker Error", errorMessage);
     }
   };
 
-  // Helper: add custom medication
+  // Helper: edit existing medication
+  const handleEditMedication = (med) => {
+    if (!med) return;
+    setEditingMedId(med.id);
+    setNewMedName(med.medicineName || med.name || '');
+    setNewMedDosage(med.dosage || '');
+    setNewMedType(med.medicineType || med.type || 'Tablet');
+    setNewMedTime(med.time || '09:00 AM');
+    setNewMedFrequency(med.frequency || 'Once daily');
+    setNewMedInstructions(med.instructions || '');
+    setNewMedStartDate(normalizeDateStr(med.startDate) || getTodayIso());
+    setNewMedEndDate(normalizeDateStr(med.endDate) || getFutureIso(30));
+    setIsAddingMed(true);
+  };
+
+  // Helper: delete medication
+  const handleDeleteMedication = (medId, medName) => {
+    Alert.alert(
+      "Delete Medication",
+      `Are you sure you want to delete ${medName || 'this medication'}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            // Optimistically remove from state for immediate UI update
+            setMedications(prev => {
+              const nextMeds = { ...prev };
+              delete nextMeds[medId];
+              return nextMeds;
+            });
+
+            if (mockUser) {
+              setMockState(prev => {
+                const nextMeds = { ...prev.medications };
+                delete nextMeds[medId];
+                return { ...prev, medications: nextMeds };
+              });
+              return;
+            }
+
+            try {
+              await deleteUserMedication(uid, medId);
+            } catch (err) {
+              console.error("Failed to delete medication from Firebase:", err);
+              Alert.alert("Delete Error", "Failed to delete medication. Please try again.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  // Helper: add or update custom medication
   const handleAddMedication = async () => {
     if (!newMedName.trim() || !newMedDosage.trim()) {
       Alert.alert("Input Needed", "Please enter the medication name and dosage.");
       return;
     }
 
+    const existingMed = editingMedId ? (medications[editingMedId] || {}) : {};
     const medData = {
+      ...(editingMedId ? { id: editingMedId } : {}),
+      medicineName: newMedName.trim(),
       name: newMedName.trim(),
       dosage: newMedDosage.trim(),
+      medicineType: newMedType,
+      type: newMedType,
       time: newMedTime,
+      frequency: newMedFrequency,
       instructions: newMedInstructions.trim() || 'No special instructions',
-      taken: false,
-      takenTime: ''
+      startDate: newMedStartDate.trim() || getTodayIso(),
+      endDate: newMedEndDate.trim() || getFutureIso(30),
+      takenLogs: existingMed.takenLogs || {},
+      createdAt: existingMed.createdAt || new Date().toISOString(),
+      userId: uid || 'guest_user',
+      takenStatus: existingMed.takenStatus || false,
+      taken: existingMed.taken || false,
+      takenTime: existingMed.takenTime || ''
     };
 
     if (mockUser) {
-      const newId = `med_${Date.now()}`;
+      const medIdToUse = editingMedId || `med_${Date.now()}`;
+      const fullMed = { ...medData, id: medIdToUse };
       setMockState(prev => {
-        const nextMeds = { ...prev.medications, [newId]: { ...medData, id: newId } };
+        const nextMeds = { ...prev.medications, [medIdToUse]: fullMed };
         setMedications(nextMeds);
         return { ...prev, medications: nextMeds };
       });
       setIsAddingMed(false);
       resetAddMedForm();
+      Alert.alert(
+        editingMedId ? "Medication Updated" : "Medication Registered", 
+        `✓ ${fullMed.medicineName} (${fullMed.dosage}) ${editingMedId ? 'updated' : 'added to your cabinet'}.`
+      );
     } else {
       try {
-        setLoading(true);
-        await saveUserMedication(uid, medData);
-        setLoading(false);
+        const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
         setIsAddingMed(false);
         resetAddMedForm();
+        const savedMed = await saveUserMedication(activeUid, medData);
+        setMedications(prev => ({
+          ...prev,
+          [savedMed.id]: savedMed
+        }));
+        Alert.alert(
+          editingMedId ? "Medication Updated" : "Medication Registered", 
+          `✓ ${savedMed.medicineName || savedMed.name} (${savedMed.dosage}) ${editingMedId ? 'updated successfully.' : `registered successfully for ${savedMed.time}.`}`
+        );
       } catch (err) {
-        setLoading(false);
-        Alert.alert("Failed", "Failed to save medication to your cabinet.");
+        Alert.alert("Save Error", err.message || "Failed to save medication to your cabinet.");
       }
     }
   };
 
   const resetAddMedForm = () => {
+    setEditingMedId(null);
     setNewMedName('');
     setNewMedDosage('');
+    setNewMedType('Tablet');
     setNewMedTime('09:00 AM');
+    setNewMedFrequency('Once daily');
     setNewMedInstructions('');
+    setNewMedStartDate(getTodayIso());
+    setNewMedEndDate(getFutureIso(30));
   };
 
   // Helper: Read a notification alert
@@ -322,6 +679,18 @@ export const DashboardScreen = ({ route, navigation }) => {
     }
   };
 
+  // Helper: Open edit profile modal pre-populated
+  const handleOpenEditProfile = () => {
+    setEditName(profile?.fullName || '');
+    setEditDob(profile?.dob || '');
+    setEditBloodType(profile?.bloodType || '');
+    const allergiesVal = Array.isArray(profile?.allergies) 
+      ? profile.allergies.join(', ') 
+      : (profile?.allergies || '');
+    setEditAllergies(allergiesVal);
+    setIsEditingProfile(true);
+  };
+
   // Helper: Update profile fields in DB
   const handleSaveProfile = async () => {
     if (!editName.trim()) {
@@ -348,48 +717,73 @@ export const DashboardScreen = ({ route, navigation }) => {
         return { ...prev, profile: nextProfile };
       });
       setIsEditingProfile(false);
+      Alert.alert("Success", "Profile updated successfully!");
     } else {
+      // Optimistically update profile state immediately
+      setProfile(prev => ({
+        ...prev,
+        ...updatedFields
+      }));
+      setIsEditingProfile(false);
+
       try {
-        setLoading(true);
-        await updateUserProfileFields(uid, updatedFields);
-        setLoading(false);
-        setIsEditingProfile(false);
+        const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
+        const res = await updateUserProfileFields(activeUid, updatedFields);
+        if (res && Object.keys(res).length > 0) {
+          setProfile(prev => ({
+            ...prev,
+            ...res
+          }));
+        }
+        Alert.alert("Success", "Profile updated successfully!");
       } catch (err) {
-        setLoading(false);
-        Alert.alert("Database Error", "Failed to save profile changes.");
+        Alert.alert("Success", "Profile updated locally.");
       }
     }
   };
 
-  // Helper: Toggle database preferences
-  const handlePreferenceToggle = async (prefKey, currentValue) => {
-    const nextPrefs = {
-      ...profile.preferences,
-      [prefKey]: !currentValue
-    };
-
-    if (mockUser) {
-      setMockState(prev => {
-        const nextProfile = { ...prev.profile, preferences: nextPrefs };
-        setProfile(nextProfile);
-        return { ...prev, profile: nextProfile };
-      });
-    } else {
-      try {
-        await updateUserPreferences(uid, nextPrefs);
-      } catch (err) {
-        console.error("Failed to update preferences: ", err);
-      }
-    }
+  // Settings Handler: Toggle Notifications
+  const handleToggleNotifications = async () => {
+    const nextVal = !notificationsEnabled;
+    setNotificationsEnabled(nextVal);
+    const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
+    setProfile(prev => ({
+      ...(prev || {}),
+      preferences: { ...(prev?.preferences || {}), notificationsEnabled: nextVal }
+    }));
+    try {
+      await updateUserPreferences(activeUid, { notificationsEnabled: nextVal });
+    } catch (e) {}
   };
 
-  // Dynamic calculations
-  const medicationsList = Object.values(medications || {});
-  const remainingDoses = medicationsList.filter(m => !m.taken).length;
+  // Settings Handler: Toggle Dark Mode
+  const handleToggleDarkMode = async () => {
+    const nextVal = !isDarkMode;
+    setIsDarkMode(nextVal);
+    const activeUid = auth?.currentUser?.uid || uid || 'guest_user';
+    setProfile(prev => ({
+      ...(prev || {}),
+      preferences: { ...(prev?.preferences || {}), darkMode: nextVal }
+    }));
+    try {
+      await AsyncStorage.setItem('@meditrust_dark_mode', JSON.stringify(nextVal));
+      await updateUserPreferences(activeUid, { darkMode: nextVal });
+    } catch (e) {}
+  };
+
+  // Dynamic calculations for user medications
+  const todayIso = getTodayIso();
+  const medicationsList = Object.values(medications || {}).filter(med => {
+    if (!med) return false;
+    const name = (med.medicineName || med.name || '').trim().toLowerCase();
+    const isValidName = name && name !== 'medication' && name !== 'new medication';
+    return isValidName && isMedActiveToday(med, todayIso);
+  });
+  const remainingDoses = medicationsList.filter(m => !isMedTakenOnDate(m, todayIso, m.time)).length;
   const totalDoses = medicationsList.length;
   
   // Calculate dynamic adherence score
-  const takenDosesCount = medicationsList.filter(m => m.taken).length;
+  const takenDosesCount = medicationsList.filter(m => isMedTakenOnDate(m, todayIso, m.time)).length;
   const adherenceRate = totalDoses > 0 
     ? Math.round((takenDosesCount / totalDoses) * 100) 
     : 94; // Premium Figma fallback default
@@ -410,13 +804,32 @@ export const DashboardScreen = ({ route, navigation }) => {
   // TAB CONTENT RENDERERS
   // -------------------------------------------------------------
 
+  // Immediately resolve user's greeting name without delay
+  const getGreetingName = () => {
+    if (profile?.fullName && profile.fullName.trim() !== '') {
+      const first = profile.fullName.trim().split(' ')[0];
+      if (first) return first.charAt(0).toUpperCase() + first.slice(1);
+    }
+    const currentAuthUser = auth?.currentUser;
+    if (currentAuthUser?.displayName && currentAuthUser.displayName.trim() !== '') {
+      const first = currentAuthUser.displayName.trim().split(' ')[0];
+      if (first) return first.charAt(0).toUpperCase() + first.slice(1);
+    }
+    if (currentAuthUser?.email && currentAuthUser.email.includes('@')) {
+      const prefix = currentAuthUser.email.split('@')[0].trim();
+      if (prefix) return prefix.charAt(0).toUpperCase() + prefix.slice(1);
+    }
+    return 'User';
+  };
+
   const renderDashboardTab = () => {
+    const greetingName = getGreetingName();
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <View style={styles.welcomeLeft}>
-            <Text style={styles.welcomeGreeting}>Hello, {profile?.fullName?.split(' ')[0] || 'User'}</Text>
+            <Text style={styles.welcomeGreeting}>Hello, {greetingName}</Text>
             <Text style={styles.welcomeSubtitle}>
               {remainingDoses === 0 
                 ? "All caught up for today! Outstanding work."
@@ -426,73 +839,48 @@ export const DashboardScreen = ({ route, navigation }) => {
           </View>
           <TouchableOpacity style={styles.avatarMini} onPress={() => setActiveTab('profile')}>
             <Text style={styles.avatarMiniText}>
-              {profile?.fullName ? profile.fullName.charAt(0).toUpperCase() : 'P'}
+              {(greetingName.charAt(0) || 'U').toUpperCase()}
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Prominent Search Bar Entry Point (Module 5) */}
-        <TouchableOpacity 
-          style={styles.dashSearchBlock}
-          onPress={() => navigation.navigate('MedicineSearch', { uid, mockUser })}
-          activeOpacity={0.9}
-        >
-          <MaterialIcons name="search" size={22} color={colors.primary} style={styles.dashSearchIcon} />
-          <Text style={styles.dashSearchPlaceholder}>Search medicine, usage, precautions...</Text>
-        </TouchableOpacity>
+        <View style={styles.dashSearchBlock}>
+          <TouchableOpacity onPress={() => handleDashSearchSubmit()}>
+            <MaterialIcons name="search" size={22} color={colors.primary} style={styles.dashSearchIcon} />
+          </TouchableOpacity>
+          <TextInput 
+            style={styles.dashSearchInput}
+            placeholder="Search medicine, usage, precautions..."
+            placeholderTextColor={colors.outline}
+            value={dashSearchQuery}
+            onChangeText={handleDashQueryChange}
+            onSubmitEditing={() => handleDashSearchSubmit()}
+            returnKeyType="search"
+            numberOfLines={1}
+            multiline={false}
+          />
+          {dashSearchQuery.trim().length > 0 && (
+            <TouchableOpacity onPress={() => handleDashQueryChange('')}>
+              <MaterialIcons name="close" size={20} color={colors.outline} />
+            </TouchableOpacity>
+          )}
+        </View>
 
-        {/* Urgent Alerts Bento Section */}
-        {Object.values(notifications).filter(n => n.unread).length > 0 && (
-          <View style={styles.bentoSection}>
-            <View style={styles.bentoHeaderRow}>
-              <Text style={styles.bentoSectionTitle}>Urgent Alerts</Text>
-              {unreadAlertsCount > 0 && (
-                <View style={styles.bentoBadge}>
-                  <Text style={styles.bentoBadgeText}>
-                    {unreadAlertsCount} ACTION ITEM{unreadAlertsCount > 1 ? 'S' : ''}
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            <View style={styles.bentoCardsStack}>
-              {Object.values(notifications)
-                .filter(n => n.unread && (n.type === 'critical' || n.type === 'expiry'))
-                .slice(0, 2)
-                .map((alert) => (
-                  <TouchableOpacity 
-                    key={alert.id} 
-                    style={styles.bentoAlertCard}
-                    onPress={() => {
-                      handleReadNotification(alert.id, true);
-                      setActiveTab('alerts');
-                    }}
-                  >
-                    <View style={[
-                      styles.alertIconCircle, 
-                      { backgroundColor: alert.type === 'critical' ? colors.error + '1A' : colors.primaryFixed }
-                    ]}>
-                      <MaterialIcons 
-                        name={alert.type === 'critical' ? "warning" : "event-busy"} 
-                        size={22} 
-                        color={alert.type === 'critical' ? colors.error : colors.primary} 
-                      />
-                    </View>
-                    <View style={styles.alertContentText}>
-                      <Text style={styles.alertCardHeading}>{alert.title}</Text>
-                      <Text style={styles.alertCardBody} numberOfLines={2}>{alert.description}</Text>
-                      <View style={styles.alertPillRow}>
-                        <View style={[styles.statusDot, { backgroundColor: alert.type === 'critical' ? colors.error : '#e67e22' }]} />
-                        <Text style={[styles.alertPillText, { color: alert.type === 'critical' ? colors.error : '#e67e22' }]}>
-                          {alert.type === 'critical' ? 'CRITICAL' : 'WARNING'}
-                        </Text>
-                      </View>
-                    </View>
-                    <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-                  </TouchableOpacity>
-                ))
-              }
-            </View>
+        {/* Live Search Suggestions Dropdown as User Types */}
+        {dashSuggestions.length > 0 && (
+          <View style={styles.dashSuggestionsCard}>
+            <Text style={styles.dashSuggestionsHeader}>Suggestions</Text>
+            {dashSuggestions.map((sug, idx) => (
+              <TouchableOpacity 
+                key={idx} 
+                style={styles.dashSuggestionRowItem}
+                onPress={() => handleDashSearchSubmit(sug)}
+              >
+                <MaterialIcons name="search" size={18} color={colors.primary} />
+                <Text style={styles.dashSuggestionRowText}>{sug}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         )}
 
@@ -500,33 +888,34 @@ export const DashboardScreen = ({ route, navigation }) => {
         <View style={styles.quickActionsGrid}>
           <TouchableOpacity 
             style={[styles.quickActionBtn, { backgroundColor: colors.primary }]}
-            onPress={() => setIsAddingMed(true)}
+            onPress={() => { resetAddMedForm(); setIsAddingMed(true); }}
           >
             <Ionicons name="add-circle" size={24} color={colors.white} />
             <Text style={[styles.quickActionLabel, { color: colors.white }]}>Add Med</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={[styles.quickActionBtn, styles.quickActionGhost]}
-            onPress={() => navigation.navigate('MedicineScanner', { uid, mockUser })}
-          >
-            <MaterialIcons name="qr-code-scanner" size={24} color={colors.primary} />
-            <Text style={styles.quickActionLabel}>Scan Pill</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={[styles.quickActionBtn, styles.quickActionGhost]}
-            onPress={() => {
-              Alert.alert(
-                "Clinical History", 
-                `Verification Report:\n\n• Tracked Doses: ${takenDosesCount}\n• Missed Doses: 0\n• Overall Adherence: ${adherenceRate}%`
-              );
-            }}
-          >
-            <MaterialIcons name="history" size={24} color={colors.primary} />
-            <Text style={styles.quickActionLabel}>History</Text>
-          </TouchableOpacity>
         </View>
+
+        {/* Verified Pharmacy network Bento Card (Module 7) */}
+        <TouchableOpacity 
+          style={styles.pharmacyBentoBanner}
+          onPress={() => navigation.navigate('ClinicalTrustFramework', { uid, mockUser })}
+          activeOpacity={0.9}
+        >
+          <View style={styles.pharmacyBentoLeft}>
+            <Text style={styles.pharmacyBentoBadge}>Verified Networks</Text>
+            <Text style={styles.pharmacyBentoTitle}>Verify Local Pharmacies</Text>
+            <Text style={styles.pharmacyBentoDesc}>
+              Search certified distributors, inspect AI trust ratings, and audit safety logs.
+            </Text>
+            <View style={styles.pharmacyBentoBtn}>
+              <MaterialIcons name="local-pharmacy" size={16} color={colors.primary} />
+              <Text style={styles.pharmacyBentoBtnText}>Launch Portal</Text>
+            </View>
+          </View>
+          <View style={styles.pharmacyBentoRight}>
+            <MaterialIcons name="verified-user" size={96} color="rgba(255,255,255,0.12)" />
+          </View>
+        </TouchableOpacity>
 
         {/* Upcoming Doses */}
         <View style={styles.upcomingSection}>
@@ -535,90 +924,109 @@ export const DashboardScreen = ({ route, navigation }) => {
             {medicationsList.length === 0 ? (
               <View style={styles.emptyMedsContainer}>
                 <Ionicons name="medical-outline" size={40} color={colors.outlineVariant} />
-                <Text style={styles.emptyMedsText}>Your medicine cabinet is empty.</Text>
-                <TouchableOpacity style={styles.emptyAddBtn} onPress={() => setIsAddingMed(true)}>
+                <Text style={styles.emptyMedsText}>No medications added yet.</Text>
+                <TouchableOpacity style={styles.emptyAddBtn} onPress={() => { resetAddMedForm(); setIsAddingMed(true); }}>
                   <Text style={styles.emptyAddBtnText}>Add Medication Now</Text>
                 </TouchableOpacity>
               </View>
             ) : (
               medicationsList
-                .sort((a, b) => a.time.localeCompare(b.time))
-                .map((med) => (
-                  <View 
-                    key={med.id} 
-                    style={[styles.medCard, med.taken && styles.medCardCompleted]}
-                  >
-                    <View style={med.taken ? styles.medCardCompleted : styles.medCardActive} />
-                    <View style={styles.medCardLeft}>
-                      <View style={styles.medTimeCol}>
-                        <Text style={[styles.medTimeText, med.taken && styles.medTextMuted]}>
-                          {med.time.split(' ')[0]}
-                        </Text>
-                        <Text style={[styles.medTimeAmPm, med.taken && styles.medTextMuted]}>
-                          {med.time.split(' ')[1]}
-                        </Text>
-                      </View>
-                      
-                      {/* Fluid indicator bar */}
-                      <View style={[
-                        styles.indicatorBar, 
-                        { backgroundColor: med.taken ? colors.secondary : colors.primaryFixed }
-                      ]} />
-
-                      <View style={styles.medInfoCol}>
-                        <Text style={[styles.medNameText, med.taken && styles.medNameCompleted]}>
-                          {med.name}
-                        </Text>
-                        <Text style={styles.medDosageText}>
-                          {med.dosage} • {med.instructions}
-                        </Text>
-                        {med.taken && (
-                          <Text style={styles.takenLabelText}>
-                            Taken at {med.takenTime || '08:05 AM'}
+                .sort((a, b) => convertTimeToMinutes(a?.time) - convertTimeToMinutes(b?.time))
+                .map((med) => {
+                  const isTaken = isMedTakenOnDate(med, todayIso, med.time);
+                  const takenTime = getMedTakenTimeOnDate(med, todayIso, med.time);
+                  const medName = med.medicineName || med.name || 'Medication';
+                  const medType = med.medicineType || med.type || '';
+                  const medFreq = med.frequency || '';
+                  const displayTime = med?.time || '09:00 AM';
+                  const timeParts = displayTime.split(' ');
+                  const timeMain = timeParts[0] || '09:00';
+                  const timeAmPm = timeParts[1] || 'AM';
+                  return (
+                    <View 
+                      key={med.id || Math.random().toString()} 
+                      style={[styles.medCard, isTaken && styles.medCardCompleted]}
+                    >
+                      <View style={isTaken ? styles.medCardCompleted : styles.medCardActive} />
+                      <View style={styles.medCardLeft}>
+                        <View style={styles.medTimeCol}>
+                          <Text style={[styles.medTimeText, isTaken && styles.medTextMuted]}>
+                            {timeMain}
                           </Text>
-                        )}
+                          <Text style={[styles.medTimeAmPm, isTaken && styles.medTextMuted]}>
+                            {timeAmPm}
+                          </Text>
+                        </View>
+                        
+                        {/* Fluid indicator bar */}
+                        <View style={[
+                          styles.indicatorBar, 
+                          { backgroundColor: isTaken ? colors.secondary : colors.primaryFixed }
+                        ]} />
+
+                        <View style={styles.medInfoCol}>
+                          <Text style={[styles.medNameText, isTaken && styles.medNameCompleted]}>
+                            {medName} {medType ? `(${medType})` : ''}
+                          </Text>
+                          <Text style={styles.medDosageText}>
+                            {med.dosage || 'Standard Dose'} {medFreq ? `• ${medFreq} ` : ''}• {med.instructions || 'No special instructions'}
+                          </Text>
+                          {med.startDate && med.endDate && (
+                            <Text style={{ fontSize: 11, color: colors.outline, marginTop: 2 }}>
+                              📅 {med.startDate} to {med.endDate}
+                            </Text>
+                          )}
+                          {isTaken && (
+                            <Text style={styles.takenLabelText}>
+                              Taken at {takenTime || '08:05 AM'}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={styles.medActionsRow}>
+                        <TouchableOpacity 
+                          style={styles.actionIconButton} 
+                          onPress={() => handleEditMedication(med)}
+                          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                        >
+                          <MaterialIcons name="edit" size={18} color={colors.primary} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                          style={styles.actionIconButton} 
+                          onPress={() => handleDeleteMedication(med.id, medName)}
+                          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                        >
+                          <MaterialIcons name="delete-outline" size={18} color={colors.error} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                          style={[
+                            styles.checkCircleBtn, 
+                            isTaken ? styles.checkCircleBtnSuccess : styles.checkCircleBtnActive
+                          ]}
+                          onPress={() => handleToggleTaken(med.id, isTaken, med.time)}
+                        >
+                          <MaterialIcons 
+                            name={isTaken ? "done-all" : "check"} 
+                            size={20} 
+                            color={isTaken ? colors.white : colors.primary} 
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
-
-                    <TouchableOpacity 
-                      style={[
-                        styles.checkCircleBtn, 
-                        med.taken ? styles.checkCircleBtnSuccess : styles.checkCircleBtnActive
-                      ]}
-                      onPress={() => handleToggleTaken(med.id, med.taken)}
-                    >
-                      <MaterialIcons 
-                        name={med.taken ? "done-all" : "check"} 
-                        size={20} 
-                        color={med.taken ? colors.white : colors.primary} 
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))
+                  );
+                })
             )}
           </View>
         </View>
 
         {/* Community Safety Bento Grid & Recall Box */}
-        <Text style={styles.sectionTitle}>MediGuard AI Core Modules</Text>
+        <Text style={styles.sectionTitle}>MediGuard AI Community Services</Text>
         <View style={styles.grid}>
           <TouchableOpacity 
-            style={styles.gridCard}
-            onPress={() => navigation.navigate('MedicineScanner', { uid, mockUser })}
-          >
-            <View style={styles.iconCircle}>
-              <MaterialIcons name="qr-code-scanner" size={24} color={colors.primary} />
-            </View>
-            <Text style={styles.cardTitle}>Medicine Scanner</Text>
-            <Text style={styles.cardDesc}>Scan pill packaging labels and check holograms & barcodes in real-time.</Text>
-            <View style={styles.cardAction}>
-              <Text style={styles.cardActionText}>Module 3</Text>
-              <MaterialIcons name="arrow-forward" size={14} color={colors.primary} />
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.gridCard}
+            style={[styles.gridCard, { width: '100%', flex: 1 }]}
             onPress={() => navigation.navigate('MyMedicines', { uid, mockUser })}
           >
             <View style={styles.iconCircle}>
@@ -627,13 +1035,12 @@ export const DashboardScreen = ({ route, navigation }) => {
             <Text style={styles.cardTitle}>Expiry Management</Text>
             <Text style={styles.cardDesc}>Register and trace clinical expiration alerts automatically.</Text>
             <View style={styles.cardAction}>
-              <Text style={styles.cardActionText}>Module 4</Text>
               <MaterialIcons name="arrow-forward" size={14} color={colors.primary} />
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* Module 6: Community Experiences & Analytics Bento card */}
+        {/* Community Experiences & Analytics Bento card */}
         <View style={[styles.grid, { marginTop: 16 }]}>
           <TouchableOpacity 
             style={[styles.gridCard, { width: '100%', flex: 1 }]}
@@ -645,34 +1052,26 @@ export const DashboardScreen = ({ route, navigation }) => {
             <Text style={styles.cardTitle}>Community Safety Feed</Text>
             <Text style={styles.cardDesc}>Read patient-contributed reviews, side effect logs, and verified clinician guidelines.</Text>
             <View style={styles.cardAction}>
-              <Text style={styles.cardActionText}>Module 6</Text>
               <MaterialIcons name="arrow-forward" size={14} color={colors.primary} />
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* Community Safety Glass Banner */}
-        <View style={[styles.glassRecallBanner, { marginTop: 24 }]}>
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDFKsu46DWbYtts1fuUmo810PE4jvYg2Iak0yyMkHgjZxWNSaK1tVTilKZOjZhpBjYDlfKzAZYkHPZxabCn0jxkv-n7t02jyTuifeihUbcgmnZMG9KUa1MYoD2B9RfjVGykr4IdBg9AZ7M79lfB8PWHr_IQsjrrUpAZ_gqP-Ea4iHfh7m0a-m2kDsI_7LUMKiHLysxJXDkRMi05OWangtieuphTP4PxBaoYuoV9B3xveXXCYFzEW2WsB3_nRA8cG9rswtSwK58tnKlr' }}
-            style={styles.recallBannerImage}
-          />
-          <View style={styles.recallBannerOverlay}>
-            <Text style={styles.recallTag}>Local Health Alert</Text>
-          </View>
-          <View style={styles.recallTextBodyContainer}>
-            <Text style={styles.recallTextBody}>
-              FDA recall issued for Batch #4092 of generic Aspirin in the Greater Seattle area. Check your cabinet immediately.
-            </Text>
-            <TouchableOpacity 
-              style={styles.recallDetailsBtn}
-              onPress={() => {
-                Linking.openURL('https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts');
-              }}
-            >
-              <Text style={styles.recallDetailsBtnText}>READ MORE DETAILS</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Community Safety Network Card */}
+        <View style={[styles.grid, { marginTop: 16 }]}>
+          <TouchableOpacity 
+            style={[styles.gridCard, { width: '100%', flex: 1 }]}
+            onPress={() => navigation.navigate('SafetyMap', { uid, mockUser })}
+          >
+            <View style={styles.iconCircle}>
+              <MaterialIcons name="shield" size={24} color={colors.primary} />
+            </View>
+            <Text style={styles.cardTitle}>Community Safety Network</Text>
+            <Text style={styles.cardDesc}>Inspect live safety maps, active community alerts, and recent medicine recall notices in real time.</Text>
+            <View style={styles.cardAction}>
+              <MaterialIcons name="arrow-forward" size={14} color={colors.primary} />
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
@@ -728,7 +1127,7 @@ export const DashboardScreen = ({ route, navigation }) => {
           {filteredAlerts.length === 0 ? (
             <View style={styles.emptyFeedContainer}>
               <MaterialIcons name="notifications-none" size={48} color={colors.outlineVariant} />
-              <Text style={styles.emptyFeedText}>No notifications found matching filter.</Text>
+              <Text style={styles.emptyFeedText}>No Notifications</Text>
             </View>
           ) : (
             filteredAlerts.map((alert) => (
@@ -803,6 +1202,10 @@ export const DashboardScreen = ({ route, navigation }) => {
   };
 
   const renderProfileTab = () => {
+    const allergiesList = Array.isArray(profile?.allergies) 
+      ? profile.allergies 
+      : (typeof profile?.allergies === 'string' && profile.allergies ? profile.allergies.split(',') : []);
+
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {/* Profile Card Header */}
@@ -814,7 +1217,7 @@ export const DashboardScreen = ({ route, navigation }) => {
                   {profile?.fullName ? profile.fullName.charAt(0).toUpperCase() : 'P'}
                 </Text>
               </View>
-              <TouchableOpacity style={styles.editAvatarBadge} onPress={() => setIsEditingProfile(true)}>
+              <TouchableOpacity style={styles.editAvatarBadge} onPress={handleOpenEditProfile}>
                 <MaterialIcons name="edit" size={14} color={colors.white} />
               </TouchableOpacity>
             </View>
@@ -827,40 +1230,13 @@ export const DashboardScreen = ({ route, navigation }) => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.editBtnCircle} onPress={() => setIsEditingProfile(true)}>
+            <TouchableOpacity style={styles.editBtnCircle} onPress={handleOpenEditProfile}>
               <MaterialIcons name="edit" size={18} color={colors.primary} />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Adherence Bento Stats */}
-        <View style={styles.profileBentoStats}>
-          <View style={styles.bentoAdherenceCard}>
-            <Text style={styles.bentoStatPercentage}>{adherenceRate}%</Text>
-            <Text style={styles.bentoStatLabel}>ADHERENCE</Text>
-            <View style={[
-              styles.adherenceStatusPill, 
-              { backgroundColor: adherenceRate >= 80 ? '#e8f5e9' : '#fff3e0' }
-            ]}>
-              <Text style={[
-                styles.adherenceStatusText,
-                { color: adherenceRate >= 80 ? '#2e7d32' : '#e65100' }
-              ]}>
-                {adherenceRate >= 90 ? 'EXCELLENT' : adherenceRate >= 70 ? 'GOOD' : 'ATTENTION'}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.bentoMedsCard}>
-            <Text style={[styles.bentoStatPercentage, { color: '#e67e22' }]}>{totalDoses}</Text>
-            <Text style={styles.bentoStatLabel}>ACTIVE MEDS</Text>
-            <View style={[styles.adherenceStatusPill, { backgroundColor: '#fff3e0' }]}>
-              <Text style={[styles.adherenceStatusText, { color: '#e65100' }]}>TRACKED</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Personal Details Card */}
+        {/* Clinical Profile Details */}
         <View style={styles.clinicalDataCard}>
           <View style={styles.cardSectionHeaderRow}>
             <Text style={styles.cardSectionHeaderTitle}>Personal Information</Text>
@@ -870,13 +1246,28 @@ export const DashboardScreen = ({ route, navigation }) => {
           <View style={styles.personalDataGrid}>
             <View style={styles.gridDataRow}>
               <View style={styles.gridItemHalf}>
-                <Text style={styles.gridItemLabel}>Date of Birth</Text>
-                <Text style={styles.gridItemValue}>{profile?.dob || 'May 14, 1978'}</Text>
+                <Text style={styles.gridItemLabel}>Full Name</Text>
+                <Text style={styles.gridItemValue}>{profile?.fullName || 'Clinical User'}</Text>
               </View>
               <View style={styles.gridItemHalf}>
+                <Text style={styles.gridItemLabel}>Date of Birth</Text>
+                <Text style={styles.gridItemValue}>{profile?.dob || 'Not provided'}</Text>
+              </View>
+            </View>
+
+            <View style={styles.gridDataDivider} />
+
+            <View style={styles.gridDataRow}>
+              <View style={styles.gridItemHalf}>
                 <Text style={styles.gridItemLabel}>Blood Type</Text>
-                <Text style={[styles.gridItemValue, { color: colors.error, fontWeight: '700' }]}>
-                  {profile?.bloodType || 'O Positive (O+)'}
+                <Text style={[styles.gridItemValue, { color: profile?.bloodType ? colors.error : colors.textSecondary, fontWeight: '700' }]}>
+                  {profile?.bloodType || 'Not provided'}
+                </Text>
+              </View>
+              <View style={styles.gridItemHalf}>
+                <Text style={styles.gridItemLabel}>Account Status</Text>
+                <Text style={[styles.gridItemValue, { color: colors.secondary, fontWeight: '600' }]}>
+                  Verified Patient
                 </Text>
               </View>
             </View>
@@ -886,102 +1277,43 @@ export const DashboardScreen = ({ route, navigation }) => {
             <View style={styles.allergiesSection}>
               <Text style={styles.gridItemLabel}>Allergies & Sensitivities</Text>
               <View style={styles.allergiesPillsContainer}>
-                {(profile?.allergies || ['Penicillin', 'Shellfish', 'Lactose']).map((allergy, index) => (
-                  <View 
-                    key={allergy + index} 
-                    style={[
-                      styles.allergyPill, 
-                      (allergy.toLowerCase().includes('penicillin') || allergy.toLowerCase().includes('shellfish')) 
-                        ? styles.allergyPillCritical 
-                        : styles.allergyPillNormal
-                    ]}
-                  >
-                    {(allergy.toLowerCase().includes('penicillin') || allergy.toLowerCase().includes('shellfish')) && (
-                      <MaterialIcons name="warning" size={12} color={colors.error} style={{ marginRight: 4 }} />
-                    )}
-                    <Text style={[
-                      styles.allergyPillText,
-                      (allergy.toLowerCase().includes('penicillin') || allergy.toLowerCase().includes('shellfish'))
-                        ? { color: colors.error }
-                        : { color: colors.textSecondary }
-                    ]}>
-                      {allergy}
-                    </Text>
-                  </View>
-                ))}
+                {allergiesList.filter(a => typeof a === 'string' ? a.trim() : a).length === 0 ? (
+                  <Text style={{ fontSize: 13, color: colors.textSecondary, fontStyle: 'italic', marginTop: 4 }}>
+                    Not provided
+                  </Text>
+                ) : (
+                  allergiesList.map((allergy, index) => {
+                    const allergyTrimmed = typeof allergy === 'string' ? allergy.trim() : String(allergy);
+                    if (!allergyTrimmed) return null;
+                    const isCritical = allergyTrimmed.toLowerCase().includes('penicillin') || allergyTrimmed.toLowerCase().includes('shellfish');
+                    return (
+                      <View 
+                        key={allergyTrimmed + index} 
+                        style={[
+                          styles.allergyPill, 
+                          isCritical ? styles.allergyPillCritical : styles.allergyPillNormal
+                        ]}
+                      >
+                        {isCritical && (
+                          <MaterialIcons name="warning" size={12} color={colors.error} style={{ marginRight: 4 }} />
+                        )}
+                        <Text style={[
+                          styles.allergyPillText,
+                          isCritical ? { color: colors.error } : { color: colors.textSecondary }
+                        ]}>
+                          {allergyTrimmed}
+                        </Text>
+                      </View>
+                    );
+                  })
+                )}
               </View>
             </View>
           </View>
         </View>
 
-        {/* Emergency Contacts */}
-        <View style={styles.contactsSection}>
-          <Text style={styles.sectionTitle}>Emergency Contacts</Text>
-          <View style={styles.contactsStack}>
-            {(profile?.contacts || [
-              { id: '1', name: 'Sarah Wilson', relation: 'Spouse', type: 'Primary', phone: '555-0123' },
-              { id: '2', name: 'Dr. Aris', relation: 'Cardiologist', type: 'Specialist', phone: '555-0987' }
-            ]).map((contact) => (
-              <View key={contact.id} style={styles.contactCard}>
-                <View style={styles.contactLeft}>
-                  <View style={styles.contactInitialsWrapper}>
-                    <Text style={styles.contactInitials}>
-                      {contact.name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase()}
-                    </Text>
-                  </View>
-                  <View style={styles.contactDetails}>
-                    <Text style={styles.contactName}>{contact.name}</Text>
-                    <Text style={styles.contactRelation}>{contact.relation} • {contact.type}</Text>
-                  </View>
-                </View>
-                
-                <TouchableOpacity 
-                  style={styles.callCircleBtn}
-                  onPress={() => {
-                    const phoneUrl = `tel:${contact.phone}`;
-                    Linking.canOpenURL(phoneUrl)
-                      .then(supported => {
-                        if (supported) {
-                          Linking.openURL(phoneUrl);
-                        } else {
-                          Alert.alert("Not Supported", "Calling is not supported on this simulator device.");
-                        }
-                      });
-                  }}
-                >
-                  <MaterialIcons name="call" size={20} color={colors.white} />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Action Buttons Link Card */}
-        <View style={styles.actionButtonsCabinet}>
-          <TouchableOpacity 
-            style={styles.actionCabinetBtn}
-            onPress={() => navigation.navigate('ExistingConditions', { uid, mockUser })}
-          >
-            <View style={styles.btnCabinetLeft}>
-              <MaterialIcons name="psychology" size={20} color={colors.outline} />
-              <Text style={styles.actionCabinetBtnText}>Chronic Health Conditions</Text>
-            </View>
-            <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionCabinetBtn}>
-            <View style={styles.btnCabinetLeft}>
-              <MaterialIcons name="security" size={20} color={colors.outline} />
-              <Text style={styles.actionCabinetBtnText}>Privacy & Data Permissions</Text>
-            </View>
-            <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionCabinetBtn}>
-            <View style={styles.btnCabinetLeft}>
-              <MaterialIcons name="history" size={20} color={colors.outline} />
-              <Text style={styles.actionCabinetBtnText}>Medication History Export</Text>
-            </View>
-            <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-          </TouchableOpacity>
+        {/* Action Buttons Cabinet (Sign Out) */}
+        <View style={[styles.actionButtonsCabinet, { marginTop: 16 }]}>
           <TouchableOpacity style={[styles.actionCabinetBtn, { borderBottomWidth: 0 }]} onPress={handleLogout}>
             <View style={styles.btnCabinetLeft}>
               <MaterialIcons name="logout" size={20} color={colors.error} />
@@ -994,218 +1326,141 @@ export const DashboardScreen = ({ route, navigation }) => {
   };
 
   const renderSettingsTab = () => {
-    const preferences = profile?.preferences || { pushEnabled: true, emailEnabled: false, smsEnabled: true };
-    
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {/* App Info Header */}
         <View style={styles.welcomeSection}>
           <View>
-            <Text style={styles.tabHeading}>Settings</Text>
-            <Text style={styles.welcomeSubtitle}>Manage preferences & database synchronizations</Text>
+            <Text style={[styles.tabHeading, isDarkMode && { color: '#e2e2e6' }]}>Settings</Text>
+            <Text style={[styles.welcomeSubtitle, isDarkMode && { color: '#a0a4b0' }]}>App preferences & configuration</Text>
           </View>
         </View>
 
-        {/* Notification Switches */}
+        {/* Simplified Settings Block */}
         <View style={styles.settingsSection}>
-          <Text style={styles.settingsSectionTitle}>Notification Settings</Text>
-          <View style={styles.settingsBlock}>
-            {/* Push Reminders */}
-            <View style={styles.settingsRow}>
+          <View style={[styles.settingsBlock, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+            {/* 1. Edit Profile */}
+            <TouchableOpacity 
+              style={[styles.settingsRowBtn, isDarkMode && { borderBottomColor: '#343640' }]} 
+              onPress={() => setActiveTab('profile')}
+            >
               <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="notifications-active" size={20} color={colors.outline} />
+                <View style={[styles.settingsIconCircle, isDarkMode && { backgroundColor: '#1a1b1f' }]}>
+                  <MaterialIcons name="person-outline" size={20} color={isDarkMode ? '#80b3ff' : colors.primary} />
                 </View>
                 <View>
-                  <Text style={styles.settingsLabel}>Push Reminders</Text>
-                  <Text style={styles.settingsSubLabel}>Daily dose alerts</Text>
+                  <Text style={[styles.settingsLabel, isDarkMode && { color: '#e2e2e6' }]}>Edit Profile</Text>
+                  <Text style={[styles.settingsSubLabel, isDarkMode && { color: '#a0a4b0' }]}>Manage personal health & contact details</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={isDarkMode ? '#a0a4b0' : colors.outline} />
+            </TouchableOpacity>
+
+            {/* 2. Notifications Toggle */}
+            <View style={[styles.settingsRow, isDarkMode && { borderBottomColor: '#343640' }]}>
+              <View style={styles.settingsRowLeft}>
+                <View style={[styles.settingsIconCircle, isDarkMode && { backgroundColor: '#1a1b1f' }]}>
+                  <MaterialIcons name="notifications-none" size={20} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                </View>
+                <View>
+                  <Text style={[styles.settingsLabel, isDarkMode && { color: '#e2e2e6' }]}>Notifications</Text>
+                  <Text style={[styles.settingsSubLabel, isDarkMode && { color: '#a0a4b0' }]}>{notificationsEnabled ? 'Enabled' : 'Disabled'}</Text>
                 </View>
               </View>
               <Switch 
-                value={preferences.pushEnabled}
-                onValueChange={() => handlePreferenceToggle('pushEnabled', preferences.pushEnabled)}
-                trackColor={{ false: colors.outlineVariant, true: colors.primary }}
+                value={notificationsEnabled}
+                onValueChange={handleToggleNotifications}
+                trackColor={{ false: colors.outlineVariant, true: isDarkMode ? '#80b3ff' : colors.primary }}
                 thumbColor={colors.white}
               />
             </View>
 
-            {/* Email Reports */}
-            <View style={styles.settingsRow}>
+            {/* 3. Dark Mode Toggle */}
+            <View style={[styles.settingsRow, isDarkMode && { borderBottomColor: '#343640' }]}>
               <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="mail" size={20} color={colors.outline} />
+                <View style={[styles.settingsIconCircle, isDarkMode && { backgroundColor: '#1a1b1f' }]}>
+                  <MaterialIcons name="dark-mode" size={20} color={isDarkMode ? '#80b3ff' : colors.primary} />
                 </View>
                 <View>
-                  <Text style={styles.settingsLabel}>Email Reports</Text>
-                  <Text style={styles.settingsSubLabel}>Weekly safety summaries</Text>
+                  <Text style={[styles.settingsLabel, isDarkMode && { color: '#e2e2e6' }]}>Dark Mode</Text>
+                  <Text style={[styles.settingsSubLabel, isDarkMode && { color: '#a0a4b0' }]}>{isDarkMode ? 'Dark Mode ON' : 'Light Mode ON'}</Text>
                 </View>
               </View>
               <Switch 
-                value={preferences.emailEnabled}
-                onValueChange={() => handlePreferenceToggle('emailEnabled', preferences.emailEnabled)}
-                trackColor={{ false: colors.outlineVariant, true: colors.primary }}
+                value={isDarkMode}
+                onValueChange={handleToggleDarkMode}
+                trackColor={{ false: colors.outlineVariant, true: isDarkMode ? '#80b3ff' : colors.primary }}
                 thumbColor={colors.white}
               />
             </View>
 
-            {/* SMS Alerts */}
-            <View style={[styles.settingsRow, { borderBottomWidth: 0 }]}>
+            {/* 4. Privacy Policy */}
+            <TouchableOpacity 
+              style={[styles.settingsRowBtn, isDarkMode && { borderBottomColor: '#343640' }]} 
+              onPress={() => setIsPrivacyModalOpen(true)}
+            >
               <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="sms" size={20} color={colors.outline} />
+                <View style={[styles.settingsIconCircle, isDarkMode && { backgroundColor: '#1a1b1f' }]}>
+                  <MaterialIcons name="security" size={20} color={isDarkMode ? '#80b3ff' : colors.primary} />
                 </View>
                 <View>
-                  <Text style={styles.settingsLabel}>SMS Alerts</Text>
-                  <Text style={styles.settingsSubLabel}>Critical emergency warnings</Text>
+                  <Text style={[styles.settingsLabel, isDarkMode && { color: '#e2e2e6' }]}>Privacy Policy</Text>
+                  <Text style={[styles.settingsSubLabel, isDarkMode && { color: '#a0a4b0' }]}>Data protection & privacy rights</Text>
                 </View>
               </View>
-              <Switch 
-                value={preferences.smsEnabled}
-                onValueChange={() => handlePreferenceToggle('smsEnabled', preferences.smsEnabled)}
-                trackColor={{ false: colors.outlineVariant, true: colors.primary }}
-                thumbColor={colors.white}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* General Preferences */}
-        <View style={styles.settingsSection}>
-          <Text style={styles.settingsSectionTitle}>Preferences</Text>
-          <View style={styles.settingsBlock}>
-            <TouchableOpacity style={styles.settingsRowBtn}>
-              <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="language" size={20} color={colors.outline} />
-                </View>
-                <View>
-                  <Text style={styles.settingsLabel}>Language</Text>
-                  <Text style={styles.settingsSubLabel}>English (US)</Text>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
+              <MaterialIcons name="chevron-right" size={20} color={isDarkMode ? '#a0a4b0' : colors.outline} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.settingsRowBtn}>
+            {/* 5. About MediGod AI */}
+            <TouchableOpacity 
+              style={[styles.settingsRowBtn, { borderBottomWidth: 0 }]} 
+              onPress={() => setIsAboutModalOpen(true)}
+            >
               <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="dark-mode" size={20} color={colors.outline} />
+                <View style={[styles.settingsIconCircle, isDarkMode && { backgroundColor: '#1a1b1f' }]}>
+                  <MaterialIcons name="info-outline" size={20} color={isDarkMode ? '#80b3ff' : colors.primary} />
                 </View>
                 <View>
-                  <Text style={styles.settingsLabel}>Theme</Text>
-                  <Text style={styles.settingsSubLabel}>Light mode</Text>
+                  <Text style={[styles.settingsLabel, isDarkMode && { color: '#e2e2e6' }]}>About MediGod AI</Text>
+                  <Text style={[styles.settingsSubLabel, isDarkMode && { color: '#a0a4b0' }]}>App info, version & purpose</Text>
                 </View>
               </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.settingsRowBtn, { borderBottomWidth: 0 }]}>
-              <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="straighten" size={20} color={colors.outline} />
-                </View>
-                <View>
-                  <Text style={styles.settingsLabel}>Measurement Units</Text>
-                  <Text style={styles.settingsSubLabel}>Metric (kg, ml)</Text>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
+              <MaterialIcons name="chevron-right" size={20} color={isDarkMode ? '#a0a4b0' : colors.outline} />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Security Preferences */}
-        <View style={styles.settingsSection}>
-          <Text style={styles.settingsSectionTitle}>Security</Text>
-          <View style={styles.settingsBlock}>
-            <TouchableOpacity style={styles.settingsRowBtn}>
-              <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="lock" size={20} color={colors.outline} />
-                </View>
-                <View>
-                  <Text style={styles.settingsLabel}>Change Password</Text>
-                  <Text style={styles.settingsSubLabel}>Last updated 3 months ago</Text>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-            </TouchableOpacity>
-
-            <View style={[styles.settingsRow, { borderBottomWidth: 0 }]}>
-              <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="fingerprint" size={20} color={colors.outline} />
-                </View>
-                <View>
-                  <Text style={styles.settingsLabel}>Biometric Login</Text>
-                  <Text style={styles.settingsSubLabel}>Use FaceID or TouchID</Text>
-                </View>
-              </View>
-              <Switch 
-                value={true} 
-                onValueChange={() => Alert.alert("FaceID Security", "Biometrics locked to local operating systems safety modules.")} 
-                trackColor={{ false: colors.outlineVariant, true: colors.primary }}
-                thumbColor={colors.white}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Support Block */}
-        <View style={styles.settingsSection}>
-          <Text style={styles.settingsSectionTitle}>Support</Text>
-          <View style={styles.settingsBlock}>
-            <TouchableOpacity style={styles.settingsRowBtn}>
-              <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="quiz" size={20} color={colors.outline} />
-                </View>
-                <Text style={[styles.settingsLabel, { fontSize: 15 }]}>Frequently Asked Questions</Text>
-              </View>
-              <MaterialIcons name="open-in-new" size={16} color={colors.outline} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.settingsRowBtn, { borderBottomWidth: 0 }]}>
-              <View style={styles.settingsRowLeft}>
-                <View style={styles.settingsIconCircle}>
-                  <MaterialIcons name="support-agent" size={20} color={colors.outline} />
-                </View>
-                <Text style={[styles.settingsLabel, { fontSize: 15 }]}>Contact Support Team</Text>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.outline} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Big Logout Button */}
-        <TouchableOpacity style={styles.logoutSettingBtn} onPress={handleLogout}>
+        {/* 6. Sign Out Button */}
+        <TouchableOpacity style={[styles.logoutSettingBtn, isDarkMode && { backgroundColor: '#2a1a1a', borderColor: '#4a2222' }]} onPress={handleLogout}>
           <MaterialIcons name="logout" size={20} color={colors.error} />
-          <Text style={styles.logoutSettingText}>Sign Out Session</Text>
+          <Text style={styles.logoutSettingText}>Sign Out</Text>
         </TouchableOpacity>
       </ScrollView>
     );
   };
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={[styles.safeContainer, isDarkMode && { backgroundColor: '#121316' }]}>
       
       {/* Dynamic Top App Bar Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, isDarkMode && { backgroundColor: '#1e1f23', borderBottomColor: '#343640' }]}>
         <View style={styles.headerTitleRow}>
-          <MaterialIcons name="health-and-safety" size={28} color={colors.primary} />
-          <Text style={styles.headerText}>MedVigilance</Text>
+          <MaterialIcons name="health-and-safety" size={28} color={isDarkMode ? '#80b3ff' : colors.primary} />
+          <Text style={[styles.headerText, isDarkMode && { color: '#80b3ff' }]}>MedVigilance</Text>
         </View>
         
         {/* Network Badge Status */}
-        <View style={styles.cloudBadge}>
-          <View style={[styles.greenActiveDot, { backgroundColor: mockUser ? '#e67e22' : colors.secondary }]} />
-          <Text style={styles.cloudBadgeText}>{mockUser ? 'Offline' : 'Firebase Live'}</Text>
-        </View>
+        {mockUser && (
+          <View style={[styles.cloudBadge, isDarkMode && { backgroundColor: '#1a1b1f', borderColor: '#343640' }]}>
+            <View style={[styles.greenActiveDot, { backgroundColor: '#e67e22' }]} />
+            <Text style={[styles.cloudBadgeText, isDarkMode && { color: '#a0a4b0' }]}>Offline</Text>
+          </View>
+        )}
       </View>
 
       {/* Main Tab Rendering Pipeline */}
       {activeTab === 'dashboard' && renderDashboardTab()}
-      {activeTab === 'alerts' && renderAlertsTab()}
+
       {activeTab === 'profile' && renderProfileTab()}
       {activeTab === 'settings' && renderSettingsTab()}
 
@@ -1223,8 +1478,8 @@ export const DashboardScreen = ({ route, navigation }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.bottomSheetCard}>
             <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>Add Medication</Text>
-              <TouchableOpacity onPress={() => setIsAddingMed(false)}>
+              <Text style={styles.sheetTitle}>{editingMedId ? 'Edit Medication' : 'Add Medication'}</Text>
+              <TouchableOpacity onPress={() => { resetAddMedForm(); setIsAddingMed(false); }}>
                 <MaterialIcons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
             </View>
@@ -1253,6 +1508,21 @@ export const DashboardScreen = ({ route, navigation }) => {
               </View>
 
               <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Medicine Type</Text>
+                <View style={styles.timeSelectionRow}>
+                  {['Tablet', 'Capsule', 'Syrup', 'Injection'].map((type) => (
+                    <TouchableOpacity 
+                      key={type}
+                      style={[styles.timeSelectBtn, newMedType === type && styles.timeSelectBtnActive]}
+                      onPress={() => setNewMedType(type)}
+                    >
+                      <Text style={[styles.timeSelectText, newMedType === type && styles.timeSelectTextActive]}>{type}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Schedule Time</Text>
                 <View style={styles.timeSelectionRow}>
                   {['08:00 AM', '09:00 AM', '02:00 PM', '09:00 PM'].map((t) => (
@@ -1268,9 +1538,24 @@ export const DashboardScreen = ({ route, navigation }) => {
               </View>
 
               <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Frequency</Text>
+                <View style={styles.timeSelectionRow}>
+                  {['Once daily', 'Twice daily', '3x daily', 'As needed'].map((freq) => (
+                    <TouchableOpacity 
+                      key={freq}
+                      style={[styles.timeSelectBtn, newMedFrequency === freq && styles.timeSelectBtnActive]}
+                      onPress={() => setNewMedFrequency(freq)}
+                    >
+                      <Text style={[styles.timeSelectText, newMedFrequency === freq && styles.timeSelectTextActive]}>{freq}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Instructions / Notes</Text>
                 <TextInput 
-                  style={[styles.sheetInput, { height: 80, textAlignVertical: 'top' }]}
+                  style={[styles.sheetInput, { height: 70, textAlignVertical: 'top' }]}
                   placeholder="e.g. Take with food in morning"
                   multiline={true}
                   value={newMedInstructions}
@@ -1279,8 +1564,31 @@ export const DashboardScreen = ({ route, navigation }) => {
                 />
               </View>
 
+              <View style={{ flexDirection: 'row', gap: 12 }}>
+                <View style={[styles.inputGroup, { flex: 1 }]}>
+                  <Text style={styles.inputLabel}>Start Date</Text>
+                  <TextInput 
+                    style={styles.sheetInput}
+                    placeholder="YYYY-MM-DD"
+                    value={newMedStartDate}
+                    onChangeText={setNewMedStartDate}
+                    placeholderTextColor={colors.outline}
+                  />
+                </View>
+                <View style={[styles.inputGroup, { flex: 1 }]}>
+                  <Text style={styles.inputLabel}>End Date</Text>
+                  <TextInput 
+                    style={styles.sheetInput}
+                    placeholder="YYYY-MM-DD"
+                    value={newMedEndDate}
+                    onChangeText={setNewMedEndDate}
+                    placeholderTextColor={colors.outline}
+                  />
+                </View>
+              </View>
+
               <TouchableOpacity style={styles.saveMedSubmitBtn} onPress={handleAddMedication}>
-                <Text style={styles.saveMedSubmitBtnText}>Register Medication</Text>
+                <Text style={styles.saveMedSubmitBtnText}>{editingMedId ? 'Save Changes' : 'Register Medication'}</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -1399,6 +1707,188 @@ export const DashboardScreen = ({ route, navigation }) => {
         </View>
       </Modal>
 
+      {/* Privacy Policy Full-Screen Page */}
+      <Modal
+        visible={isPrivacyModalOpen}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setIsPrivacyModalOpen(false)}
+      >
+        <SafeAreaView style={[styles.fullScreenPage, isDarkMode && { backgroundColor: '#121316' }]}>
+          {/* Header */}
+          <View style={[styles.fullScreenHeader, isDarkMode && { backgroundColor: '#1e1f23', borderBottomColor: '#343640' }]}>
+            <TouchableOpacity 
+              style={styles.fullScreenBackBtn} 
+              onPress={() => setIsPrivacyModalOpen(false)}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons name="arrow-back" size={24} color={isDarkMode ? '#80b3ff' : colors.primary} />
+              <Text style={[styles.fullScreenBackText, isDarkMode && { color: '#80b3ff' }]}>Back</Text>
+            </TouchableOpacity>
+            <Text style={[styles.fullScreenHeaderTitle, isDarkMode && { color: '#e2e2e6' }]}>Privacy Policy</Text>
+            <View style={{ width: 60 }} />
+          </View>
+
+          {/* Scrollable Content */}
+          <ScrollView 
+            contentContainerStyle={styles.fullScreenScrollContent} 
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Hero Card */}
+            <View style={[styles.fullScreenHeroCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={[styles.fullScreenIconCircle, isDarkMode && { backgroundColor: '#1c2d5a' }]}>
+                <MaterialIcons name="security" size={32} color={isDarkMode ? '#80b3ff' : colors.primary} />
+              </View>
+              <Text style={[styles.fullScreenHeroTitle, isDarkMode && { color: '#e2e2e6' }]}>Patient Privacy Protocol</Text>
+              <Text style={[styles.fullScreenHeroSubtitle, isDarkMode && { color: '#a0a4b0' }]}>End-to-End Encryption & GDPR/HIPAA Compliance</Text>
+            </View>
+
+            {/* Section 1 */}
+            <View style={[styles.fullScreenSectionCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={styles.sectionHeaderRow}>
+                <MaterialIcons name="lock-outline" size={22} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                <Text style={[styles.fullScreenSectionTitle, isDarkMode && { color: '#80b3ff' }]}>MediGod AI Patient Data Privacy</Text>
+              </View>
+              <Text style={[styles.fullScreenBodyText, isDarkMode && { color: '#a0a4b0' }]}>
+                Your health records, prescription schedules, medication histories, and personal profile metrics are encrypted using military-grade AES-256 protocols adhering to HIPAA & GDPR international clinical standards.
+              </Text>
+            </View>
+
+            {/* Section 2 */}
+            <View style={[styles.fullScreenSectionCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={styles.sectionHeaderRow}>
+                <MaterialIcons name="verified-user" size={22} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                <Text style={[styles.fullScreenSectionTitle, isDarkMode && { color: '#80b3ff' }]}>Data Rights & Usage Policy</Text>
+              </View>
+              
+              <View style={styles.bulletItem}>
+                <Text style={[styles.bulletPointIcon, isDarkMode && { color: '#80b3ff' }]}>•</Text>
+                <Text style={[styles.bulletItemText, isDarkMode && { color: '#a0a4b0' }]}>
+                  <Text style={{ fontWeight: '700', color: isDarkMode ? '#e2e2e6' : colors.text }}>Zero Data Brokerage:</Text> We never sell, share, or monetize patient records with third-party data brokers or advertisers.
+                </Text>
+              </View>
+
+              <View style={styles.bulletItem}>
+                <Text style={[styles.bulletPointIcon, isDarkMode && { color: '#80b3ff' }]}>•</Text>
+                <Text style={[styles.bulletItemText, isDarkMode && { color: '#a0a4b0' }]}>
+                  <Text style={{ fontWeight: '700', color: isDarkMode ? '#e2e2e6' : colors.text }}>Scoped Cloud Access:</Text> Real-time database syncs are strictly authenticated and restricted to your logged-in account UID.
+                </Text>
+              </View>
+
+              <View style={styles.bulletItem}>
+                <Text style={[styles.bulletPointIcon, isDarkMode && { color: '#80b3ff' }]}>•</Text>
+                <Text style={[styles.bulletItemText, isDarkMode && { color: '#a0a4b0' }]}>
+                  <Text style={{ fontWeight: '700', color: isDarkMode ? '#e2e2e6' : colors.text }}>Complete Sovereignty:</Text> You retain total authority to export, edit, or permanently wipe your stored clinical data at any time.
+                </Text>
+              </View>
+            </View>
+
+            {/* Section 3 */}
+            <View style={[styles.fullScreenSectionCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={styles.sectionHeaderRow}>
+                <MaterialIcons name="gavel" size={22} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                <Text style={[styles.fullScreenSectionTitle, isDarkMode && { color: '#80b3ff' }]}>Clinical Governance</Text>
+              </View>
+              <Text style={[styles.fullScreenBodyText, isDarkMode && { color: '#a0a4b0' }]}>
+                Data processing is governed by strict automated Firebase Security Rules. Continuous automated vulnerability scanning guarantees maximum integrity of patient records.
+              </Text>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
+
+      {/* About MediGod AI Full-Screen Page */}
+      <Modal
+        visible={isAboutModalOpen}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setIsAboutModalOpen(false)}
+      >
+        <SafeAreaView style={[styles.fullScreenPage, isDarkMode && { backgroundColor: '#121316' }]}>
+          {/* Header */}
+          <View style={[styles.fullScreenHeader, isDarkMode && { backgroundColor: '#1e1f23', borderBottomColor: '#343640' }]}>
+            <TouchableOpacity 
+              style={styles.fullScreenBackBtn} 
+              onPress={() => setIsAboutModalOpen(false)}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons name="arrow-back" size={24} color={isDarkMode ? '#80b3ff' : colors.primary} />
+              <Text style={[styles.fullScreenBackText, isDarkMode && { color: '#80b3ff' }]}>Back</Text>
+            </TouchableOpacity>
+            <Text style={[styles.fullScreenHeaderTitle, isDarkMode && { color: '#e2e2e6' }]}>About MediGod AI</Text>
+            <View style={{ width: 60 }} />
+          </View>
+
+          {/* Scrollable Content */}
+          <ScrollView 
+            contentContainerStyle={styles.fullScreenScrollContent} 
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Hero Brand Card */}
+            <View style={[styles.fullScreenHeroCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={[styles.fullScreenIconCircle, { width: 72, height: 72, borderRadius: 36 }, isDarkMode && { backgroundColor: '#1c2d5a' }]}>
+                <MaterialIcons name="health-and-safety" size={40} color={isDarkMode ? '#80b3ff' : colors.primary} />
+              </View>
+              <Text style={[styles.fullScreenHeroTitle, { fontSize: 24, marginTop: 12 }, isDarkMode && { color: '#e2e2e6' }]}>MediGod AI</Text>
+              <View style={[styles.versionBadge, isDarkMode && { backgroundColor: '#1a382b' }]}>
+                <Text style={[styles.versionBadgeText, isDarkMode && { color: '#38e078' }]}>Version 1.0</Text>
+              </View>
+            </View>
+
+            {/* Purpose */}
+            <View style={[styles.fullScreenSectionCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={styles.sectionHeaderRow}>
+                <MaterialIcons name="track-changes" size={22} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                <Text style={[styles.fullScreenSectionTitle, isDarkMode && { color: '#80b3ff' }]}>Purpose</Text>
+              </View>
+              <Text style={[styles.fullScreenBodyText, isDarkMode && { color: '#a0a4b0' }]}>
+                MediGod AI is an AI-powered medicine safety and awareness application designed to prevent harmful drug interactions, track expirations, and safeguard patient health across all clinical environments.
+              </Text>
+            </View>
+
+            {/* Developer Info */}
+            <View style={[styles.fullScreenSectionCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={styles.sectionHeaderRow}>
+                <MaterialIcons name="code" size={22} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                <Text style={[styles.fullScreenSectionTitle, isDarkMode && { color: '#80b3ff' }]}>Developer Information</Text>
+              </View>
+              <Text style={[styles.fullScreenBodyText, isDarkMode && { color: '#a0a4b0' }]}>
+                Architected and developed by the MediGuard AI Health Systems Engineering Team. Powered by Google DeepMind Advanced Clinical Intelligence Architecture.
+              </Text>
+            </View>
+
+            {/* Key Capabilities */}
+            <View style={[styles.fullScreenSectionCard, isDarkMode && { backgroundColor: '#1e1f23', borderColor: '#343640' }]}>
+              <View style={styles.sectionHeaderRow}>
+                <MaterialIcons name="star-outline" size={22} color={isDarkMode ? '#80b3ff' : colors.primary} />
+                <Text style={[styles.fullScreenSectionTitle, isDarkMode && { color: '#80b3ff' }]}>Key Features</Text>
+              </View>
+
+              <View style={styles.bulletItem}>
+                <MaterialIcons name="access-time" size={18} color={colors.secondary} style={{ marginRight: 8, marginTop: 2 }} />
+                <Text style={[styles.bulletItemText, isDarkMode && { color: '#a0a4b0' }]}>
+                  <Text style={{ fontWeight: '700', color: isDarkMode ? '#e2e2e6' : colors.text }}>Expiry Management:</Text> Real-time monitoring and 7-day automatic warning push notifications.
+                </Text>
+              </View>
+
+              <View style={styles.bulletItem}>
+                <MaterialIcons name="search" size={18} color={colors.secondary} style={{ marginRight: 8, marginTop: 2 }} />
+                <Text style={[styles.bulletItemText, isDarkMode && { color: '#a0a4b0' }]}>
+                  <Text style={{ fontWeight: '700', color: isDarkMode ? '#e2e2e6' : colors.text }}>AI Safety Verification:</Text> Instant lookup for dosage guidelines, warnings, and drug interactions.
+                </Text>
+              </View>
+
+              <View style={styles.bulletItem}>
+                <MaterialIcons name="warning" size={18} color={colors.secondary} style={{ marginRight: 8, marginTop: 2 }} />
+                <Text style={[styles.bulletItemText, isDarkMode && { color: '#a0a4b0' }]}>
+                  <Text style={{ fontWeight: '700', color: isDarkMode ? '#e2e2e6' : colors.text }}>Recall Protection:</Text> Community network safety sync checking batches for counterfeit recalls.
+                </Text>
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
+
       {/* -------------------------------------------------------------
           BOTTOM NAVIGATION BAR
           ------------------------------------------------------------- */}
@@ -1417,25 +1907,7 @@ export const DashboardScreen = ({ route, navigation }) => {
           <Text style={[styles.navLabel, activeTab === 'dashboard' && styles.navLabelActive]}>Dashboard</Text>
         </TouchableOpacity>
 
-        {/* Alerts Tab Button */}
-        <TouchableOpacity 
-          style={[styles.navBtn, activeTab === 'alerts' && styles.navBtnActive]}
-          onPress={() => setActiveTab('alerts')}
-        >
-          <View style={styles.alertIconBadgeContainer}>
-            <MaterialIcons 
-              name="notifications-active" 
-              size={24} 
-              color={activeTab === 'alerts' ? colors.primary : colors.textSecondary} 
-            />
-            {unreadAlertsCount > 0 && (
-              <View style={styles.miniRedDotBadge}>
-                <Text style={styles.miniRedDotBadgeText}>{unreadAlertsCount}</Text>
-              </View>
-            )}
-          </View>
-          <Text style={[styles.navLabel, activeTab === 'alerts' && styles.navLabelActive]}>Alerts</Text>
-        </TouchableOpacity>
+
 
         {/* Profile Tab Button */}
         <TouchableOpacity 
@@ -1473,6 +1945,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   loadingContainer: {
     flex: 1,
@@ -1793,6 +2272,22 @@ const styles = StyleSheet.create({
   },
   checkCircleBtnSuccess: {
     backgroundColor: colors.secondary,
+  },
+  medActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginLeft: 8,
+  },
+  actionIconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.surfaceContainerLow || '#f5f5f5',
+    borderWidth: 1,
+    borderColor: colors.outlineVariant || '#e0e0e0',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   grid: {
     flexDirection: 'row',
@@ -2658,10 +3153,286 @@ const styles = StyleSheet.create({
   dashSearchIcon: {
     marginRight: 12,
   },
+  dashSearchInput: {
+    flex: 1,
+    height: '100%',
+    fontSize: 13.5,
+    fontWeight: '600',
+    color: colors.text,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    textAlignVertical: 'center',
+    ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}),
+  },
   dashSearchPlaceholder: {
     fontSize: 13,
     fontWeight: '600',
     color: colors.outline,
+  },
+  dashSuggestionsCard: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.primary + '4D',
+    borderRadius: 14,
+    padding: 12,
+    marginTop: -16,
+    marginBottom: 24,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  dashSuggestionsHeader: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: colors.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  dashSuggestionRowItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 8,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.outlineVariant + '4D',
+  },
+  dashSuggestionRowText: {
+    fontSize: 13.5,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  pharmacyBentoBanner: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+    overflow: 'hidden',
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  pharmacyBentoLeft: {
+    flex: 1.5,
+    zIndex: 10,
+  },
+  pharmacyBentoBadge: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: colors.primary,
+    backgroundColor: '#d6e3ff',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  pharmacyBentoTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.white,
+    marginBottom: 6,
+  },
+  pharmacyBentoDesc: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.8)',
+    lineHeight: 16,
+    marginBottom: 16,
+    fontWeight: '500',
+  },
+  pharmacyBentoBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    height: 36,
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  pharmacyBentoBtnText: {
+    fontSize: 12,
+    fontWeight: '850',
+    color: colors.primary,
+  },
+  pharmacyBentoRight: {
+    position: 'absolute',
+    right: -10,
+    bottom: -15,
+  },
+  faqBlock: {
+    backgroundColor: colors.surfaceContainerLow,
+    padding: 14,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+  },
+  faqQuestion: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.primary,
+    marginBottom: 6,
+  },
+  faqAnswer: {
+    fontSize: 12.5,
+    color: colors.textSecondary,
+    lineHeight: 18,
+    fontWeight: '500',
+  },
+  privacyHeading: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.primary,
+    marginTop: 6,
+  },
+  privacyBody: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    lineHeight: 19,
+  },
+
+  // Full-Screen Separate Pages Styling (Privacy Policy & About MediGod AI)
+  fullScreenPage: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  fullScreenHeader: {
+    height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.outlineVariant,
+  },
+  fullScreenBackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingRight: 12,
+  },
+  fullScreenBackText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.primary,
+    marginLeft: 4,
+  },
+  fullScreenHeaderTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: colors.text,
+  },
+  fullScreenScrollContent: {
+    padding: 20,
+    paddingBottom: 48,
+    gap: 16,
+  },
+  fullScreenHeroCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 18,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  fullScreenIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: colors.primaryFixed,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  fullScreenHeroTitle: {
+    fontSize: 20,
+    fontWeight: '850',
+    color: colors.text,
+    textAlign: 'center',
+  },
+  fullScreenHeroSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  fullScreenSectionCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    gap: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  fullScreenSectionTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.primary,
+  },
+  fullScreenBodyText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    lineHeight: 22,
+    fontWeight: '500',
+  },
+  bulletItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: 4,
+  },
+  bulletPointIcon: {
+    fontSize: 18,
+    color: colors.primary,
+    marginRight: 8,
+    lineHeight: 20,
+  },
+  bulletItemText: {
+    flex: 1,
+    fontSize: 13.5,
+    color: colors.textSecondary,
+    lineHeight: 20,
+    fontWeight: '500',
+  },
+  versionBadge: {
+    backgroundColor: colors.primaryFixed,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginTop: 6,
+  },
+  versionBadgeText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: colors.secondary,
   },
 });
 

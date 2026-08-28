@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   Platform, 
   StatusBar,
   Dimensions,
   Alert,
-  ActivityIndicator
-} from 'react-native';
+  ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { 
@@ -53,54 +52,19 @@ export const UsageDosageScreen = ({ route, navigation }) => {
     }
   }, [uid, mockUser]);
 
-  // Handle "Set Dosage Reminder" database integration
-  const handleSetReminder = async () => {
-    setLoading(true);
-    try {
-      // Find if this medicine name already exists in the cabinet
-      const existingMed = Object.values(cabinetMeds).find(m => 
-        m.name.toLowerCase().includes(med.name.toLowerCase()) || 
-        med.name.toLowerCase().includes(m.name.toLowerCase())
-      );
-
-      let targetMedId = '';
-      let updatedCabinet = { ...cabinetMeds };
-
-      if (existingMed) {
-        targetMedId = existingMed.id;
-      } else {
-        // If not in cabinet, save a default cabinet record to connect to reminder scheduler!
-        const medPayload = {
-          name: med.name,
-          dosage: med.strength || '500mg',
-          time: '09:00 AM',
-          instructions: 'Take as directed by pharmacist',
-          taken: false,
-          takenTime: ''
-        };
-
-        if (mockUser) {
-          const mockId = `med_${Date.now()}`;
-          targetMedId = mockId;
-          updatedCabinet[mockId] = { ...medPayload, id: mockId };
-        } else {
-          const savedMed = await saveUserMedication(uid, medPayload);
-          targetMedId = savedMed.id;
-        }
+  // Handle "Set Dosage Reminder" trigger
+  const handleSetReminder = () => {
+    navigation.navigate('AddReminder', {
+      uid,
+      mockUser,
+      medData: {
+        id: med.id || `med_${Date.now()}`,
+        name: med.name,
+        dosage: med.strength || '500mg',
+        type: med.type || 'Tablet',
+        instructions: med.usage || 'Take as directed'
       }
-
-      setLoading(false);
-      // Seamlessly navigate user directly to AddReminderScreen with all parameters prefilled!
-      navigation.navigate('AddReminder', {
-        uid,
-        mockUser,
-        medId: targetMedId,
-        medications: updatedCabinet
-      });
-    } catch (err) {
-      setLoading(false);
-      Alert.alert("Database Connection Failed", "Failed to register cabinet entry. Please try again.");
-    }
+    });
   };
 
   return (
@@ -146,32 +110,22 @@ export const UsageDosageScreen = ({ route, navigation }) => {
               <Text style={[styles.headerCell, { flex: 2 }]}>Dosage Instruction</Text>
             </View>
             
-            <View style={styles.tableRow}>
-              <View style={[{ flex: 1.2 }]}>
-                <Text style={styles.rowTitle}>Adults</Text>
-                <Text style={styles.rowSub}>18+ years</Text>
+            {(med.dosageTable || [
+              { group: 'Adults', sub: '18+ years', desc: '500mg every 8 hours or 875mg every 12 hours' },
+              { group: 'Children', sub: '3 - 17 years', desc: '20mg/kg/day in divided doses every 8 hours' },
+              { group: 'Infants', sub: 'Under 3 months', desc: 'Max 30mg/kg/day divided every 12 hours' }
+            ]).map((row, idx, arr) => (
+              <View key={idx} style={[styles.tableRow, idx === arr.length - 1 && { borderBottomWidth: 0 }]}>
+                <View style={[{ flex: 1.2 }]}>
+                  <Text style={styles.rowTitle}>{row.group}</Text>
+                  <Text style={styles.rowSub}>{row.sub}</Text>
+                </View>
+                <Text style={[styles.rowDesc, { flex: 2 }]}>{row.desc}</Text>
               </View>
-              <Text style={[styles.rowDesc, { flex: 2 }]}>500mg every 8 hours or 875mg every 12 hours</Text>
-            </View>
-
-            <View style={styles.tableRow}>
-              <View style={[{ flex: 1.2 }]}>
-                <Text style={styles.rowTitle}>Children</Text>
-                <Text style={styles.rowSub}>3 - 17 years</Text>
-              </View>
-              <Text style={[styles.rowDesc, { flex: 2 }]}>20mg/kg/day in divided doses every 8 hours</Text>
-            </View>
-
-            <View style={[styles.tableRow, { borderBottomWidth: 0 }]}>
-              <View style={[{ flex: 1.2 }]}>
-                <Text style={styles.rowTitle}>Infants</Text>
-                <Text style={styles.rowSub}>Under 3 months</Text>
-              </View>
-              <Text style={[styles.rowDesc, { flex: 2 }]}>Max 30mg/kg/day divided every 12 hours</Text>
-            </View>
+            ))}
           </View>
           <Text style={styles.cautionNote}>
-            * Note: Absolute dosages are dependent on body weight and severity of infection. Consult your primary practitioner.
+            {med.dosageInfo || "* Note: Absolute dosages are dependent on body weight and severity of infection. Consult your primary practitioner."}
           </Text>
         </View>
 
@@ -183,39 +137,19 @@ export const UsageDosageScreen = ({ route, navigation }) => {
           </View>
 
           <View style={styles.instructionsStack}>
-            <View style={styles.instructionStep}>
-              <View style={styles.stepNumberCircle}><Text style={styles.stepNum}>1</Text></View>
-              <Text style={styles.stepText}>Take with or without food. Taking it with meals can help prevent moderate stomach irritation.</Text>
-            </View>
-            <View style={styles.instructionStep}>
-              <View style={styles.stepNumberCircle}><Text style={styles.stepNum}>2</Text></View>
-              <Text style={styles.stepText}>Swallow the capsule whole with a full glass of water. Never crush, split, or chew clinical capsules.</Text>
-            </View>
-            <View style={styles.instructionStep}>
-              <View style={styles.stepNumberCircle}><Text style={styles.stepNum}>3</Text></View>
-              <Text style={styles.stepText}>Always complete the full prescribed clinical course, even if symptoms vanish early, to prevent antibiotic resistance.</Text>
-            </View>
+            {(med.instructionsList || [
+              'Take with or without food. Taking it with meals can help prevent moderate stomach irritation.',
+              'Swallow the capsule whole with a full glass of water. Never crush, split, or chew clinical capsules.',
+              'Always complete the full prescribed clinical course, even if symptoms vanish early, to prevent antibiotic resistance.'
+            ]).map((step, idx) => (
+              <View key={idx} style={styles.instructionStep}>
+                <View style={styles.stepNumberCircle}><Text style={styles.stepNum}>{idx + 1}</Text></View>
+                <Text style={styles.stepText}>{step}</Text>
+              </View>
+            ))}
           </View>
         </View>
 
-        {/* Set Reminder Button Trigger */}
-        <View style={[styles.actionContainer, { marginTop: 8 }]}>
-          <TouchableOpacity 
-            style={styles.reminderBtn}
-            onPress={handleSetReminder}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color={colors.white} />
-            ) : (
-              <>
-                <MaterialIcons name="notifications-active" size={22} color={colors.white} />
-                <Text style={styles.reminderBtnText}>Set Dosage Reminder</Text>
-              </>
-            )}
-          </TouchableOpacity>
-          <Text style={styles.actionNote}>Alarms can ring persistently to match clinical guidance.</Text>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -226,6 +160,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

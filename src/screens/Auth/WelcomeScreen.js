@@ -1,14 +1,13 @@
 import React from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   ScrollView, 
   TouchableOpacity, 
-  SafeAreaView,
+  
   Platform,
-  StatusBar
-} from 'react-native';
+  StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -71,11 +70,11 @@ export const WelcomeScreen = ({ navigation }) => {
           
           <View style={styles.benefitCard}>
             <View style={styles.benefitIconContainer}>
-              <MaterialIcons name="qr-code-scanner" size={24} color={colors.primary} />
+              <MaterialIcons name="event-available" size={24} color={colors.primary} />
             </View>
             <View style={styles.benefitTextContainer}>
-              <Text style={styles.benefitTitle}>Scan medicines instantly</Text>
-              <Text style={styles.benefitDesc}>Identify complex pill labels in seconds using advanced OCR.</Text>
+              <Text style={styles.benefitTitle}>Track Doses & Expiries</Text>
+              <Text style={styles.benefitDesc}>Stay informed with timely reminders and medicine expiration alerts.</Text>
             </View>
           </View>
 
@@ -139,6 +138,13 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingHorizontal: 24,
     paddingBottom: 40,
+    ...Platform.select({
+      web: {
+        maxWidth: 500,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

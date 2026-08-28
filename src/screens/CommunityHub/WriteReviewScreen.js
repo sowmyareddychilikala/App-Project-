@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  View, 
+import { View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
+   
   ScrollView, 
   TextInput, 
   Platform, 
   StatusBar,
   Dimensions,
   ActivityIndicator,
-  Alert
-} from 'react-native';
+  Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { saveMedicineReview } from '../../services/dbService';
@@ -25,7 +24,7 @@ export const WriteReviewScreen = ({ route, navigation }) => {
   const { uid, mockUser } = params;
 
   // Form states
-  const [medName, setMedName] = useState('');
+  const [medName, setMedName] = useState(params.medName || '');
   const [title, setTitle] = useState('');
   const [rating, setRating] = useState(5); // 1 to 5 stars
   const [category, setCategory] = useState('General'); // 'Cardiological' | 'Respiratory' | 'Neurological' | 'General'
@@ -43,21 +42,11 @@ export const WriteReviewScreen = ({ route, navigation }) => {
       title: title.trim(),
       rating,
       category,
-      comment: comment.trim()
+      comment: comment.trim(),
+      userName: 'Verified Patient',
+      location: 'Local Community',
+      createdAt: new Date().toISOString()
     };
-
-    if (mockUser) {
-      setSaving(true);
-      setTimeout(() => {
-        setSaving(false);
-        Alert.alert(
-          "Review Registered", 
-          "Your review has been successfully published in the public community experience feed!",
-          [{ text: "Confirm", onPress: () => navigation.replace('CommunityFeed', { uid, mockUser }) }]
-        );
-      }, 1200);
-      return;
-    }
 
     try {
       setSaving(true);
@@ -66,13 +55,13 @@ export const WriteReviewScreen = ({ route, navigation }) => {
       await saveMedicineReview(uid, formattedMedId, payload);
       setSaving(false);
       Alert.alert(
-        "Review Synced", 
-        "Thank you. Your clinical treatment review is now published globally on our patient experiences board!",
-        [{ text: "OK", onPress: () => navigation.replace('CommunityFeed', { uid }) }]
+        "Review Published", 
+        "Thank you! Your treatment review is now published and live on the Community Safety Feed.",
+        [{ text: "View Feed", onPress: () => navigation.replace('CommunityFeed', { uid, mockUser }) }]
       );
     } catch (err) {
       setSaving(false);
-      Alert.alert("Database Error", "Failed to upload medication review.");
+      Alert.alert("Database Error", "Failed to upload medication review. Please try again.");
     }
   };
 
@@ -224,6 +213,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: STATUSBAR_HEIGHT,
+    ...Platform.select({
+      web: {
+        maxWidth: 1024,
+        width: '100%',
+        alignSelf: 'center',
+      }
+    })
   },
   header: {
     flexDirection: 'row',

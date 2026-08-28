@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "sideEffectsReports": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "medicineReviews": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "communityAlerts": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "suspiciousMedicines": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "medicineRecalls": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

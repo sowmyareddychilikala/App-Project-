@@ -14,8 +14,12 @@ export const signUpUser = async (email, password, fullName) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const user = userCredential.user;
   
-  // Create profile node in Firebase Realtime Database
-  await saveUserProfile(user.uid, fullName, email);
+  // Create profile node in Firebase (non-blocking fallback to ensure registration completes)
+  try {
+    await saveUserProfile(user.uid, fullName, email);
+  } catch (profileErr) {
+    console.warn("signUpUser profile save notice:", profileErr.message);
+  }
   return user;
 };
 
