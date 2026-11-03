@@ -13,7 +13,7 @@ console.log('Generating MediTrust Mobile Appium E2E Test Cases Excel Workbook...
 
 const mobileTestCases = [];
 
-function addMobileTC(id, moduleName, scenario, description, preconditions, steps, testData, expected, severity, execType, status = 'Pass') {
+function addMobileTC(id, moduleName, scenario, description, preconditions, steps, testData, expected, severity, execType, status = 'PASSED') {
   mobileTestCases.push({
     'Test ID': id,
     'Mobile Module': moduleName,

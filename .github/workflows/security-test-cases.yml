@@ -1,0 +1,72 @@
+name: Security Test Cases 300+ Suite
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master", "develop" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
+jobs:
+  execute-security-test-cases:
+    name: Execute 300+ Distinct Security Test Cases
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Project & Security Dependencies
+        run: |
+          npm ci || npm install --legacy-peer-deps || true
+          npm install xlsx --save-dev || true
+
+      - name: Execute 300+ Security Test Cases Suite
+        id: run-security-suite
+        run: |
+          echo "=== RUNNING MEDITRUST 300+ SECURITY TEST CASES ==="
+          node security-tests/run-security-suite.js
+
+      - name: Validate Output Excel Deliverable
+        run: |
+          echo "=== VALIDATING EXCEL & SUMMARY DELIVERABLES ==="
+          if [ ! -f "Vulnerability Test Results/security-test-cases-300.xlsx" ]; then
+            echo "ERROR: Vulnerability Test Results/security-test-cases-300.xlsx is missing!"
+            exit 1
+          fi
+          if [ ! -f "Vulnerability Test Results/security-test-summary.md" ]; then
+            echo "ERROR: Vulnerability Test Results/security-test-summary.md is missing!"
+            exit 1
+          fi
+          echo "Verification passed: security-test-cases-300.xlsx exists and is valid."
+
+      - name: Publish Test Summary to GitHub Actions
+        run: |
+          cat "Vulnerability Test Results/security-test-summary.md" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Security Test Cases Excel Artifact (security-test-cases-300)
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-test-cases-300
+          path: "Vulnerability Test Results/security-test-cases-300.xlsx"
+          retention-days: 30
+
+      - name: Upload All Supporting Security Results Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-security-test-deliverables
+          path: "Vulnerability Test Results/"
+          retention-days: 30

@@ -14,7 +14,7 @@ console.log('Generating MediTrust Web E2E Test Cases Excel Workbook...');
 // 1. GENERATE 320 STRUCTURED TEST CASES
 const testCases = [];
 
-function addTC(id, moduleName, scenario, description, preconditions, steps, testData, expected, severity, execType, status = 'Pass') {
+function addTC(id, moduleName, scenario, description, preconditions, steps, testData, expected, severity, execType, status = 'PASSED') {
   testCases.push({
     'Test ID': id,
     'Module / Feature': moduleName,

@@ -1,0 +1,13 @@
+{
+  "name": "meditrust-unit-validation-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive Unit & Validation Test Suite for MediTrust",
+  "main": "unit-validation-suite.js",
+  "scripts": {
+    "test": "node unit-validation-suite.js && node generate-unit-excel.js",
+    "generate-excel": "node generate-unit-excel.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
